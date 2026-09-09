@@ -148,6 +148,21 @@ test("confirmed official branding is used and optimized for the web", async () =
   assert.ok(banner.size < 800_000, "web banner should remain below 800 KB");
 });
 
+test("the interface uses the dark archival color system", async () => {
+  const css = await read("styles.css");
+  assert.ok(css.includes("color-scheme: dark"));
+  assert.ok(css.includes("--paper: #151514"));
+  assert.ok(css.includes("background: rgba(39, 35, 30, .92)"), "catalog and checkout panels must use dark raised surfaces");
+  assert.ok(css.includes("background: #1e1c19"), "checkout fields must use dark controls");
+  assert.ok(css.includes("--sage: #59664b"), "available badges need an AA-compliant dark background");
+  assert.ok(css.includes("background: #984a44"), "cart hover state needs AA-compliant contrast");
+  assert.ok(css.includes("textarea:focus-visible"), "textarea must share the visible keyboard focus treatment");
+  assert.ok(css.includes("textarea::placeholder { color: #988b75; }"), "checkout placeholder must remain readable");
+  assert.ok(css.includes("border: 1px solid #806e4d"), "checkout control boundaries need non-text contrast");
+  assert.ok(!css.includes("background: rgba(246, 237, 217"), "light parchment panels must not return");
+  assert.ok(!css.includes("background: rgba(248, 241, 225"), "light filter controls must not return");
+});
+
 test("checkout collects delivery details and payment preference without taking payment", async () => {
   const html = await read("checkout.html");
   for (const field of ["name", "email", "address_line_1", "city", "region", "postal_code", "country", "payment_preference"]) {
