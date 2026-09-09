@@ -13,6 +13,9 @@ const state = {
 };
 
 const elements = {
+  collectionHighlights: document.querySelector("#collection-highlights"),
+  specimenHighlights: document.querySelector("#specimen-highlights"),
+  bookHighlights: document.querySelector("#book-highlights"),
   collectionGrid: document.querySelector("#collection-grid"),
   specimenGrid: document.querySelector("#specimen-grid"),
   bookGrid: document.querySelector("#book-grid"),
@@ -25,6 +28,16 @@ const elements = {
   specimenSort: document.querySelector("#specimen-sort"),
   availableOnly: document.querySelector("#available-only"),
   clearFilters: document.querySelector("#clear-specimen-filters"),
+  collectionResultCount: document.querySelector("#collection-result-count"),
+  collectionSearch: document.querySelector("#collection-search"),
+  collectionClassification: document.querySelector("#collection-classification"),
+  collectionSort: document.querySelector("#collection-sort"),
+  clearCollectionFilters: document.querySelector("#clear-collection-filters"),
+  bookResultCount: document.querySelector("#book-result-count"),
+  bookSearch: document.querySelector("#book-search"),
+  bookSort: document.querySelector("#book-sort"),
+  bookAvailableOnly: document.querySelector("#book-available-only"),
+  clearBookFilters: document.querySelector("#clear-book-filters"),
   menuButton: document.querySelector(".menu-button"),
   navigation: document.querySelector("#site-navigation"),
   wordmark: document.querySelector(".wordmark"),
@@ -153,14 +166,33 @@ function createBookCard(item) {
 }
 
 function renderCollection() {
+  if (!elements.collectionGrid) return;
+  const query = elements.collectionSearch.value.trim().toLocaleLowerCase();
+  const classification = elements.collectionClassification.value;
+  const sort = elements.collectionSort.value;
+  const collection = state.collection.filter((item) => {
+    const searchable = [item.name, item.classification, item.locality, item.provenance, item.catalogNumber]
+      .filter(Boolean).join(" ").toLocaleLowerCase();
+    return (!query || searchable.includes(query)) && (!classification || item.classification === classification);
+  });
+  collection.sort((a, b) => {
+    if (sort === "mass-desc") return (b.massGrams ?? Number.NEGATIVE_INFINITY) - (a.massGrams ?? Number.NEGATIVE_INFINITY);
+    if (sort === "acquired-desc") return (b.acquiredYear ?? Number.NEGATIVE_INFINITY) - (a.acquiredYear ?? Number.NEGATIVE_INFINITY);
+    return text(a.name, "").localeCompare(text(b.name, ""), undefined, { sensitivity: "base", numeric: true });
+  });
+
   elements.collectionGrid.replaceChildren();
-  if (!state.collection.length) {
+  elements.collectionResultCount.textContent = String(collection.length);
+  const filtersActive = query || classification || sort !== "name";
+  elements.clearCollectionFilters.hidden = !filtersActive;
+  if (!collection.length) {
+    const hasInventory = state.collection.length > 0;
     elements.collectionGrid.append(createEmptyState(
-      "The collection ledger is being prepared",
-      "Photographs and catalog records will appear here as the personal collection folders are reviewed."
+      hasInventory ? "No collection records answer that description" : "The collection ledger is being prepared",
+      hasInventory ? "Try a broader search or clear the current filters." : "Photographs and catalog records will appear here as the personal collection folders are reviewed."
     ));
   } else {
-    state.collection.forEach((item) => elements.collectionGrid.append(createSpecimenCard(item, "collection")));
+    collection.forEach((item) => elements.collectionGrid.append(createSpecimenCard(item, "collection")));
   }
   elements.collectionGrid.setAttribute("aria-busy", "false");
 }
@@ -187,6 +219,7 @@ function getFilteredSpecimens() {
 }
 
 function renderSpecimens() {
+  if (!elements.specimenGrid) return;
   const specimens = getFilteredSpecimens();
   elements.specimenGrid.replaceChildren();
   elements.specimenResultCount.textContent = String(specimens.length);
@@ -206,34 +239,93 @@ function renderSpecimens() {
 }
 
 function renderBooks() {
+  if (!elements.bookGrid) return;
+  const query = elements.bookSearch.value.trim().toLocaleLowerCase();
+  const sort = elements.bookSort.value;
+  const availableOnly = elements.bookAvailableOnly.checked;
+  const books = state.books.filter((item) => {
+    const searchable = [item.title, item.author, item.publisher, item.catalogNumber, item.description]
+      .filter(Boolean).join(" ").toLocaleLowerCase();
+    return (!query || searchable.includes(query)) && (!availableOnly || item.status === "available");
+  });
+  books.sort((a, b) => {
+    if (sort === "price-asc") return (a.priceUsd ?? Number.POSITIVE_INFINITY) - (b.priceUsd ?? Number.POSITIVE_INFINITY);
+    if (sort === "price-desc") return (b.priceUsd ?? Number.NEGATIVE_INFINITY) - (a.priceUsd ?? Number.NEGATIVE_INFINITY);
+    if (sort === "year-desc") return (b.year ?? Number.NEGATIVE_INFINITY) - (a.year ?? Number.NEGATIVE_INFINITY);
+    return text(a.title, "").localeCompare(text(b.title, ""), undefined, { sensitivity: "base", numeric: true });
+  });
+
   elements.bookGrid.replaceChildren();
-  const availableBooks = state.books.filter((item) => item.status !== "sold");
-  if (!availableBooks.length) {
+  elements.bookResultCount.textContent = String(books.length);
+  const filtersActive = query || sort !== "title" || !availableOnly;
+  elements.clearBookFilters.hidden = !filtersActive;
+  if (!books.length) {
+    const hasInventory = state.books.length > 0;
     elements.bookGrid.append(createEmptyState(
-      "The bookseller's list is forthcoming",
-      "Reference books, catalogs, and collectible volumes will be added after the library inventory is supplied."
+      hasInventory ? "No books answer that description" : "The bookseller's list is forthcoming",
+      hasInventory ? "Try a broader search or clear the current filters." : "Reference books, catalogs, and collectible volumes will be added after the library inventory is supplied."
     ));
   } else {
-    availableBooks.forEach((item) => elements.bookGrid.append(createBookCard(item)));
+    books.forEach((item) => elements.bookGrid.append(createBookCard(item)));
   }
   elements.bookGrid.setAttribute("aria-busy", "false");
 }
 
+function renderHighlights() {
+  if (elements.collectionHighlights) {
+    elements.collectionHighlights.replaceChildren();
+    const records = state.collection.slice(0, 3);
+    if (records.length) records.forEach((item) => elements.collectionHighlights.append(createSpecimenCard(item, "collection")));
+    else elements.collectionHighlights.append(createEmptyState(
+      "Collection highlights are being prepared",
+      "The first selected records will appear here when the collection folders are reviewed."
+    ));
+    elements.collectionHighlights.setAttribute("aria-busy", "false");
+  }
+
+  if (elements.specimenHighlights) {
+    elements.specimenHighlights.replaceChildren();
+    const records = state.specimens.filter((item) => item.status === "available").slice(0, 3);
+    if (records.length) records.forEach((item) => elements.specimenHighlights.append(createSpecimenCard(item)));
+    else elements.specimenHighlights.append(createEmptyState(
+      "The first sale highlights are being assembled",
+      "Documented specimens will appear here after the incoming folders and photographs are reviewed."
+    ));
+    elements.specimenHighlights.setAttribute("aria-busy", "false");
+  }
+
+  if (elements.bookHighlights) {
+    elements.bookHighlights.replaceChildren();
+    const records = state.books.filter((item) => item.status === "available").slice(0, 4);
+    if (records.length) records.forEach((item) => elements.bookHighlights.append(createBookCard(item)));
+    else elements.bookHighlights.append(createEmptyState(
+      "Book highlights are forthcoming",
+      "Selected reference and collectible volumes will appear here when the library inventory is supplied."
+    ));
+    elements.bookHighlights.setAttribute("aria-busy", "false");
+  }
+}
+
 function populateClassifications() {
-  const values = [...new Set(state.specimens.map((item) => item.classification).filter(Boolean))]
-    .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base", numeric: true }));
-  values.forEach((value) => {
-    const option = document.createElement("option");
-    option.value = value;
-    option.textContent = value;
-    elements.classificationFilter.append(option);
-  });
+  const populate = (select, items) => {
+    if (!select) return;
+    const values = [...new Set(items.map((item) => item.classification).filter(Boolean))]
+      .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base", numeric: true }));
+    values.forEach((value) => {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = value;
+      select.append(option);
+    });
+  };
+  populate(elements.classificationFilter, state.specimens);
+  populate(elements.collectionClassification, state.collection);
 }
 
 function updateCounts() {
-  elements.collectionCount.textContent = number.format(state.collection.length);
-  elements.specimenCount.textContent = number.format(state.specimens.filter((item) => item.status === "available").length);
-  elements.bookCount.textContent = number.format(state.books.filter((item) => item.status === "available").length);
+  if (elements.collectionCount) elements.collectionCount.textContent = number.format(state.collection.length);
+  if (elements.specimenCount) elements.specimenCount.textContent = number.format(state.specimens.filter((item) => item.status === "available").length);
+  if (elements.bookCount) elements.bookCount.textContent = number.format(state.books.filter((item) => item.status === "available").length);
 }
 
 function handleFilterChange() {
@@ -247,6 +339,22 @@ function clearFilters() {
   elements.availableOnly.checked = true;
   renderSpecimens();
   elements.specimenSearch.focus();
+}
+
+function clearCollectionFilters() {
+  elements.collectionSearch.value = "";
+  elements.collectionClassification.value = "";
+  elements.collectionSort.value = "name";
+  renderCollection();
+  elements.collectionSearch.focus();
+}
+
+function clearBookFilters() {
+  elements.bookSearch.value = "";
+  elements.bookSort.value = "title";
+  elements.bookAvailableOnly.checked = true;
+  renderBooks();
+  elements.bookSearch.focus();
 }
 
 function setPageInert(inert) {
@@ -301,11 +409,25 @@ function handleMenuKeydown(event) {
 }
 
 function setupInteractions() {
-  elements.specimenSearch.addEventListener("input", handleFilterChange);
-  elements.classificationFilter.addEventListener("change", handleFilterChange);
-  elements.specimenSort.addEventListener("change", handleFilterChange);
-  elements.availableOnly.addEventListener("change", handleFilterChange);
-  elements.clearFilters.addEventListener("click", clearFilters);
+  if (elements.specimenSearch) {
+    elements.specimenSearch.addEventListener("input", handleFilterChange);
+    elements.classificationFilter.addEventListener("change", handleFilterChange);
+    elements.specimenSort.addEventListener("change", handleFilterChange);
+    elements.availableOnly.addEventListener("change", handleFilterChange);
+    elements.clearFilters.addEventListener("click", clearFilters);
+  }
+  if (elements.collectionSearch) {
+    elements.collectionSearch.addEventListener("input", renderCollection);
+    elements.collectionClassification.addEventListener("change", renderCollection);
+    elements.collectionSort.addEventListener("change", renderCollection);
+    elements.clearCollectionFilters.addEventListener("click", clearCollectionFilters);
+  }
+  if (elements.bookSearch) {
+    elements.bookSearch.addEventListener("input", renderBooks);
+    elements.bookSort.addEventListener("change", renderBooks);
+    elements.bookAvailableOnly.addEventListener("change", renderBooks);
+    elements.clearBookFilters.addEventListener("click", clearBookFilters);
+  }
 
   elements.menuButton.addEventListener("click", () => {
     const expanded = elements.menuButton.getAttribute("aria-expanded") === "true";
@@ -335,6 +457,7 @@ async function loadData() {
 
   populateClassifications();
   updateCounts();
+  renderHighlights();
   renderCollection();
   renderSpecimens();
   renderBooks();

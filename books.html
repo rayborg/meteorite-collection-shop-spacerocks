@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Browse meteorite books, catalogs, reference works, and collectible volumes offered by SpaceRocks.">
+  <meta name="author" content="Raymond Borges Hink">
+  <meta name="theme-color" content="#211c17">
+  <meta property="og:title" content="Books for Sale | SpaceRocks">
+  <meta property="og:description" content="Meteorite reference works, field guides, catalogs, and collectible books.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://rayborg.github.io/meteorite-collection-shop-spacerocks/assets/branding/spacerocks-banner.webp">
+  <title>Books for Sale | The Space Rocks Cabinet</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./inventory-utils.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body class="interior-page" data-page="books">
+  <a class="skip-link" href="#catalog-content">Skip to books for sale</a>
+
+  <header class="site-header">
+    <a class="wordmark" href="./index.html" aria-label="The Space Rocks Cabinet, home">
+      <img class="wordmark-logo" src="./assets/branding/spacerocks-logo.webp" alt="" width="640" height="640">
+      <span><strong>Space Rocks</strong><small>Collector's Cabinet</small></span>
+    </a>
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-navigation">
+      <span></span><span></span><span></span><b>Menu</b>
+    </button>
+    <nav id="site-navigation" class="site-navigation" aria-label="Primary navigation">
+      <a href="./collection.html">Collection</a>
+      <a href="./specimens.html">Specimens for sale</a>
+      <a href="./books.html" aria-current="page">Books</a>
+      <a href="./index.html#research">Research desk</a>
+      <a class="nav-coa" href="https://coa-sandbox.meteoriteresearch.org/" target="_blank" rel="noopener noreferrer">Official COA <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+
+  <main id="catalog-content">
+    <section class="interior-hero" aria-labelledby="page-title">
+      <img src="./assets/branding/spacerocks-banner.webp" alt="" width="2033" height="774" aria-hidden="true">
+      <div class="interior-hero-overlay" aria-hidden="true"></div>
+      <div class="page-shell interior-hero-copy">
+        <p><a href="./index.html">The cabinet</a> <span aria-hidden="true">/</span> Catalog III</p>
+        <h1 id="page-title">Books for sale</h1>
+        <p>Reference works, field guides, collection catalogs, and collectible volumes from the working library.</p>
+      </div>
+    </section>
+
+    <section class="catalog-page page-shell" aria-labelledby="ledger-title">
+      <header class="catalog-page-heading">
+        <div>
+          <p class="eyebrow">The library</p>
+          <h2 id="ledger-title">Bookseller's list</h2>
+        </div>
+        <p><strong id="book-result-count">0</strong> matching volumes</p>
+      </header>
+
+      <form class="catalog-tools catalog-tools-light book-tools" role="search" aria-label="Filter books for sale">
+        <label class="search-field">
+          <span>Search the library</span>
+          <span class="input-wrap">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m15.5 15.5 5 5"></path></svg>
+            <input id="book-search" type="search" autocomplete="off" placeholder="Title, author, publisher, or catalog number">
+          </span>
+        </label>
+        <label>
+          <span>Order the list</span>
+          <span class="select-wrap">
+            <select id="book-sort">
+              <option value="title">Title, A–Z</option>
+              <option value="price-asc">Price, low to high</option>
+              <option value="price-desc">Price, high to low</option>
+              <option value="year-desc">Publication year, newest</option>
+            </select>
+          </span>
+        </label>
+        <label class="availability-toggle">
+          <input id="book-available-only" type="checkbox" checked>
+          <span>Show available only</span>
+        </label>
+        <button id="clear-book-filters" class="filter-button" type="button" hidden>Clear filters</button>
+      </form>
+
+      <div id="book-grid" class="card-grid book-grid" aria-live="polite" aria-busy="true"></div>
+    </section>
+
+    <aside class="catalog-crosslink">
+      <div class="page-shell">
+        <p class="eyebrow">Beyond the library</p>
+        <h2>Explore the meteorite cabinet.</h2>
+        <a class="button button-light" href="./collection.html">Browse the personal collection</a>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-mark" aria-hidden="true"><span>✦</span></div>
+    <p class="footer-title">The Space Rocks Cabinet</p>
+    <p>A personal meteorite collection, exchange, and working library maintained by Raymond Borges Hink.</p>
+    <nav aria-label="Footer navigation">
+      <a href="./index.html">Home</a>
+      <a href="./collection.html">Collection</a>
+      <a href="./specimens.html">Specimens</a>
+      <a href="./index.html#research">Research</a>
+    </nav>
+    <p class="footer-note">Book descriptions will identify the exact edition and copy-specific condition wherever possible.</p>
+  </footer>
+
+  <template id="empty-template">
+    <div class="empty-ledger"><span aria-hidden="true">✦</span><h3></h3><p></p></div>
+  </template>
+</body>
+</html>

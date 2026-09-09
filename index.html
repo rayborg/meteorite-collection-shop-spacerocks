@@ -10,6 +10,7 @@
   <meta property="og:description" content="Meteorites collected, documented, and occasionally offered to fellow collectors.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://rayborg.github.io/meteorite-collection-shop-spacerocks/">
+  <meta property="og:image" content="https://rayborg.github.io/meteorite-collection-shop-spacerocks/assets/branding/spacerocks-banner.webp">
   <title>The Space Rocks Cabinet | Collection &amp; Exchange</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
@@ -21,16 +22,16 @@
 
   <header class="site-header">
     <a class="wordmark" href="#top" aria-label="The Space Rocks Cabinet, home">
-      <span class="wordmark-mark" aria-hidden="true">SR</span>
+      <img class="wordmark-logo" src="./assets/branding/spacerocks-logo.webp" alt="" width="640" height="640">
       <span><strong>Space Rocks</strong><small>Collector's Cabinet</small></span>
     </a>
     <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-navigation">
       <span></span><span></span><span></span><b>Menu</b>
     </button>
     <nav id="site-navigation" class="site-navigation" aria-label="Primary navigation">
-      <a href="#collection">Collection</a>
-      <a href="#specimens">Specimens for sale</a>
-      <a href="#books">Books</a>
+      <a href="./collection.html">Collection</a>
+      <a href="./specimens.html">Specimens for sale</a>
+      <a href="./books.html">Books</a>
       <a href="#research">Research desk</a>
       <a class="nav-coa" href="https://coa-sandbox.meteoriteresearch.org/" target="_blank" rel="noopener noreferrer">Official COA <span aria-hidden="true">↗</span></a>
     </nav>
@@ -38,22 +39,16 @@
 
   <main id="main-content">
     <section id="top" class="hero" aria-labelledby="page-title">
-      <div class="hero-rule" aria-hidden="true"><span>✦</span></div>
+      <img class="hero-banner" src="./assets/branding/spacerocks-banner.webp" alt="Illustrated SpaceRocks landscape with a fireball crossing a starry sky above three meteorites beside a mountain lake" width="2033" height="774" fetchpriority="high">
+      <div class="hero-overlay" aria-hidden="true"></div>
       <div class="hero-copy">
         <p class="kicker">A collector's archive &amp; exchange</p>
-        <h1 id="page-title"><span>The</span> Space Rocks Cabinet</h1>
-        <p class="hero-deck">Meteorites collected with curiosity, documented with care, and occasionally offered to fellow custodians.</p>
+        <h1 id="page-title">Meteorites with a paper trail.</h1>
+        <p class="hero-deck">Collected with curiosity, documented with care, and occasionally offered to fellow custodians.</p>
         <div class="hero-actions">
-          <a class="button button-light" href="#specimens">Visit the exchange</a>
-          <a class="text-link" href="#collection">Open the collection ledger <span aria-hidden="true">↓</span></a>
+          <a class="button button-light" href="./specimens.html">Visit the exchange</a>
+          <a class="text-link" href="./collection.html">Open the collection ledger <span aria-hidden="true">→</span></a>
         </div>
-      </div>
-      <div class="hero-object" aria-hidden="true">
-        <span class="orbit orbit-one"></span>
-        <span class="orbit orbit-two"></span>
-        <span class="meteorite-shape"></span>
-        <small class="object-label label-one">Terrestrial archive</small>
-        <small class="object-label label-two">Extraterrestrial matter</small>
       </div>
     </section>
 
@@ -82,9 +77,12 @@
           <p class="eyebrow">Private holdings · Catalog I</p>
           <h2 id="collection-title">The personal collection</h2>
         </div>
-        <p>Selected records from the cabinet, retained for study and display. These entries are not offered for sale.</p>
+        <div class="section-summary">
+          <p>Highlights from the cabinet, retained for study and display. These entries are not offered for sale.</p>
+          <a class="section-link" href="./collection.html">Browse the full collection <span aria-hidden="true">→</span></a>
+        </div>
       </header>
-      <div id="collection-grid" class="card-grid collection-grid" aria-live="polite" aria-busy="true"></div>
+      <div id="collection-highlights" class="card-grid collection-grid" aria-live="polite" aria-busy="true"></div>
     </section>
 
     <section id="specimens" class="exchange-section" aria-labelledby="specimens-title">
@@ -94,47 +92,12 @@
             <p class="eyebrow">The exchange · Catalog II</p>
             <h2 id="specimens-title">Specimens for sale</h2>
           </div>
-          <p>Duplicate and selected material offered with clear weights, condition notes, and supporting documentation where available.</p>
+          <div class="section-summary">
+            <p>Current highlights from duplicate and selected material offered with clear weights and condition notes.</p>
+            <a class="section-link section-link-light" href="./specimens.html">Browse all sale specimens <span aria-hidden="true">→</span></a>
+          </div>
         </header>
-
-        <form class="catalog-tools" role="search" aria-label="Filter specimens for sale">
-          <label class="search-field">
-            <span>Search the sale ledger</span>
-            <span class="input-wrap">
-              <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m15.5 15.5 5 5"></path></svg>
-              <input id="specimen-search" type="search" autocomplete="off" placeholder="Name, class, locality, or catalog number">
-            </span>
-          </label>
-          <label>
-            <span>Classification</span>
-            <span class="select-wrap">
-              <select id="classification-filter">
-                <option value="">All classifications</option>
-              </select>
-            </span>
-          </label>
-          <label>
-            <span>Order the ledger</span>
-            <span class="select-wrap">
-              <select id="specimen-sort">
-                <option value="name">Name, A–Z</option>
-                <option value="price-asc">Price, low to high</option>
-                <option value="price-desc">Price, high to low</option>
-                <option value="mass-desc">Mass, largest first</option>
-              </select>
-            </span>
-          </label>
-          <label class="availability-toggle">
-            <input id="available-only" type="checkbox" checked>
-            <span>Show available specimens only</span>
-          </label>
-        </form>
-
-        <div class="results-bar">
-          <p><strong id="specimen-result-count">0</strong> <span>entries in the sale ledger</span></p>
-          <button id="clear-specimen-filters" class="clear-button" type="button" hidden>Clear filters</button>
-        </div>
-        <div id="specimen-grid" class="card-grid sale-grid" aria-live="polite" aria-busy="true"></div>
+        <div id="specimen-highlights" class="card-grid sale-grid" aria-live="polite" aria-busy="true"></div>
       </div>
     </section>
 
@@ -144,9 +107,12 @@
           <p class="eyebrow">The library · Catalog III</p>
           <h2 id="books-title">Books for sale</h2>
         </div>
-        <p>Reference works, field guides, catalogs, and collectible volumes for meteorite enthusiasts and researchers.</p>
+        <div class="section-summary">
+          <p>Highlights from reference works, field guides, catalogs, and collectible volumes for enthusiasts and researchers.</p>
+          <a class="section-link" href="./books.html">Browse the bookseller's list <span aria-hidden="true">→</span></a>
+        </div>
       </header>
-      <div id="book-grid" class="card-grid book-grid" aria-live="polite" aria-busy="true"></div>
+      <div id="book-highlights" class="card-grid book-grid" aria-live="polite" aria-busy="true"></div>
     </section>
 
     <section class="buying-notes page-shell" aria-labelledby="buying-title">
@@ -201,9 +167,9 @@
     <p class="footer-title">The Space Rocks Cabinet</p>
     <p>A personal meteorite collection, exchange, and working library maintained by Raymond Borges Hink.</p>
     <nav aria-label="Footer navigation">
-      <a href="#collection">Collection</a>
-      <a href="#specimens">Specimens</a>
-      <a href="#books">Books</a>
+      <a href="./collection.html">Collection</a>
+      <a href="./specimens.html">Specimens</a>
+      <a href="./books.html">Books</a>
       <a href="#research">Research</a>
     </nav>
     <p class="footer-note">Collection records are descriptive and do not replace official Meteoritical Bulletin classifications. Sale terms will be stated with each listing.</p>

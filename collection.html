@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Browse documented meteorites in the private SpaceRocks collection.">
+  <meta name="author" content="Raymond Borges Hink">
+  <meta name="theme-color" content="#211c17">
+  <meta property="og:title" content="Personal Collection | SpaceRocks">
+  <meta property="og:description" content="A catalog of meteorites retained for study and display in the SpaceRocks collection.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://rayborg.github.io/meteorite-collection-shop-spacerocks/assets/branding/spacerocks-banner.webp">
+  <title>Personal Collection | The Space Rocks Cabinet</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./inventory-utils.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body class="interior-page" data-page="collection">
+  <a class="skip-link" href="#catalog-content">Skip to the collection catalog</a>
+
+  <header class="site-header">
+    <a class="wordmark" href="./index.html" aria-label="The Space Rocks Cabinet, home">
+      <img class="wordmark-logo" src="./assets/branding/spacerocks-logo.webp" alt="" width="640" height="640">
+      <span><strong>Space Rocks</strong><small>Collector's Cabinet</small></span>
+    </a>
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-navigation">
+      <span></span><span></span><span></span><b>Menu</b>
+    </button>
+    <nav id="site-navigation" class="site-navigation" aria-label="Primary navigation">
+      <a href="./collection.html" aria-current="page">Collection</a>
+      <a href="./specimens.html">Specimens for sale</a>
+      <a href="./books.html">Books</a>
+      <a href="./index.html#research">Research desk</a>
+      <a class="nav-coa" href="https://coa-sandbox.meteoriteresearch.org/" target="_blank" rel="noopener noreferrer">Official COA <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+
+  <main id="catalog-content">
+    <section class="interior-hero" aria-labelledby="page-title">
+      <img src="./assets/branding/spacerocks-banner.webp" alt="" width="2033" height="774" aria-hidden="true">
+      <div class="interior-hero-overlay" aria-hidden="true"></div>
+      <div class="page-shell interior-hero-copy">
+        <p><a href="./index.html">The cabinet</a> <span aria-hidden="true">/</span> Catalog I</p>
+        <h1 id="page-title">The personal collection</h1>
+        <p>Documented specimens retained for study, comparison, and display. Collection entries shown here are not offered for sale.</p>
+      </div>
+    </section>
+
+    <section class="catalog-page page-shell" aria-labelledby="ledger-title">
+      <header class="catalog-page-heading">
+        <div>
+          <p class="eyebrow">Private holdings</p>
+          <h2 id="ledger-title">Collection ledger</h2>
+        </div>
+        <p><strong id="collection-result-count">0</strong> documented records</p>
+      </header>
+
+      <form class="catalog-tools catalog-tools-light" role="search" aria-label="Filter the personal collection">
+        <label class="search-field">
+          <span>Search the collection</span>
+          <span class="input-wrap">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m15.5 15.5 5 5"></path></svg>
+            <input id="collection-search" type="search" autocomplete="off" placeholder="Name, class, locality, provenance, or catalog number">
+          </span>
+        </label>
+        <label>
+          <span>Classification</span>
+          <span class="select-wrap">
+            <select id="collection-classification">
+              <option value="">All classifications</option>
+            </select>
+          </span>
+        </label>
+        <label>
+          <span>Order the ledger</span>
+          <span class="select-wrap">
+            <select id="collection-sort">
+              <option value="name">Name, A–Z</option>
+              <option value="mass-desc">Mass, largest first</option>
+              <option value="acquired-desc">Recently acquired</option>
+            </select>
+          </span>
+        </label>
+        <button id="clear-collection-filters" class="filter-button" type="button" hidden>Clear filters</button>
+      </form>
+
+      <div id="collection-grid" class="card-grid collection-grid" aria-live="polite" aria-busy="true"></div>
+    </section>
+
+    <aside class="catalog-crosslink">
+      <div class="page-shell">
+        <p class="eyebrow">Looking to acquire a specimen?</p>
+        <h2>Visit the exchange ledger.</h2>
+        <a class="button button-light" href="./specimens.html">Browse specimens for sale</a>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-mark" aria-hidden="true"><span>✦</span></div>
+    <p class="footer-title">The Space Rocks Cabinet</p>
+    <p>A personal meteorite collection, exchange, and working library maintained by Raymond Borges Hink.</p>
+    <nav aria-label="Footer navigation">
+      <a href="./index.html">Home</a>
+      <a href="./specimens.html">Specimens</a>
+      <a href="./books.html">Books</a>
+      <a href="./index.html#research">Research</a>
+    </nav>
+    <p class="footer-note">Collection records are descriptive and do not replace official Meteoritical Bulletin classifications.</p>
+  </footer>
+
+  <template id="empty-template">
+    <div class="empty-ledger"><span aria-hidden="true">✦</span><h3></h3><p></p></div>
+  </template>
+</body>
+</html>
