@@ -38,6 +38,7 @@ const elements = {
   bookSort: document.querySelector("#book-sort"),
   bookAvailableOnly: document.querySelector("#book-available-only"),
   clearBookFilters: document.querySelector("#clear-book-filters"),
+  cartCounts: document.querySelectorAll(".cart-count"),
   menuButton: document.querySelector(".menu-button"),
   navigation: document.querySelector("#site-navigation"),
   wordmark: document.querySelector(".wordmark"),
@@ -100,24 +101,38 @@ function appendMeta(list, label, value) {
   list.append(row);
 }
 
-function createPriceFooter(item) {
+function createCartItem(item, type) {
+  return {
+    type,
+    id: item.id,
+    catalogNumber: item.catalogNumber,
+    name: type === "book" ? item.title : item.name,
+    subtitle: type === "book" ? [item.author, item.year].filter(Boolean).join(" · ") : item.classification,
+    priceUsd: item.priceUsd,
+    image: item.image,
+    imageAlt: item.imageAlt
+  };
+}
+
+function createPriceFooter(item, type) {
   const footer = createElement("div", "card-footer");
   const price = createElement("div", "price");
   price.append(createElement("small", "", "Price"));
   price.append(document.createTextNode(Number.isFinite(item.priceUsd) ? currency.format(item.priceUsd) : "On request"));
   footer.append(price);
 
-  const inquiryUrl = InventoryUtils.getSafeInquiryUrl(item.inquiryUrl);
-  if (inquiryUrl && item.status === "available") {
-    const link = createElement("a", "inquiry-link", "Make an inquiry ↗");
-    link.href = inquiryUrl;
-    if (inquiryUrl.startsWith("https:")) {
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-    }
-    footer.append(link);
+  if (item.status === "available") {
+    const cartItem = createCartItem(item, type);
+    const button = createElement("button", "add-cart-button", "Add to cart");
+    button.type = "button";
+    button.dataset.cartKey = `${type}:${item.id}`;
+    button.addEventListener("click", () => {
+      CartStore.add(cartItem);
+      updateCartUI();
+    });
+    footer.append(button);
   } else {
-    footer.append(createElement("span", "inquiry-pending", "Inquiry details forthcoming"));
+    footer.append(createElement("span", "inquiry-pending", "Not currently available"));
   }
   return footer;
 }
@@ -140,7 +155,7 @@ function createSpecimenCard(item, kind = "sale") {
   appendMeta(metadata, "Acquired", item.acquiredYear);
   appendMeta(metadata, "Provenance", item.provenance);
   if (metadata.children.length) body.append(metadata);
-  if (kind === "sale") body.append(createPriceFooter(item));
+  if (kind === "sale") body.append(createPriceFooter(item, "specimen"));
   article.append(body);
   return article;
 }
@@ -160,7 +175,7 @@ function createBookCard(item) {
   appendMeta(metadata, "Publisher", item.publisher);
   appendMeta(metadata, "Format", item.format);
   if (metadata.children.length) body.append(metadata);
-  body.append(createPriceFooter(item));
+  body.append(createPriceFooter(item, "book"));
   article.append(body);
   return article;
 }
@@ -357,6 +372,19 @@ function clearBookFilters() {
   elements.bookSearch.focus();
 }
 
+function updateCartUI() {
+  const items = CartStore.readItems();
+  elements.cartCounts.forEach((count) => {
+    count.textContent = String(items.length);
+    count.setAttribute("aria-label", `${items.length} ${items.length === 1 ? "item" : "items"} in cart`);
+  });
+  document.querySelectorAll(".add-cart-button").forEach((button) => {
+    const inCart = items.some((item) => item.key === button.dataset.cartKey);
+    button.disabled = inCart;
+    button.textContent = inCart ? "In cart" : "Add to cart";
+  });
+}
+
 function setPageInert(inert) {
   elements.wordmark.inert = inert;
   elements.main.inert = inert;
@@ -439,6 +467,7 @@ function setupInteractions() {
   window.addEventListener("resize", () => {
     if (window.innerWidth > 820) closeMenu();
   });
+  window.addEventListener("cart:change", updateCartUI);
 }
 
 async function loadData() {
@@ -461,6 +490,7 @@ async function loadData() {
   renderCollection();
   renderSpecimens();
   renderBooks();
+  updateCartUI();
 }
 
 setupInteractions();

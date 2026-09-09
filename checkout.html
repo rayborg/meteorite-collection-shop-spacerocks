@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Review your Spacerocks cart and send a checkout request for shipping and payment confirmation.">
+  <meta name="author" content="Raymond Borges Hink">
+  <meta name="theme-color" content="#211c17">
+  <meta name="robots" content="noindex">
+  <title>Checkout Request | The Spacerocks Cabinet</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./inventory-utils.js" defer></script>
+  <script src="./cart.js" defer></script>
+  <script src="./app.js" defer></script>
+  <script src="./checkout-config.js" defer></script>
+  <script src="./checkout.js" defer></script>
+</head>
+<body class="interior-page" data-page="checkout">
+  <a class="skip-link" href="#checkout-content">Skip to checkout</a>
+
+  <header class="site-header">
+    <a class="wordmark" href="./index.html" aria-label="The Spacerocks Cabinet, home">
+      <img class="wordmark-logo" src="./assets/branding/spacerocks-logo.webp" alt="" width="640" height="640">
+      <span><strong>Spacerocks</strong><small>Collector's Cabinet</small></span>
+    </a>
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-navigation">
+      <span></span><span></span><span></span><b>Menu</b>
+    </button>
+    <nav id="site-navigation" class="site-navigation" aria-label="Primary navigation">
+      <a href="./index.html">Home</a>
+      <a href="./collection.html">Collection</a>
+      <a href="./specimens.html">Specimens for sale</a>
+      <a href="./books.html">Books</a>
+      <a href="./index.html#research">Research desk</a>
+      <a class="cart-link" href="./checkout.html" aria-current="page">Cart <span class="cart-count" aria-label="0 items in cart">0</span></a>
+      <a class="nav-coa" href="https://coa-sandbox.meteoriteresearch.org/" target="_blank" rel="noopener noreferrer">Official COA <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+
+  <main id="checkout-content">
+    <section class="interior-brand" aria-labelledby="page-title">
+      <img class="hero-banner" src="./assets/branding/spacerocks-banner.webp" alt="Spacerocks: Pieces of other worlds" width="2033" height="774">
+      <div class="interior-title-panel">
+        <p><a href="./index.html">The cabinet</a> <span aria-hidden="true">/</span> Checkout</p>
+        <h1 id="page-title">Checkout request</h1>
+        <p>Send your selected items and delivery details. Shipping and availability will be confirmed before payment.</p>
+      </div>
+    </section>
+
+    <section class="checkout-layout page-shell" aria-label="Cart and checkout details">
+      <article class="order-panel" aria-labelledby="order-title">
+        <header class="checkout-panel-heading">
+          <div><p class="eyebrow">Your selection</p><h2 id="order-title">Order summary</h2></div>
+          <span id="checkout-item-count">0 items</span>
+        </header>
+        <div id="checkout-empty" class="checkout-empty">
+          <span aria-hidden="true">✦</span>
+          <h3>Your cart is empty</h3>
+          <p>Browse the exchange or bookseller's list to add an item.</p>
+          <div><a href="./specimens.html">View specimens</a><a href="./books.html">View books</a></div>
+        </div>
+        <ul id="checkout-items" class="checkout-items" hidden></ul>
+        <button id="clear-cart" class="clear-button" type="button" hidden>Clear cart</button>
+        <div class="checkout-total">
+          <span>Catalog subtotal</span>
+          <strong id="checkout-subtotal">$0.00</strong>
+        </div>
+        <p class="shipping-note"><strong>Shipping is not included.</strong> The final total and payment instructions will be sent after destination, availability, and shipping are confirmed.</p>
+      </article>
+
+      <article class="checkout-form-panel" aria-labelledby="details-title">
+        <header class="checkout-panel-heading">
+          <div><p class="eyebrow">Checkout details</p><h2 id="details-title">Shipping and contact</h2></div>
+        </header>
+        <p id="endpoint-notice" class="endpoint-notice">Checkout delivery is being configured. You can review the form, but final submission will be enabled after the Formspree endpoint is added.</p>
+        <form id="checkout-form">
+          <input type="hidden" name="_subject" value="New Spacerocks checkout request">
+          <input id="order-summary-field" type="hidden" name="order_summary">
+          <input id="order-reference-field" type="hidden" name="order_reference">
+          <input id="cart-subtotal-field" type="hidden" name="catalog_subtotal">
+
+          <div class="checkout-fields">
+            <label class="field-wide"><span>Full name</span><input name="name" type="text" autocomplete="name" required></label>
+            <label><span>Email</span><input name="email" type="email" autocomplete="email" required></label>
+            <label><span>Phone <small>optional</small></span><input name="phone" type="tel" autocomplete="tel"></label>
+            <label class="field-wide"><span>Address</span><input name="address_line_1" type="text" autocomplete="address-line1" required></label>
+            <label class="field-wide"><span>Apartment, suite, etc. <small>optional</small></span><input name="address_line_2" type="text" autocomplete="address-line2"></label>
+            <label><span>City</span><input name="city" type="text" autocomplete="address-level2" required></label>
+            <label><span>State / region</span><input name="region" type="text" autocomplete="address-level1" required></label>
+            <label><span>Postal code</span><input name="postal_code" type="text" autocomplete="postal-code" required></label>
+            <label><span>Country</span><input name="country" type="text" autocomplete="country-name" required></label>
+          </div>
+
+          <fieldset class="payment-options">
+            <legend>Preferred payment method</legend>
+            <label><input type="radio" name="payment_preference" value="PayPal" required><span>PayPal</span></label>
+            <label><input type="radio" name="payment_preference" value="Revolut" required><span>Revolut</span></label>
+            <label><input type="radio" name="payment_preference" value="Bank transfer" required><span>Bank transfer</span></label>
+          </fieldset>
+
+          <label class="checkout-notes"><span>Order notes <small>optional</small></span><textarea name="notes" rows="4" placeholder="Questions, delivery instructions, or certificate requests"></textarea></label>
+          <label class="checkout-consent"><input type="checkbox" name="privacy_consent" value="yes" required><span>I agree to send these contact and shipping details for this checkout request.</span></label>
+          <p class="form-provider-notice">Checkout requests are processed by <a href="https://formspree.io/legal/privacy-policy/" target="_blank" rel="noopener noreferrer">Formspree <span aria-hidden="true">↗</span></a>.</p>
+          <p class="payment-warning">Do not enter card numbers, bank credentials, or payment passwords. No payment is collected on this website.</p>
+          <button id="checkout-submit" class="checkout-submit" type="submit" disabled>Send checkout request</button>
+          <p id="checkout-status" class="checkout-status" role="status" aria-live="polite"></p>
+        </form>
+        <div id="checkout-success" class="checkout-success" tabindex="-1" hidden>
+          <span aria-hidden="true">✓</span>
+          <h3>Checkout request sent</h3>
+          <p>Your request has been delivered. You will receive a reply after availability and shipping are confirmed.</p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-mark" aria-hidden="true"><span>✦</span></div>
+    <p class="footer-title">The Spacerocks Cabinet</p>
+    <p>A personal meteorite collection, exchange, and working library maintained by Raymond Borges Hink.</p>
+    <nav aria-label="Footer navigation">
+      <a href="./index.html">Home</a>
+      <a href="./collection.html">Collection</a>
+      <a href="./specimens.html">Specimens</a>
+      <a href="./books.html">Books</a>
+    </nav>
+    <p class="footer-note">All prices and availability are verified before payment instructions are issued.</p>
+  </footer>
+</body>
+</html>

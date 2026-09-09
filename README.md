@@ -10,6 +10,7 @@ The site is organized across four pages:
 - `collection.html` contains the searchable personal-collection ledger.
 - `specimens.html` contains the searchable and sortable sale inventory.
 - `books.html` contains the searchable and sortable bookseller's list.
+- `checkout.html` contains the persistent cart and checkout-request form.
 
 ## Local preview
 
@@ -67,7 +68,6 @@ Photographs belong in the corresponding directory under `assets/`. All paths mus
   "description": "Condition and preparation notes for the exact specimen.",
   "priceUsd": 125,
   "status": "available",
-  "inquiryUrl": "mailto:replace-with-contact-address@example.com?subject=Inquiry%20SRS%20001",
   "image": "./assets/sale-specimens/example.webp",
   "imageAlt": "Exact specimen offered for sale"
 }
@@ -91,7 +91,6 @@ Supported sale statuses are `available`, `reserved`, and `sold`.
   "description": "Copy-specific condition and completeness notes.",
   "priceUsd": 45,
   "status": "available",
-  "inquiryUrl": "mailto:replace-with-contact-address@example.com?subject=Inquiry%20SRB%20001",
   "image": "./assets/books/example.webp",
   "imageAlt": "The exact book offered for sale"
 }
@@ -102,3 +101,17 @@ Supported sale statuses are `available`, `reserved`, and `sold`.
 The GitHub Actions workflow validates the static package and deploys it with GitHub Pages after every push to `main`. In the repository settings, configure Pages to use **GitHub Actions** as its source.
 
 Do not publish private acquisition records, home addresses, precise storage locations, unredacted receipts, or photograph metadata that should remain private.
+
+## Checkout delivery
+
+The cart is stored locally in the visitor's browser. Checkout sends an order request rather than collecting payment: the seller confirms availability, calculates shipping, and replies with PayPal, Revolut, or bank-transfer instructions.
+
+To enable checkout submission, create a Formspree form and set its HTTPS endpoint in `checkout-config.js`:
+
+```js
+globalThis.CheckoutConfig = Object.freeze({
+  formspreeEndpoint: "https://formspree.io/f/your-form-id"
+});
+```
+
+Until that endpoint is configured, the final submission button remains disabled. Cart contents can be altered by a visitor, so verify every item and price against the inventory before sending payment instructions.

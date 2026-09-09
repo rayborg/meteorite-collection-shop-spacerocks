@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const require = createRequire(import.meta.url);
 const { getSafeInquiryUrl } = require("../inventory-utils.js");
+const CartStore = require("../cart.js");
 
 async function read(relativePath) {
   return readFile(path.join(root, relativePath), "utf8");
@@ -46,8 +47,25 @@ test("inventory inquiry links reject active and insecure schemes", () => {
   assert.equal(getSafeInquiryUrl("mailto:collector@example.com?subject=Inquiry"), "mailto:collector@example.com?subject=Inquiry");
 });
 
+test("cart items are normalized and unsafe persisted fields are discarded", () => {
+  const item = CartStore.normalizeItem({
+    type: "specimen",
+    id: "sale-001",
+    name: "Test specimen",
+    subtitle: "H5",
+    priceUsd: 125,
+    image: "javascript:alert(1)",
+    imageAlt: "Test"
+  });
+  assert.equal(item.key, "specimen:sale-001");
+  assert.equal(item.priceUsd, 125);
+  assert.equal(item.image, null);
+  assert.equal(CartStore.normalizeItem({ type: "collection", id: "private-001", name: "Private" }), null);
+  assert.equal(CartStore.subtotal([item, { priceUsd: null }]), 125);
+});
+
 test("the three related meteorite projects are linked safely", async () => {
-  const pages = await Promise.all(["index.html", "collection.html", "specimens.html", "books.html"].map(read));
+  const pages = await Promise.all(["index.html", "collection.html", "specimens.html", "books.html", "checkout.html"].map(read));
   const html = pages.join("\n");
   const links = [
     "https://rayborg.github.io/Historical-meteorite-collections/",
@@ -62,7 +80,7 @@ test("the three related meteorite projects are linked safely", async () => {
 
 test("all catalog pages load shared assets and cross-link from the homepage", async () => {
   const html = await read("index.html");
-  for (const asset of ["styles.css", "inventory-utils.js", "app.js", "favicon.svg"]) {
+  for (const asset of ["styles.css", "inventory-utils.js", "cart.js", "app.js", "favicon.svg"]) {
     assert.ok(html.includes(`./${asset}`));
     assert.ok((await read(asset)).length > 0, `${asset} must not be empty`);
   }
@@ -78,14 +96,15 @@ test("all catalog pages load shared assets and cross-link from the homepage", as
   assert.ok((await read("collection.html")).includes('id="collection-grid"'));
   assert.ok((await read("specimens.html")).includes('id="specimen-grid"'));
   assert.ok((await read("books.html")).includes('id="book-grid"'));
-  for (const page of ["index.html", "collection.html", "specimens.html", "books.html"]) {
+  assert.ok(html.includes('href="./checkout.html"'), "homepage must link to the cart");
+  for (const page of ["index.html", "collection.html", "specimens.html", "books.html", "checkout.html"]) {
     const pageHtml = await read(page);
     assert.match(pageHtml, /<nav id="site-navigation"[\s\S]*?<a href="\.\/index\.html"(?: aria-current="page")?>Home<\/a>/u, `${page} must have an explicit primary Home link`);
   }
 });
 
 test("confirmed official branding is used and optimized for the web", async () => {
-  const pages = await Promise.all(["index.html", "collection.html", "specimens.html", "books.html"].map(read));
+  const pages = await Promise.all(["index.html", "collection.html", "specimens.html", "books.html", "checkout.html"].map(read));
   for (const html of pages) {
     assert.ok(html.includes("./assets/branding/spacerocks-logo.webp"));
     assert.ok(html.includes("Spacerocks"), "business name must use the one-word form");
@@ -95,15 +114,31 @@ test("confirmed official branding is used and optimized for the web", async () =
   for (const html of pages) assert.ok(html.includes('<img class="hero-banner" src="./assets/branding/spacerocks-banner.webp"'), "every page must show the official banner");
   assert.ok(!pages[0].includes("Meteorites with a paper trail."), "removed banner headline must not return");
   assert.ok(pages[0].includes("A personal meteorite collection, selected specimens, and books."));
-  const bannerStart = pages[0].indexOf('<section id="top" class="hero-brand"');
-  const bannerEnd = pages[0].indexOf("</section>", bannerStart);
-  const bannerSection = pages[0].slice(bannerStart, bannerEnd);
-  assert.ok(bannerSection.includes("hero-intro") && bannerSection.includes("hero-copy"), "compact homepage panel must be contained by the banner");
+  const bannerIndex = pages[0].indexOf('class="hero-brand"');
+  const ledgerIndex = pages[0].indexOf('class="ledger-strip"');
+  const introIndex = pages[0].indexOf('class="hero-intro"');
+  assert.ok(bannerIndex < ledgerIndex && ledgerIndex < introIndex, "homepage must order the banner, inventory bar, then compact introduction");
   for (const html of pages.slice(1)) {
-    assert.ok(html.indexOf('class="interior-brand"') < html.indexOf('class="interior-hero"'), "subpage title must follow its unobstructed banner");
+    const brandStart = html.indexOf('<section class="interior-brand"');
+    const brandEnd = html.indexOf("</section>", brandStart);
+    assert.ok(html.slice(brandStart, brandEnd).includes("interior-title-panel"), "subpage title panel must be contained by its banner");
+    assert.equal((html.match(/<h1\b/gu) || []).length, 1, "subpage must have one primary title");
   }
   const logo = await stat(path.join(root, "assets/branding/spacerocks-logo.webp"));
   const banner = await stat(path.join(root, "assets/branding/spacerocks-banner.webp"));
   assert.ok(logo.size < 250_000, "web logo should remain below 250 KB");
   assert.ok(banner.size < 800_000, "web banner should remain below 800 KB");
+});
+
+test("checkout collects delivery details and payment preference without taking payment", async () => {
+  const html = await read("checkout.html");
+  for (const field of ["name", "email", "address_line_1", "city", "region", "postal_code", "country", "payment_preference"]) {
+    assert.ok(html.includes(`name="${field}"`), `checkout is missing ${field}`);
+  }
+  assert.match(html, /name="phone"[^>]*autocomplete="tel"/u);
+  for (const method of ["PayPal", "Revolut", "Bank transfer"]) assert.ok(html.includes(`value="${method}"`));
+  assert.ok(html.includes("No payment is collected on this website."));
+  assert.ok(html.includes("formspree.io/legal/privacy-policy/"), "checkout must disclose the form processor");
+  const config = await read("checkout-config.js");
+  assert.ok(config.includes('formspreeEndpoint: ""'), "placeholder endpoint must remain explicit until configured");
 });

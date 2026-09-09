@@ -5,7 +5,7 @@
   "description": "A personal meteorite collection, specimen exchange, bookshop, and research portal.",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "validate": "node --check app.js && npm test",
+    "validate": "node --check app.js && node --check cart.js && node --check checkout.js && npm test",
     "serve": "python3 -m http.server 8000"
   },
   "engines": {

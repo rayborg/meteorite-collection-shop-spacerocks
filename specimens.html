@@ -14,6 +14,7 @@
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
   <script src="./inventory-utils.js" defer></script>
+  <script src="./cart.js" defer></script>
   <script src="./app.js" defer></script>
 </head>
 <body class="interior-page" data-page="specimens">
@@ -33,30 +34,25 @@
       <a href="./specimens.html" aria-current="page">Specimens for sale</a>
       <a href="./books.html">Books</a>
       <a href="./index.html#research">Research desk</a>
+      <a class="cart-link" href="./checkout.html">Cart <span class="cart-count" aria-label="0 items in cart">0</span></a>
       <a class="nav-coa" href="https://coa-sandbox.meteoriteresearch.org/" target="_blank" rel="noopener noreferrer">Official COA <span aria-hidden="true">↗</span></a>
     </nav>
   </header>
 
   <main id="catalog-content">
-    <section class="interior-brand" aria-label="Spacerocks official banner">
+    <section class="interior-brand" aria-labelledby="page-title">
       <img class="hero-banner" src="./assets/branding/spacerocks-banner.webp" alt="Spacerocks: Pieces of other worlds" width="2033" height="774">
-    </section>
-    <section class="interior-hero" aria-labelledby="page-title">
-      <div class="page-shell interior-hero-copy">
+      <div class="interior-title-panel">
         <p><a href="./index.html">The cabinet</a> <span aria-hidden="true">/</span> Catalog II</p>
         <h1 id="page-title">Specimens for sale</h1>
         <p>Duplicate and selected meteorites offered with clear weights, condition notes, and supporting documentation where available.</p>
       </div>
     </section>
 
-    <section class="catalog-page page-shell" aria-labelledby="ledger-title">
-      <header class="catalog-page-heading">
-        <div>
-          <p class="eyebrow">The exchange</p>
-          <h2 id="ledger-title">Sale ledger</h2>
-        </div>
+    <section class="catalog-page page-shell" aria-label="Sale inventory">
+      <div class="catalog-result-heading">
         <p><strong id="specimen-result-count">0</strong> matching entries</p>
-      </header>
+      </div>
 
       <form class="catalog-tools catalog-tools-light" role="search" aria-label="Filter specimens for sale">
         <label class="search-field">
