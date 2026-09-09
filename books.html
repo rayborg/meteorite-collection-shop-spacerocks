@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Browse meteorite books, catalogs, reference works, and collectible volumes offered by Spacerocks.">
+  <meta name="description" content="Browse the Spacerocks reference library and meteorite books offered for sale.">
   <meta name="author" content="Raymond Borges Hink">
   <meta name="theme-color" content="#211c17">
-  <meta property="og:title" content="Books for Sale | Spacerocks">
-  <meta property="og:description" content="Meteorite reference works, field guides, catalogs, and collectible books.">
+  <meta property="og:title" content="Books &amp; Library | Spacerocks">
+  <meta property="og:description" content="Meteorite reference works, field guides, catalogs, and collectible books in the library and for sale.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://rayborg.github.io/meteorite-collection-shop-spacerocks/assets/branding/spacerocks-banner.webp">
-  <title>Books for Sale | The Spacerocks Cabinet</title>
+  <title>Books &amp; Library | The Spacerocks Cabinet</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
   <script src="./inventory-utils.js" defer></script>
@@ -18,7 +18,7 @@
   <script src="./app.js" defer></script>
 </head>
 <body class="interior-page" data-page="books">
-  <a class="skip-link" href="#catalog-content">Skip to books for sale</a>
+  <a class="skip-link" href="#catalog-content">Skip to books and library</a>
 
   <header class="site-header">
     <a class="wordmark" href="./index.html" aria-label="The Spacerocks Cabinet, home">
@@ -41,22 +41,22 @@
 
   <main id="catalog-content">
     <section class="interior-brand" aria-label="Spacerocks official banner">
-      <img class="hero-banner" src="./assets/branding/spacerocks-banner.webp" alt="Spacerocks: Pieces of other worlds" width="2033" height="774">
+      <img class="hero-banner" src="./assets/branding/spacerocks-banner.webp" alt="Spacerocks: Pieces of other worlds" width="2025" height="777">
     </section>
     <section class="interior-title-band" aria-labelledby="page-title">
       <div class="interior-title-panel page-shell">
         <p><a href="./index.html">The cabinet</a> <span aria-hidden="true">/</span> Catalog III</p>
-        <h1 id="page-title">Books for sale</h1>
-        <p>Reference works, field guides, collection catalogs, and collectible volumes from the working library.</p>
+        <h1 id="page-title">Books &amp; library</h1>
+        <p>Reference works in the working library alongside collectible volumes offered for sale.</p>
       </div>
     </section>
 
-    <section class="catalog-page page-shell" aria-label="Bookseller's list">
+    <section class="catalog-page page-shell" aria-label="Books and library catalog">
       <div class="catalog-result-heading">
         <p><strong id="book-result-count">0</strong> matching volumes</p>
       </div>
 
-      <form class="catalog-tools catalog-tools-light book-tools" role="search" aria-label="Filter books for sale">
+      <form class="catalog-tools catalog-tools-light book-tools" role="search" aria-label="Filter books and library records">
         <label class="search-field">
           <span>Search the library</span>
           <span class="input-wrap">
@@ -65,9 +65,20 @@
           </span>
         </label>
         <label>
+          <span>Shelf</span>
+          <span class="select-wrap">
+            <select id="book-listing-filter">
+              <option value="">All books</option>
+              <option value="collection">Reference library</option>
+              <option value="sale">Books for sale</option>
+            </select>
+          </span>
+        </label>
+        <label>
           <span>Order the list</span>
           <span class="select-wrap">
             <select id="book-sort">
+              <option value="catalog">Catalog order</option>
               <option value="title">Title, A–Z</option>
               <option value="price-asc">Price, low to high</option>
               <option value="price-desc">Price, high to low</option>
@@ -77,7 +88,7 @@
         </label>
         <label class="availability-toggle">
           <input id="book-available-only" type="checkbox" checked>
-          <span>Show available only</span>
+          <span>Hide sold sale books</span>
         </label>
         <button id="clear-book-filters" class="filter-button" type="button" hidden>Clear filters</button>
       </form>

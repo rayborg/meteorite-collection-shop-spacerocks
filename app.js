@@ -35,6 +35,7 @@ const elements = {
   clearCollectionFilters: document.querySelector("#clear-collection-filters"),
   bookResultCount: document.querySelector("#book-result-count"),
   bookSearch: document.querySelector("#book-search"),
+  bookListingFilter: document.querySelector("#book-listing-filter"),
   bookSort: document.querySelector("#book-sort"),
   bookAvailableOnly: document.querySelector("#book-available-only"),
   clearBookFilters: document.querySelector("#clear-book-filters"),
@@ -87,7 +88,9 @@ function createImage(item, kind) {
   }
 
   if (kind !== "collection") {
-    const status = text(item.status, "coming soon").toLowerCase();
+    const status = kind === "book" && item.listingType === "collection"
+      ? "reference library"
+      : text(item.status, "coming soon").toLowerCase();
     const badge = createElement("span", `card-badge ${status.replace(/\s+/gu, "-")}`, status);
     figure.append(badge);
   }
@@ -175,7 +178,7 @@ function createBookCard(item) {
   appendMeta(metadata, "Publisher", item.publisher);
   appendMeta(metadata, "Format", item.format);
   if (metadata.children.length) body.append(metadata);
-  body.append(createPriceFooter(item, "book"));
+  if (item.listingType !== "collection") body.append(createPriceFooter(item, "book"));
   article.append(body);
   return article;
 }
@@ -191,6 +194,7 @@ function renderCollection() {
     return (!query || searchable.includes(query)) && (!classification || item.classification === classification);
   });
   collection.sort((a, b) => {
+    if (sort === "catalog") return compareCatalogOrder(a, b, "name");
     if (sort === "mass-desc") return (b.massGrams ?? Number.NEGATIVE_INFINITY) - (a.massGrams ?? Number.NEGATIVE_INFINITY);
     if (sort === "acquired-desc") return (b.acquiredYear ?? Number.NEGATIVE_INFINITY) - (a.acquiredYear ?? Number.NEGATIVE_INFINITY);
     return text(a.name, "").localeCompare(text(b.name, ""), undefined, { sensitivity: "base", numeric: true });
@@ -198,7 +202,7 @@ function renderCollection() {
 
   elements.collectionGrid.replaceChildren();
   elements.collectionResultCount.textContent = String(collection.length);
-  const filtersActive = query || classification || sort !== "name";
+  const filtersActive = query || classification || sort !== "catalog";
   elements.clearCollectionFilters.hidden = !filtersActive;
   if (!collection.length) {
     const hasInventory = state.collection.length > 0;
@@ -225,6 +229,7 @@ function getFilteredSpecimens() {
 
   const sort = elements.specimenSort.value;
   filtered.sort((a, b) => {
+    if (sort === "catalog") return compareCatalogOrder(a, b, "name");
     if (sort === "price-asc") return (a.priceUsd ?? Number.POSITIVE_INFINITY) - (b.priceUsd ?? Number.POSITIVE_INFINITY);
     if (sort === "price-desc") return (b.priceUsd ?? Number.NEGATIVE_INFINITY) - (a.priceUsd ?? Number.NEGATIVE_INFINITY);
     if (sort === "mass-desc") return (b.massGrams ?? Number.NEGATIVE_INFINITY) - (a.massGrams ?? Number.NEGATIVE_INFINITY);
@@ -238,7 +243,7 @@ function renderSpecimens() {
   const specimens = getFilteredSpecimens();
   elements.specimenGrid.replaceChildren();
   elements.specimenResultCount.textContent = String(specimens.length);
-  const filtersActive = elements.specimenSearch.value.trim() || elements.classificationFilter.value || !elements.availableOnly.checked || elements.specimenSort.value !== "name";
+  const filtersActive = elements.specimenSearch.value.trim() || elements.classificationFilter.value || !elements.availableOnly.checked || elements.specimenSort.value !== "catalog";
   elements.clearFilters.hidden = !filtersActive;
 
   if (!specimens.length) {
@@ -256,14 +261,19 @@ function renderSpecimens() {
 function renderBooks() {
   if (!elements.bookGrid) return;
   const query = elements.bookSearch.value.trim().toLocaleLowerCase();
+  const listingFilter = elements.bookListingFilter.value;
   const sort = elements.bookSort.value;
-  const availableOnly = elements.bookAvailableOnly.checked;
+  const hideSold = elements.bookAvailableOnly.checked;
   const books = state.books.filter((item) => {
+    const listingType = item.listingType === "collection" ? "collection" : "sale";
     const searchable = [item.title, item.author, item.publisher, item.catalogNumber, item.description]
       .filter(Boolean).join(" ").toLocaleLowerCase();
-    return (!query || searchable.includes(query)) && (!availableOnly || item.status === "available");
+    return (!query || searchable.includes(query)) &&
+      (!listingFilter || listingType === listingFilter) &&
+      (!hideSold || listingType === "collection" || item.status !== "sold");
   });
   books.sort((a, b) => {
+    if (sort === "catalog") return compareCatalogOrder(a, b, "title");
     if (sort === "price-asc") return (a.priceUsd ?? Number.POSITIVE_INFINITY) - (b.priceUsd ?? Number.POSITIVE_INFINITY);
     if (sort === "price-desc") return (b.priceUsd ?? Number.NEGATIVE_INFINITY) - (a.priceUsd ?? Number.NEGATIVE_INFINITY);
     if (sort === "year-desc") return (b.year ?? Number.NEGATIVE_INFINITY) - (a.year ?? Number.NEGATIVE_INFINITY);
@@ -272,7 +282,7 @@ function renderBooks() {
 
   elements.bookGrid.replaceChildren();
   elements.bookResultCount.textContent = String(books.length);
-  const filtersActive = query || sort !== "title" || !availableOnly;
+  const filtersActive = query || listingFilter || sort !== "catalog" || !hideSold;
   elements.clearBookFilters.hidden = !filtersActive;
   if (!books.length) {
     const hasInventory = state.books.length > 0;
@@ -289,7 +299,7 @@ function renderBooks() {
 function renderHighlights() {
   if (elements.collectionHighlights) {
     elements.collectionHighlights.replaceChildren();
-    const records = state.collection.slice(0, 3);
+    const records = [...state.collection].sort((a, b) => compareCatalogOrder(a, b, "name")).slice(0, 3);
     if (records.length) records.forEach((item) => elements.collectionHighlights.append(createSpecimenCard(item, "collection")));
     else elements.collectionHighlights.append(createEmptyState(
       "Collection highlights are being prepared",
@@ -300,7 +310,8 @@ function renderHighlights() {
 
   if (elements.specimenHighlights) {
     elements.specimenHighlights.replaceChildren();
-    const records = state.specimens.filter((item) => item.status === "available").slice(0, 3);
+    const records = state.specimens.filter((item) => item.status === "available")
+      .sort((a, b) => compareCatalogOrder(a, b, "name")).slice(0, 3);
     if (records.length) records.forEach((item) => elements.specimenHighlights.append(createSpecimenCard(item)));
     else elements.specimenHighlights.append(createEmptyState(
       "The first sale highlights are being assembled",
@@ -311,7 +322,8 @@ function renderHighlights() {
 
   if (elements.bookHighlights) {
     elements.bookHighlights.replaceChildren();
-    const records = state.books.filter((item) => item.status === "available").slice(0, 4);
+    const records = state.books.filter((item) => item.listingType !== "collection" && item.status === "available")
+      .sort((a, b) => compareCatalogOrder(a, b, "title")).slice(0, 4);
     if (records.length) records.forEach((item) => elements.bookHighlights.append(createBookCard(item)));
     else elements.bookHighlights.append(createEmptyState(
       "Book highlights are forthcoming",
@@ -343,6 +355,12 @@ function updateCounts() {
   if (elements.bookCount) elements.bookCount.textContent = number.format(state.books.filter((item) => item.status === "available").length);
 }
 
+function compareCatalogOrder(a, b, labelKey) {
+  const orderDifference = (a.displayOrder ?? Number.POSITIVE_INFINITY) - (b.displayOrder ?? Number.POSITIVE_INFINITY);
+  if (orderDifference) return orderDifference;
+  return text(a[labelKey], "").localeCompare(text(b[labelKey], ""), undefined, { sensitivity: "base", numeric: true });
+}
+
 function handleFilterChange() {
   renderSpecimens();
 }
@@ -350,7 +368,7 @@ function handleFilterChange() {
 function clearFilters() {
   elements.specimenSearch.value = "";
   elements.classificationFilter.value = "";
-  elements.specimenSort.value = "name";
+  elements.specimenSort.value = "catalog";
   elements.availableOnly.checked = true;
   renderSpecimens();
   elements.specimenSearch.focus();
@@ -359,14 +377,15 @@ function clearFilters() {
 function clearCollectionFilters() {
   elements.collectionSearch.value = "";
   elements.collectionClassification.value = "";
-  elements.collectionSort.value = "name";
+  elements.collectionSort.value = "catalog";
   renderCollection();
   elements.collectionSearch.focus();
 }
 
 function clearBookFilters() {
   elements.bookSearch.value = "";
-  elements.bookSort.value = "title";
+  elements.bookListingFilter.value = "";
+  elements.bookSort.value = "catalog";
   elements.bookAvailableOnly.checked = true;
   renderBooks();
   elements.bookSearch.focus();
@@ -452,6 +471,7 @@ function setupInteractions() {
   }
   if (elements.bookSearch) {
     elements.bookSearch.addEventListener("input", renderBooks);
+    elements.bookListingFilter.addEventListener("change", renderBooks);
     elements.bookSort.addEventListener("change", renderBooks);
     elements.bookAvailableOnly.addEventListener("change", renderBooks);
     elements.clearBookFilters.addEventListener("click", clearBookFilters);

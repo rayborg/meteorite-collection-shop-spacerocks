@@ -26,13 +26,20 @@ test("inventory files use the supported empty-or-populated schema", async () => 
     for (const item of data.items) {
       assert.equal(typeof item.id, "string", `${relativePath} item IDs must be strings`);
       assert.ok(item.id.trim(), `${relativePath} item IDs must not be blank`);
-      if (relativePath !== "data/collection.json") {
+      assert.ok(item.displayOrder === undefined || (Number.isInteger(item.displayOrder) && item.displayOrder > 0), `${relativePath} display orders must be positive integers`);
+      const isBooks = relativePath === "data/books.json";
+      if (isBooks) assert.ok(item.listingType === "collection" || item.listingType === "sale", `${relativePath} books need a collection or sale listingType`);
+      const isSale = relativePath === "data/sale-specimens.json" || (isBooks && item.listingType === "sale");
+      if (isSale) {
         assert.ok(validStatuses.has(item.status), `${relativePath} has unsupported status ${item.status}`);
         assert.ok(item.priceUsd === undefined || (Number.isFinite(item.priceUsd) && item.priceUsd >= 0), `${relativePath} prices must be nonnegative numbers`);
         assert.ok(item.inquiryUrl === undefined || getSafeInquiryUrl(item.inquiryUrl), `${relativePath} contains an unsafe inquiry URL`);
       }
       if (item.image !== undefined) {
         assert.match(item.image, /^\.\/assets\/(?:collection|sale-specimens|books)\/[a-z0-9][a-z0-9._-]*$/u, `${relativePath} image path must be a safe relative asset path`);
+      }
+      for (const image of item.images || []) {
+        assert.match(image, /^\.\/assets\/(?:collection|sale-specimens|books)\/[a-z0-9][a-z0-9._-]*$/u, `${relativePath} image gallery paths must be safe relative assets`);
       }
     }
   }
@@ -117,7 +124,10 @@ test("confirmed official branding is used and optimized for the web", async () =
     assert.ok(!html.includes("Space Rocks"), "business name must not be split into two words");
     assert.ok(!html.includes("SpaceRocks"), "business name must use the confirmed capitalization");
   }
-  for (const html of pages) assert.ok(html.includes('<img class="hero-banner" src="./assets/branding/spacerocks-banner.webp"'), "every page must show the official banner");
+  for (const html of pages) {
+    assert.ok(html.includes('<img class="hero-banner" src="./assets/branding/spacerocks-banner.webp"'), "every page must show the official banner");
+    assert.match(html, /spacerocks-banner\.webp"[^>]*width="2025" height="777"/u, "banner dimensions must match the replacement asset");
+  }
   assert.ok(!pages[0].includes("Meteorites with a paper trail."), "removed banner headline must not return");
   assert.ok(pages[0].includes("A personal meteorite collection, selected specimens, and books."));
   const bannerIndex = pages[0].indexOf('class="hero-brand"');

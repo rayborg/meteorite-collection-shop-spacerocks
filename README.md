@@ -25,11 +25,32 @@ Open `http://localhost:8000/`.
 
 ## Adding inventory
 
-Inventory is separated into three public JSON files:
+The recommended workflow is the folder importer. Start with `inventory-template/`, place a copy of `inventory.csv` beside your specimen and book photographs, and add one row per record. The CSV supports four destinations:
+
+- `collection_specimen`
+- `sale_specimen`
+- `collection_book`
+- `sale_book`
+
+Validate a prepared folder without changing the website:
+
+```sh
+npm run import:inventory -- "/absolute/path/to/import-folder"
+```
+
+After reviewing a successful dry run, copy the images and update the catalogs:
+
+```sh
+npm run import:inventory -- "/absolute/path/to/import-folder" --write
+```
+
+See `inventory-template/README.md` for the exact column order, field rules, and complete examples. Imported rows are upserted by stable `id`; nothing is deleted automatically. The first filename in `image_files` becomes the card image, and any additional `|`-separated images are retained in the record.
+
+The generated inventory is separated into three public JSON files:
 
 - `data/collection.json` for personal-collection records that are not for sale
 - `data/sale-specimens.json` for meteorites offered for sale
-- `data/books.json` for books offered for sale
+- `data/books.json` for reference-library books and books offered for sale
 
 Photographs belong in the corresponding directory under `assets/`. All paths must remain relative so the site works from its GitHub Pages project URL.
 
@@ -38,6 +59,7 @@ Photographs belong in the corresponding directory under `assets/`. All paths mus
 ```json
 {
   "id": "collection-001",
+  "displayOrder": 10,
   "catalogNumber": "SRC 001",
   "name": "Meteorite name",
   "classification": "Classification",
@@ -49,6 +71,7 @@ Photographs belong in the corresponding directory under `assets/`. All paths mus
   "provenance": "Public-safe provenance summary",
   "description": "A concise physical description.",
   "image": "./assets/collection/example.webp",
+  "images": ["./assets/collection/example.webp"],
   "imageAlt": "Exact specimen on a neutral background"
 }
 ```
@@ -58,6 +81,7 @@ Photographs belong in the corresponding directory under `assets/`. All paths mus
 ```json
 {
   "id": "sale-001",
+  "displayOrder": 10,
   "catalogNumber": "SRS 001",
   "name": "Meteorite name",
   "classification": "Classification",
@@ -70,6 +94,7 @@ Photographs belong in the corresponding directory under `assets/`. All paths mus
   "priceUsd": 125,
   "status": "available",
   "image": "./assets/sale-specimens/example.webp",
+  "images": ["./assets/sale-specimens/example.webp"],
   "imageAlt": "Exact specimen offered for sale"
 }
 ```
@@ -81,7 +106,9 @@ Supported sale statuses are `available`, `reserved`, and `sold`.
 ```json
 {
   "id": "book-001",
+  "displayOrder": 10,
   "catalogNumber": "SRB 001",
+  "listingType": "sale",
   "title": "Book title",
   "author": "Author name",
   "year": 1995,
@@ -93,6 +120,7 @@ Supported sale statuses are `available`, `reserved`, and `sold`.
   "priceUsd": 45,
   "status": "available",
   "image": "./assets/books/example.webp",
+  "images": ["./assets/books/example.webp"],
   "imageAlt": "The exact book offered for sale"
 }
 ```
