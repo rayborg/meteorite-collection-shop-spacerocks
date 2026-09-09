@@ -78,12 +78,26 @@ test("all catalog pages load shared assets and cross-link from the homepage", as
   assert.ok((await read("collection.html")).includes('id="collection-grid"'));
   assert.ok((await read("specimens.html")).includes('id="specimen-grid"'));
   assert.ok((await read("books.html")).includes('id="book-grid"'));
+  for (const page of ["index.html", "collection.html", "specimens.html", "books.html"]) {
+    const pageHtml = await read(page);
+    assert.match(pageHtml, /<nav id="site-navigation"[\s\S]*?<a href="\.\/index\.html"(?: aria-current="page")?>Home<\/a>/u, `${page} must have an explicit primary Home link`);
+  }
 });
 
 test("confirmed official branding is used and optimized for the web", async () => {
   const pages = await Promise.all(["index.html", "collection.html", "specimens.html", "books.html"].map(read));
-  for (const html of pages) assert.ok(html.includes("./assets/branding/spacerocks-logo.webp"));
+  for (const html of pages) {
+    assert.ok(html.includes("./assets/branding/spacerocks-logo.webp"));
+    assert.ok(html.includes("Spacerocks"), "business name must use the one-word form");
+    assert.ok(!html.includes("Space Rocks"), "business name must not be split into two words");
+    assert.ok(!html.includes("SpaceRocks"), "business name must use the confirmed capitalization");
+  }
   assert.ok(pages[0].includes("./assets/branding/spacerocks-banner.webp"));
+  assert.ok(pages[0].indexOf('class="hero-brand"') < pages[0].indexOf('class="hero-intro"'), "homepage copy must follow the unobstructed banner");
+  const bannerStart = pages[0].indexOf('<section id="top" class="hero-brand"');
+  const bannerEnd = pages[0].indexOf("</section>", bannerStart);
+  assert.ok(!pages[0].slice(bannerStart, bannerEnd).includes("hero-copy"), "homepage copy must not overlay the banner");
+  for (const html of pages.slice(1)) assert.ok(!html.includes('<img src="./assets/branding/spacerocks-banner.webp"'), "interior page titles must not overlay the branded banner");
   const logo = await stat(path.join(root, "assets/branding/spacerocks-logo.webp"));
   const banner = await stat(path.join(root, "assets/branding/spacerocks-banner.webp"));
   assert.ok(logo.size < 250_000, "web logo should remain below 250 KB");

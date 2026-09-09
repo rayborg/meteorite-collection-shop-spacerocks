@@ -1,4 +1,4 @@
-# SpaceRocks branding
+# Spacerocks branding
 
 These web assets are optimized derivatives of the confirmed official branding files supplied by Raymond Borges Hink:
 

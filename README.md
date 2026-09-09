@@ -1,4 +1,4 @@
-# The Space Rocks Cabinet
+# The Spacerocks Cabinet
 
 A dependency-free static website for a personal meteorite collection, meteorite specimens offered for sale, collectible and reference books, and connected research tools.
 
@@ -6,7 +6,7 @@ The visual system is an original storefront companion to [The Meteorite Cabinet]
 
 The site is organized across four pages:
 
-- `index.html` presents the official SpaceRocks banner, inventory highlights, and connected research projects.
+- `index.html` presents the official Spacerocks banner, inventory highlights, and connected research projects.
 - `collection.html` contains the searchable personal-collection ledger.
 - `specimens.html` contains the searchable and sortable sale inventory.
 - `books.html` contains the searchable and sortable bookseller's list.
