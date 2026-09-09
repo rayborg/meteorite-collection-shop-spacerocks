@@ -93,10 +93,10 @@ test("confirmed official branding is used and optimized for the web", async () =
     assert.ok(!html.includes("SpaceRocks"), "business name must use the confirmed capitalization");
   }
   assert.ok(pages[0].includes("./assets/branding/spacerocks-banner.webp"));
-  assert.ok(pages[0].indexOf('class="hero-brand"') < pages[0].indexOf('class="hero-intro"'), "homepage copy must follow the unobstructed banner");
   const bannerStart = pages[0].indexOf('<section id="top" class="hero-brand"');
   const bannerEnd = pages[0].indexOf("</section>", bannerStart);
-  assert.ok(!pages[0].slice(bannerStart, bannerEnd).includes("hero-copy"), "homepage copy must not overlay the banner");
+  const bannerSection = pages[0].slice(bannerStart, bannerEnd);
+  assert.ok(bannerSection.includes("hero-intro") && bannerSection.includes("hero-copy"), "compact homepage panel must be contained by the banner");
   for (const html of pages.slice(1)) assert.ok(!html.includes('<img src="./assets/branding/spacerocks-banner.webp"'), "interior page titles must not overlay the branded banner");
   const logo = await stat(path.join(root, "assets/branding/spacerocks-logo.webp"));
   const banner = await stat(path.join(root, "assets/branding/spacerocks-banner.webp"));
