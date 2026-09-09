@@ -121,7 +121,9 @@ test("confirmed official branding is used and optimized for the web", async () =
   for (const html of pages.slice(1)) {
     const brandStart = html.indexOf('<section class="interior-brand"');
     const brandEnd = html.indexOf("</section>", brandStart);
-    assert.ok(html.slice(brandStart, brandEnd).includes("interior-title-panel"), "subpage title panel must be contained by its banner");
+    const titleBand = html.indexOf('<section class="interior-title-band"');
+    assert.ok(brandEnd < titleBand, "subpage title band must follow its unobstructed banner");
+    assert.ok(html.slice(titleBand).includes("interior-title-panel"), "subpage title band must contain its title panel");
     assert.equal((html.match(/<h1\b/gu) || []).length, 1, "subpage must have one primary title");
   }
   const logo = await stat(path.join(root, "assets/branding/spacerocks-logo.webp"));
