@@ -34,10 +34,10 @@ const headers = [
 ];
 
 const typeConfig = {
-  collection_specimen: { dataFile: "data/collection.json", assetDirectory: "assets/collection", kind: "specimen", listingType: "collection" },
-  sale_specimen: { dataFile: "data/sale-specimens.json", assetDirectory: "assets/sale-specimens", kind: "specimen", listingType: "sale" },
-  collection_book: { dataFile: "data/books.json", assetDirectory: "assets/books", kind: "book", listingType: "collection" },
-  sale_book: { dataFile: "data/books.json", assetDirectory: "assets/books", kind: "book", listingType: "sale" }
+  collection_specimen: { dataFile: "data/collection.json", assetDirectory: "assets/collection", kind: "specimen", listingType: "collection", imageCount: 3 },
+  sale_specimen: { dataFile: "data/sale-specimens.json", assetDirectory: "assets/sale-specimens", kind: "specimen", listingType: "sale", imageCount: 5 },
+  collection_book: { dataFile: "data/books.json", assetDirectory: "assets/books", kind: "book", listingType: "collection", imageCount: 5 },
+  sale_book: { dataFile: "data/books.json", assetDirectory: "assets/books", kind: "book", listingType: "sale", imageCount: 5 }
 };
 
 const imageExtensions = new Set([".avif", ".gif", ".jpeg", ".jpg", ".png", ".webp"]);
@@ -199,7 +199,9 @@ async function buildRecord(row, rowNumber, inputDirectory, canonicalInput, proje
   }
 
   const imageReferences = row.image_files.split("|").map((value) => value.trim()).filter(Boolean);
-  if (!imageReferences.length) throw new Error(`Row ${rowNumber}: image_files must contain at least one image filename`);
+  if (imageReferences.length !== config.imageCount) {
+    throw new Error(`Row ${rowNumber}: ${row.record_type} requires exactly ${config.imageCount} image filenames in image_files`);
+  }
   if (!row.image_alt) throw new Error(`Row ${rowNumber}: image_alt is required`);
 
   const imagePlans = [];

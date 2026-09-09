@@ -44,7 +44,9 @@ After reviewing a successful dry run, copy the images and update the catalogs:
 npm run import:inventory -- "/absolute/path/to/import-folder" --write
 ```
 
-See `inventory-template/README.md` for the exact column order, field rules, and complete examples. Imported rows are upserted by stable `id`; nothing is deleted automatically. The first filename in `image_files` becomes the card image, and any additional `|`-separated images are retained in the record.
+See `inventory-template/README.md` for the exact column order, field rules, image-count requirements, and complete examples. Imported rows are upserted by stable `id`; nothing is deleted automatically. The first filename in `image_files` becomes the card image, and the remaining `|`-separated images are retained in the record.
+
+Each collection specimen requires 3 images. Each sale specimen and every book record require 5 images.
 
 The generated inventory is separated into three public JSON files:
 
