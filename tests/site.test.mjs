@@ -65,7 +65,7 @@ test("cart items are normalized and unsafe persisted fields are discarded", () =
 });
 
 test("the three related meteorite projects are linked safely", async () => {
-  const pages = await Promise.all(["index.html", "collection.html", "specimens.html", "books.html", "checkout.html"].map(read));
+  const pages = await Promise.all(["index.html", "collection.html", "specimens.html", "books.html", "research.html", "checkout.html"].map(read));
   const html = pages.join("\n");
   const links = [
     "https://rayborg.github.io/Historical-meteorite-collections/",
@@ -84,7 +84,7 @@ test("all catalog pages load shared assets and cross-link from the homepage", as
     assert.ok(html.includes(`./${asset}`));
     assert.ok((await read(asset)).length > 0, `${asset} must not be empty`);
   }
-  for (const page of ["collection.html", "specimens.html", "books.html"]) {
+  for (const page of ["collection.html", "specimens.html", "books.html", "research.html", "checkout.html"]) {
     assert.ok(html.includes(`href="./${page}"`), `homepage must link to ${page}`);
     const pageHtml = await read(page);
     assert.ok(pageHtml.includes("./styles.css"), `${page} must load shared styles`);
@@ -96,15 +96,21 @@ test("all catalog pages load shared assets and cross-link from the homepage", as
   assert.ok((await read("collection.html")).includes('id="collection-grid"'));
   assert.ok((await read("specimens.html")).includes('id="specimen-grid"'));
   assert.ok((await read("books.html")).includes('id="book-grid"'));
+  const researchHtml = await read("research.html");
+  for (const catalogId of ["collection-grid", "specimen-grid", "book-grid"]) {
+    assert.ok(!researchHtml.includes(`id="${catalogId}"`), `Research Desk must not include ${catalogId}`);
+  }
   assert.ok(html.includes('href="./checkout.html"'), "homepage must link to the cart");
-  for (const page of ["index.html", "collection.html", "specimens.html", "books.html", "checkout.html"]) {
+  for (const page of ["index.html", "collection.html", "specimens.html", "books.html", "research.html", "checkout.html"]) {
     const pageHtml = await read(page);
     assert.match(pageHtml, /<nav id="site-navigation"[\s\S]*?<a href="\.\/index\.html"(?: aria-current="page")?>Home<\/a>/u, `${page} must have an explicit primary Home link`);
+    assert.ok(pageHtml.includes('href="./research.html"'), `${page} must link to the dedicated Research Desk`);
+    assert.ok(!pageHtml.includes('href="./index.html#research"'), `${page} must not route Research back to the homepage`);
   }
 });
 
 test("confirmed official branding is used and optimized for the web", async () => {
-  const pages = await Promise.all(["index.html", "collection.html", "specimens.html", "books.html", "checkout.html"].map(read));
+  const pages = await Promise.all(["index.html", "collection.html", "specimens.html", "books.html", "research.html", "checkout.html"].map(read));
   for (const html of pages) {
     assert.ok(html.includes("./assets/branding/spacerocks-logo.webp"));
     assert.ok(html.includes("Spacerocks"), "business name must use the one-word form");

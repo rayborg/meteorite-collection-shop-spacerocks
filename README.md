@@ -4,12 +4,13 @@ A dependency-free static website for a personal meteorite collection, meteorite 
 
 The visual system is an original storefront companion to [The Meteorite Cabinet](https://rayborg.github.io/Historical-meteorite-collections/), using a related archival palette and ledger structure.
 
-The site is organized across four pages:
+The site is organized across six pages:
 
 - `index.html` presents the official Spacerocks banner, inventory highlights, and connected research projects.
 - `collection.html` contains the searchable personal-collection ledger.
 - `specimens.html` contains the searchable and sortable sale inventory.
 - `books.html` contains the searchable and sortable bookseller's list.
+- `research.html` contains the historical catalog, market-search, and COA project links.
 - `checkout.html` contains the persistent cart and checkout-request form.
 
 ## Local preview
