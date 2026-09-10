@@ -62,7 +62,7 @@ Photographs belong in the corresponding directory under `assets/`. All paths mus
 {
   "id": "collection-001",
   "displayOrder": 10,
-  "catalogNumber": "SRC 001",
+  "catalogNumber": "Specimen 001",
   "name": "Meteorite name",
   "classification": "Classification",
   "massGrams": 12.34,

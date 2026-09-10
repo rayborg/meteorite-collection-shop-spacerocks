@@ -6,6 +6,8 @@ const DATA_FILES = {
   books: "./data/books.json"
 };
 
+const CAROUSEL_INTERVAL_MS = 3000;
+
 const state = {
   collection: [],
   specimens: [],
@@ -76,13 +78,63 @@ function createEmptyState(title, description) {
 
 function createImage(item, kind) {
   const figure = createElement("div", "card-image");
-  if (item.image) {
+  const images = kind === "book"
+    ? [item.image].filter(Boolean)
+    : [...new Set([item.image, ...(Array.isArray(item.images) ? item.images : [])].filter(Boolean))];
+  if (images.length) {
     const image = document.createElement("img");
-    image.src = item.image;
-    image.alt = text(item.imageAlt, "");
     image.loading = "lazy";
     image.decoding = "async";
     figure.append(image);
+
+    const label = text(item.name, "Specimen");
+    const primaryAlt = text(item.imageAlt, `${label} primary view`);
+    let activeIndex = 0;
+    let counter;
+    const showImage = (index) => {
+      activeIndex = index;
+      image.src = images[activeIndex];
+      image.alt = activeIndex === 0 ? primaryAlt : `${label}, alternate view ${activeIndex + 1} of ${images.length}`;
+      if (counter) counter.textContent = `${activeIndex + 1} / ${images.length}`;
+    };
+    showImage(0);
+
+    if (images.length > 1) {
+      figure.classList.add("card-carousel");
+      figure.setAttribute("role", "group");
+      figure.setAttribute("aria-roledescription", "carousel");
+      figure.setAttribute("aria-label", `${label} image carousel`);
+
+      counter = createElement("span", "carousel-count", `1 / ${images.length}`);
+      counter.setAttribute("aria-hidden", "true");
+      const toggle = createElement("button", "carousel-toggle");
+      toggle.type = "button";
+      let userPaused = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+      let interactionPaused = false;
+      const updateToggle = () => {
+        toggle.textContent = userPaused ? "Play" : "Pause";
+        toggle.setAttribute("aria-label", `${userPaused ? "Play" : "Pause"} image rotation for ${label}`);
+      };
+      updateToggle();
+      toggle.addEventListener("click", () => {
+        userPaused = !userPaused;
+        updateToggle();
+      });
+      figure.addEventListener("pointerenter", () => { interactionPaused = true; });
+      figure.addEventListener("pointerleave", () => { interactionPaused = false; });
+      figure.addEventListener("focusin", () => { interactionPaused = true; });
+      figure.addEventListener("focusout", (event) => {
+        if (!figure.contains(event.relatedTarget)) interactionPaused = false;
+      });
+
+      const cycle = () => {
+        if (!figure.isConnected) return;
+        if (!userPaused && !interactionPaused && !document.hidden) showImage((activeIndex + 1) % images.length);
+        window.setTimeout(cycle, CAROUSEL_INTERVAL_MS);
+      };
+      window.setTimeout(cycle, CAROUSEL_INTERVAL_MS);
+      figure.append(counter, toggle);
+    }
   } else {
     figure.append(createElement("span", "image-placeholder"));
   }

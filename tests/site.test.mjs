@@ -79,6 +79,25 @@ test("unpriced sale records display TBD throughout checkout", async () => {
   assert.doesNotMatch(`${app}\n${checkout}`, /(?:Price )?[Oo]n request/u);
 });
 
+test("specimen cards rotate their image galleries every three seconds", async () => {
+  const app = await read("app.js");
+  const css = await read("styles.css");
+  assert.ok(app.includes("const CAROUSEL_INTERVAL_MS = 3000;"));
+  assert.ok(app.includes('window.matchMedia?.("(prefers-reduced-motion: reduce)")'), "carousel must respect reduced-motion preferences");
+  assert.ok(app.includes('toggle.textContent = userPaused ? "Play" : "Pause"'), "carousel must provide a pause control");
+  assert.ok(app.includes('figure.addEventListener("pointerenter"'), "carousel must pause during pointer interaction");
+  assert.ok(app.includes('figure.addEventListener("focusin"'), "carousel must pause during keyboard interaction");
+  assert.ok(css.includes(".carousel-toggle:focus-visible"), "carousel control must expose keyboard focus");
+});
+
+test("collection records use reader-facing specimen numbers", async () => {
+  const collection = JSON.parse(await read("data/collection.json"));
+  assert.deepEqual(
+    collection.items.map((item) => item.catalogNumber),
+    Array.from({ length: 10 }, (_, index) => `Specimen ${String(index + 1).padStart(3, "0")}`)
+  );
+});
+
 test("the three related meteorite projects are linked safely", async () => {
   const pages = await Promise.all(["index.html", "collection.html", "specimens.html", "books.html", "research.html", "checkout.html"].map(read));
   const html = pages.join("\n");
