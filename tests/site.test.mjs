@@ -130,6 +130,29 @@ test("all specimen records use reader-facing specimen numbers", async () => {
   }
 });
 
+test("each specimen carousel opens with its selected dramatic hero", async () => {
+  const collection = JSON.parse(await read("data/collection.json"));
+  const sale = JSON.parse(await read("data/sale-specimens.json"));
+  const expectedHeroes = new Map([
+    ["unclassified-meteorite-367-3g", "unclassified-meteorite-367-3g-3-g01-03-detail.jpg"],
+    ["wabar-impact-material-63-2g", "wabar-impact-material-63-2g-2-g02-02-reverse.jpg"],
+    ["wabar-fused-sand-30-4g", "wabar-fused-sand-30-4g-1-g03-01-hero.jpg"],
+    ["wabar-impact-glass-7-2g", "wabar-impact-glass-7-2g-1-g04-01-hero.jpg"],
+    ["wabar-relic-iron-7-9g", "wabar-relic-iron-7-9g-1-g05-01-hero.jpg"],
+    ["wabar-pearl-0-7g", "wabar-pearl-0-7g-1-g06-01-hero.jpg"],
+    ["kaalijarv-36-4g", "kaalijarv-36-4g-3-g07-03-profile.jpg"],
+    ["unclassified-oc-57-6g", "unclassified-oc-57-6g-1-g08-01-hero.jpg"],
+    ["unclassified-nwa-oriented-47-4g", "unclassified-nwa-oriented-47-4g-2-g09-02-reverse.jpg"],
+    ["aguas-zarcas-4-97g", "aguas-zarcas-4-97g-1-g10-01-hero.jpg"],
+    ["bjurbole-14g", "bjurbole-14g-1-g13-01-marked.jpg"],
+    ["unclassified-nwa-oc-13-8kg", "unclassified-nwa-oc-13-8kg-1-g14-01-hero.jpg"]
+  ]);
+  for (const item of [...collection.items, ...sale.items]) {
+    assert.equal(item.image, item.images[0], `${item.id} card image must match its first carousel image`);
+    assert.equal(path.basename(item.image), expectedHeroes.get(item.id), `${item.id} must use its selected hero`);
+  }
+});
+
 test("the three related meteorite projects are linked safely", async () => {
   const pages = await Promise.all(["index.html", "collection.html", "specimens.html", "books.html", "research.html", "checkout.html"].map(read));
   const html = pages.join("\n");

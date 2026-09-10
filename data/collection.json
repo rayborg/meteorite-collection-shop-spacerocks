@@ -7,13 +7,13 @@
       "displayOrder": 10,
       "catalogNumber": "Specimen 001",
       "description": "A substantial 367.3 g unclassified specimen with a rounded dark exterior and exposed weathered interior areas. Classification and find locality have not been recorded.",
-      "image": "./assets/collection/unclassified-meteorite-367-3g-1-g01-01-hero.jpg",
+      "image": "./assets/collection/unclassified-meteorite-367-3g-3-g01-03-detail.jpg",
       "images": [
+        "./assets/collection/unclassified-meteorite-367-3g-3-g01-03-detail.jpg",
         "./assets/collection/unclassified-meteorite-367-3g-1-g01-01-hero.jpg",
-        "./assets/collection/unclassified-meteorite-367-3g-2-g01-02-reverse.jpg",
-        "./assets/collection/unclassified-meteorite-367-3g-3-g01-03-detail.jpg"
+        "./assets/collection/unclassified-meteorite-367-3g-2-g01-02-reverse.jpg"
       ],
-      "imageAlt": "Front view of a rounded dark 367.3 g unclassified meteorite",
+      "imageAlt": "Three-quarter view of a rounded dark 367.3 g unclassified meteorite with a broad weathered interior exposure",
       "name": "Unclassified Meteorite",
       "classification": "Unclassified",
       "massGrams": 367.3
@@ -23,13 +23,13 @@
       "displayOrder": 20,
       "catalogNumber": "Specimen 002",
       "description": "A 63.2 g Wabar related artifact showing black impact glass fused to pale desert sand. This is cataloged as terrestrial impact material, not as a meteorite.",
-      "image": "./assets/collection/wabar-impact-material-63-2g-1-g02-01-hero.jpg",
+      "image": "./assets/collection/wabar-impact-material-63-2g-2-g02-02-reverse.jpg",
       "images": [
-        "./assets/collection/wabar-impact-material-63-2g-1-g02-01-hero.jpg",
         "./assets/collection/wabar-impact-material-63-2g-2-g02-02-reverse.jpg",
+        "./assets/collection/wabar-impact-material-63-2g-1-g02-01-hero.jpg",
         "./assets/collection/wabar-impact-material-63-2g-3-g02-03-interface.jpg"
       ],
-      "imageAlt": "Wabar impact glass fused to pale desert sand",
+      "imageAlt": "Broad view of 63.2 g Wabar impact material with black glass fused over pale desert sand",
       "name": "Wabar Impact Glass with Fused Sand",
       "classification": "Impact material / related artifact",
       "massGrams": 63.2,
@@ -91,13 +91,13 @@
       "displayOrder": 60,
       "catalogNumber": "Specimen 006",
       "description": "A thin, angular 36.4 g iron fragment with a weathered metallic surface. Kaalijarv is an officially recognized IAB-MG iron meteorite found in Estonia in 1937; the Meteoritical Bulletin Database records 2.25 kg for the meteorite (code 12217).",
-      "image": "./assets/collection/kaalijarv-36-4g-1-g07-01-hero.jpg",
+      "image": "./assets/collection/kaalijarv-36-4g-3-g07-03-profile.jpg",
       "images": [
+        "./assets/collection/kaalijarv-36-4g-3-g07-03-profile.jpg",
         "./assets/collection/kaalijarv-36-4g-1-g07-01-hero.jpg",
-        "./assets/collection/kaalijarv-36-4g-2-g07-02-reverse.jpg",
-        "./assets/collection/kaalijarv-36-4g-3-g07-03-profile.jpg"
+        "./assets/collection/kaalijarv-36-4g-2-g07-02-reverse.jpg"
       ],
-      "imageAlt": "Front view of a thin angular 36.4 g Kaalijarv iron fragment",
+      "imageAlt": "Upright view of a thin angular 36.4 g Kaalijarv iron fragment with layered metallic texture",
       "name": "Kaalijarv",
       "classification": "Iron, IAB-MG",
       "massGrams": 36.4,
@@ -125,13 +125,13 @@
       "displayOrder": 80,
       "catalogNumber": "Specimen 008",
       "description": "A 47.4 g unclassified Northwest Africa ordinary chondrite with a rounded, shield-like oriented form and visible surface cracking. No official pairing is asserted.",
-      "image": "./assets/collection/unclassified-nwa-oriented-47-4g-1-g09-01-hero.jpg",
+      "image": "./assets/collection/unclassified-nwa-oriented-47-4g-2-g09-02-reverse.jpg",
       "images": [
-        "./assets/collection/unclassified-nwa-oriented-47-4g-1-g09-01-hero.jpg",
         "./assets/collection/unclassified-nwa-oriented-47-4g-2-g09-02-reverse.jpg",
+        "./assets/collection/unclassified-nwa-oriented-47-4g-1-g09-01-hero.jpg",
         "./assets/collection/unclassified-nwa-oriented-47-4g-3-g09-03-profile.jpg"
       ],
-      "imageAlt": "Oriented 47.4 g unclassified Northwest Africa ordinary chondrite",
+      "imageAlt": "Shield-like face of a 47.4 g oriented Northwest Africa ordinary chondrite with branching surface cracks",
       "name": "Unclassified NWA Oriented Ordinary Chondrite",
       "classification": "Unclassified ordinary chondrite",
       "massGrams": 47.4,

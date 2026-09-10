@@ -6,8 +6,9 @@ This workflow applies to every collection and sale specimen image published by t
 
 1. Inspect every source photograph at useful resolution before selecting views.
 2. Use exactly 3 distinct images for each collection specimen and exactly 5 for each sale specimen.
-3. Prefer a primary face, reverse, profile, scale, and useful material detail where those views exist.
-4. Keep each physical sale specimen in its own record, with its own stable ID and photographs.
+3. Place the strongest dramatic complete view first. The hero should be sharp, centered, visually distinctive, and immediately communicate the specimen's form or material; do not default to the source filename labeled `hero` when another approved view is stronger.
+4. Prefer a primary face, reverse, profile, scale, and useful material detail where those views exist.
+5. Keep each physical sale specimen in its own record, with its own stable ID and photographs.
 
 ## Cropping
 
