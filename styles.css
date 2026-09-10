@@ -177,22 +177,6 @@ textarea:focus-visible {
   border-bottom: 8px double var(--brass);
 }
 
-.hero-brand::before,
-.hero-brand::after,
-.interior-brand::before,
-.interior-brand::after {
-  content: "";
-  position: absolute;
-  z-index: 3;
-  pointer-events: none;
-  border: 1px solid rgba(195, 159, 92, .34);
-}
-
-.hero-brand::before,
-.interior-brand::before { inset: 1.2rem; }
-.hero-brand::after,
-.interior-brand::after { inset: 1.55rem; border-color: rgba(195, 159, 92, .13); }
-
 .hero-banner { width: 100%; height: auto; display: block; }
 
 .hero-intro {
@@ -1043,10 +1027,6 @@ textarea:focus-visible {
 }
 
 @media (max-width: 580px) {
-  .hero-brand::before,
-  .interior-brand::before { inset: .6rem; }
-  .hero-brand::after,
-  .interior-brand::after { inset: .9rem; }
   .hero-intro { padding: 1.5rem 0 2.25rem; }
   .hero-actions { align-items: flex-start; flex-direction: column; gap: 1rem; }
   .card-grid, .book-grid { grid-template-columns: 1fr; }

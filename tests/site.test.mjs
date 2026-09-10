@@ -179,6 +179,21 @@ test("all catalog pages load shared assets and cross-link from the homepage", as
   }
 });
 
+test("every page shows the linked inventory summary below an unobstructed banner", async () => {
+  const pageNames = ["index.html", "collection.html", "specimens.html", "books.html", "research.html", "checkout.html"];
+  for (const pageName of pageNames) {
+    const html = await read(pageName);
+    assert.equal((html.match(/class="ledger-strip"/gu) || []).length, 1, `${pageName} must contain one summary bar`);
+    for (const [id, destination] of [["collection-count", "collection.html"], ["specimen-count", "specimens.html"], ["book-count", "books.html"]]) {
+      assert.match(html, new RegExp(`<a href="\\./${destination}"><strong id="${id}">`, "u"), `${pageName} summary must link to ${destination}`);
+    }
+    assert.match(html, /<a href="\.\/research\.html"><strong>3<\/strong><span>connected resources<\/span><\/a>/u);
+    assert.ok(html.indexOf("hero-banner") < html.indexOf("ledger-strip"), `${pageName} summary must follow its banner`);
+  }
+  const css = await read("styles.css");
+  assert.doesNotMatch(css, /\.(?:hero|interior)-brand::(?:before|after)/u, "banner overlay rectangles must not return");
+});
+
 test("books can be filtered between the permanent collection and sale inventory", async () => {
   const html = await read("books.html");
   const app = await read("app.js");

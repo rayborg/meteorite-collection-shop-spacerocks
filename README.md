@@ -13,6 +13,8 @@ The site is organized across six pages:
 - `research.html` contains the historical catalog, market-search, and COA project links.
 - `checkout.html` contains the persistent cart and checkout-request form.
 
+Every page repeats the linked live inventory summary directly below the unobstructed official banner.
+
 ## Local preview
 
 ```sh
