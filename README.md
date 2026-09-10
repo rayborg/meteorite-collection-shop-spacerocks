@@ -9,7 +9,7 @@ The site is organized across six pages:
 - `index.html` presents the official Spacerocks banner, inventory highlights, and connected research projects.
 - `collection.html` contains the searchable personal-collection ledger.
 - `specimens.html` contains the searchable and sortable sale inventory.
-- `books.html` contains the searchable and sortable bookseller's list.
+- `books.html` contains the searchable and sortable permanent book collection and books offered for sale.
 - `research.html` contains the historical catalog, market-search, and COA project links.
 - `checkout.html` contains the persistent cart and checkout-request form.
 
@@ -44,7 +44,7 @@ After reviewing a successful dry run, copy the images and update the catalogs:
 npm run import:inventory -- "/absolute/path/to/import-folder" --write
 ```
 
-See `inventory-template/README.md` for the exact column order, field rules, image-count requirements, and complete examples. Imported rows are upserted by stable `id`; nothing is deleted automatically. The first filename in `image_files` becomes the card image, and the remaining `|`-separated images are retained in the record.
+See `inventory-template/README.md` for the exact column order, field rules, image-count requirements, and complete examples. Follow `docs/IMAGE_PREPARATION.md` for cropping, color, quality-review, and publication requirements. Imported rows are upserted by stable `id`; nothing is deleted automatically. The first filename in `image_files` becomes the card image, and the remaining `|`-separated images are retained in the record.
 
 Each collection specimen requires 3 images. Each sale specimen and every book record require 5 images.
 
@@ -84,7 +84,7 @@ Photographs belong in the corresponding directory under `assets/`. All paths mus
 {
   "id": "sale-001",
   "displayOrder": 10,
-  "catalogNumber": "SRS 001",
+  "catalogNumber": "Specimen 001",
   "name": "Meteorite name",
   "classification": "Classification",
   "massGrams": 4.56,
@@ -103,6 +103,9 @@ Photographs belong in the corresponding directory under `assets/`. All paths mus
 
 Supported sale statuses are `available`, `reserved`, and `sold`.
 When `priceUsd` is omitted, sale cards and checkout display `TBD` rather than treating the item as free.
+Collection and sale catalogs each use reader-facing `Specimen 001`, `Specimen 002`, and subsequent numbers. Stable `id` values, not the display number, identify records internally.
+
+Every physical specimen offered for sale remains a separate record with its own stable ID, weight, photographs, price, status, and cart entry. If many specimens of one meteorite are offered later, a grouped browse view may collect them under the shared meteorite name, but opening that group must still expose each individually purchasable specimen.
 
 ### Book record
 
@@ -127,6 +130,8 @@ When `priceUsd` is omitted, sale cards and checkout display `TBD` rather than tr
   "imageAlt": "The exact book offered for sale"
 }
 ```
+
+Book records use `listingType: "collection"` for the permanent private collection and `listingType: "sale"` for books offered for sale. The Books page can filter between those shelves.
 
 ## Publishing
 

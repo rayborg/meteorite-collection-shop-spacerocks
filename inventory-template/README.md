@@ -6,7 +6,7 @@ Copy `inventory.csv` into a new folder containing the photographs you want to im
 
 - `collection_specimen`: a meteorite retained in the personal collection
 - `sale_specimen`: a meteorite offered for sale
-- `collection_book`: a book retained in the reference library
+- `collection_book`: a book retained in the permanent private collection
 - `sale_book`: a book offered for sale
 
 ## Required values
@@ -33,7 +33,7 @@ Each record occupies one CSV row. Quote text containing commas.
 ```csv
 record_type,id,display_order,catalog_number,name,title,classification,author,year,mass_grams,dimensions,locality,found_year,acquired_year,provenance,edition,publisher,format,condition,description,price_usd,status,image_files,image_alt
 collection_specimen,allende-001,10,Specimen 001,Allende,,CV3,,,24.6,31 x 22 x 8 mm,Chihuahua Mexico,1969,2024,Ex. Example Collection,,,,,Complete individual with dark fusion crust.,,,allende-front.jpg|allende-back.jpg|allende-profile.jpg,Allende individual showing dark fusion crust
-sale_specimen,campo-001,20,SRS 001,Campo del Cielo,,Iron IAB-MG,,,42.1,34 x 21 x 14 mm,Chaco Argentina,1576,,Dealer provenance,,,,,Clean individual with natural regmaglypts.,85,available,campo-front.jpg|campo-back.jpg|campo-profile.jpg|campo-detail.jpg|campo-scale.jpg,Campo del Cielo individual offered for sale
+sale_specimen,campo-001,20,Specimen 001,Campo del Cielo,,Iron IAB-MG,,,42.1,34 x 21 x 14 mm,Chaco Argentina,1576,,Dealer provenance,,,,,Clean individual with natural regmaglypts.,85,available,campo-front.jpg|campo-back.jpg|campo-profile.jpg|campo-detail.jpg|campo-scale.jpg,Campo del Cielo individual offered for sale
 collection_book,burke-001,10,SRL 001,,Cosmic Debris,,John G. Burke,1986,,,,,,Private library,,University of California Press,Hardcover,Very good,Reference copy retained in the working library.,,,cosmic-debris-cover.jpg|cosmic-debris-back.jpg|cosmic-debris-spine.jpg|cosmic-debris-title.jpg|cosmic-debris-condition.jpg,Cover of Cosmic Debris by John G. Burke
 sale_book,nininger-001,20,SRB 001,,Find a Falling Star,,H. H. Nininger,1972,,,,,,,,Paul S. Eriksson,Hardcover,Good,Clean copy with light jacket wear.,45,available,nininger-cover.jpg|nininger-back.jpg|nininger-spine.jpg|nininger-title.jpg|nininger-condition.jpg,Front cover of Find a Falling Star
 ```

@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const require = createRequire(import.meta.url);
-const { getSafeInquiryUrl } = require("../inventory-utils.js");
+const { createCarouselPauseState, getSafeInquiryUrl } = require("../inventory-utils.js");
 const CartStore = require("../cart.js");
 
 async function read(relativePath) {
@@ -84,18 +84,48 @@ test("specimen cards rotate their image galleries every three seconds", async ()
   const css = await read("styles.css");
   assert.ok(app.includes("const CAROUSEL_INTERVAL_MS = 3000;"));
   assert.ok(app.includes('window.matchMedia?.("(prefers-reduced-motion: reduce)")'), "carousel must respect reduced-motion preferences");
-  assert.ok(app.includes('toggle.textContent = userPaused ? "Play" : "Pause"'), "carousel must provide a pause control");
+  assert.ok(app.includes('toggle.textContent = pauseState.userPaused ? "Play" : "Pause"'), "carousel must provide a pause control");
+  assert.ok(app.includes('"carousel-arrow carousel-previous"'), "carousel must provide previous-image navigation");
+  assert.ok(app.includes('"carousel-arrow carousel-next"'), "carousel must provide next-image navigation");
+  assert.ok(app.includes("pauseState.pauseForManualNavigation();"), "manual image navigation must stop automatic rotation");
   assert.ok(app.includes('figure.addEventListener("pointerenter"'), "carousel must pause during pointer interaction");
   assert.ok(app.includes('figure.addEventListener("focusin"'), "carousel must pause during keyboard interaction");
+  assert.ok(app.includes("pauseState.canAdvance(document.hidden)"), "carousel must check all pause conditions before advancing");
   assert.ok(css.includes(".carousel-toggle:focus-visible"), "carousel control must expose keyboard focus");
+  assert.ok(css.includes(".carousel-arrow:focus-visible"), "carousel arrows must expose keyboard focus");
 });
 
-test("collection records use reader-facing specimen numbers", async () => {
+test("carousel pause state keeps overlapping pointer and focus interactions isolated", () => {
+  const state = createCarouselPauseState();
+  assert.equal(state.canAdvance(), true);
+  state.setPointerActive(true);
+  state.setFocusActive(true);
+  state.setPointerActive(false);
+  assert.equal(state.canAdvance(), false, "focus must keep rotation paused after the pointer leaves");
+  state.setPointerActive(true);
+  state.setFocusActive(false);
+  assert.equal(state.canAdvance(), false, "pointer must keep rotation paused after focus leaves");
+  state.setPointerActive(false);
+  assert.equal(state.canAdvance(), true);
+  assert.equal(state.canAdvance(true), false, "hidden pages must not advance");
+  state.pauseForManualNavigation();
+  assert.equal(state.canAdvance(), false, "manual navigation must pause rotation");
+  assert.equal(state.toggleUserPaused(), false);
+  assert.equal(state.canAdvance(), true, "Play must resume an inactive carousel");
+  assert.equal(createCarouselPauseState(true).canAdvance(), false, "reduced motion must start paused");
+});
+
+test("all specimen records use reader-facing specimen numbers", async () => {
   const collection = JSON.parse(await read("data/collection.json"));
+  const sale = JSON.parse(await read("data/sale-specimens.json"));
   assert.deepEqual(
     collection.items.map((item) => item.catalogNumber),
     Array.from({ length: 10 }, (_, index) => `Specimen ${String(index + 1).padStart(3, "0")}`)
   );
+  assert.deepEqual(sale.items.map((item) => item.catalogNumber), ["Specimen 001", "Specimen 002"]);
+  for (const item of [...collection.items, ...sale.items]) {
+    assert.doesNotMatch(item.description, /documented in \w+ views|including broad faces, edge profile, and end texture/iu);
+  }
 });
 
 test("the three related meteorite projects are linked safely", async () => {
@@ -135,12 +165,26 @@ test("all catalog pages load shared assets and cross-link from the homepage", as
     assert.ok(!researchHtml.includes(`id="${catalogId}"`), `Research Desk must not include ${catalogId}`);
   }
   assert.ok(html.includes('href="./checkout.html"'), "homepage must link to the cart");
+  for (const [id, destination] of [["collection-count", "collection.html"], ["specimen-count", "specimens.html"], ["book-count", "books.html"]]) {
+    assert.match(html, new RegExp(`<a href="\\./${destination}"><strong id="${id}">`, "u"), `${id} summary must link to ${destination}`);
+  }
+  assert.match(html, /<a href="\.\/research\.html"><strong>3<\/strong><span>connected resources<\/span><\/a>/u);
   for (const page of ["index.html", "collection.html", "specimens.html", "books.html", "research.html", "checkout.html"]) {
     const pageHtml = await read(page);
     assert.match(pageHtml, /<nav id="site-navigation"[\s\S]*?<a href="\.\/index\.html"(?: aria-current="page")?>Home<\/a>/u, `${page} must have an explicit primary Home link`);
     assert.ok(pageHtml.includes('href="./research.html"'), `${page} must link to the dedicated Research Desk`);
     assert.ok(!pageHtml.includes('href="./index.html#research"'), `${page} must not route Research back to the homepage`);
   }
+});
+
+test("books can be filtered between the permanent collection and sale inventory", async () => {
+  const html = await read("books.html");
+  const app = await read("app.js");
+  const importer = await read("scripts/import-inventory.mjs");
+  assert.ok(html.includes('<option value="collection">Permanent private collection</option>'));
+  assert.ok(html.includes('<option value="sale">Books for sale</option>'));
+  assert.ok(app.includes('item.listingType === "collection" ? "collection" : "sale"'));
+  assert.ok(importer.includes("collection_book") && importer.includes("sale_book"));
 });
 
 test("confirmed official branding is used and optimized for the web", async () => {

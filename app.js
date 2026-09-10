@@ -107,33 +107,45 @@ function createImage(item, kind) {
 
       counter = createElement("span", "carousel-count", `1 / ${images.length}`);
       counter.setAttribute("aria-hidden", "true");
+      const previous = createElement("button", "carousel-arrow carousel-previous", "←");
+      previous.type = "button";
+      previous.setAttribute("aria-label", `Previous image for ${label}`);
+      const next = createElement("button", "carousel-arrow carousel-next", "→");
+      next.type = "button";
+      next.setAttribute("aria-label", `Next image for ${label}`);
       const toggle = createElement("button", "carousel-toggle");
       toggle.type = "button";
-      let userPaused = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
-      let interactionPaused = false;
+      const pauseState = InventoryUtils.createCarouselPauseState(window.matchMedia?.("(prefers-reduced-motion: reduce)").matches);
       const updateToggle = () => {
-        toggle.textContent = userPaused ? "Play" : "Pause";
-        toggle.setAttribute("aria-label", `${userPaused ? "Play" : "Pause"} image rotation for ${label}`);
+        toggle.textContent = pauseState.userPaused ? "Play" : "Pause";
+        toggle.setAttribute("aria-label", `${pauseState.userPaused ? "Play" : "Pause"} image rotation for ${label}`);
       };
       updateToggle();
       toggle.addEventListener("click", () => {
-        userPaused = !userPaused;
+        pauseState.toggleUserPaused();
         updateToggle();
       });
-      figure.addEventListener("pointerenter", () => { interactionPaused = true; });
-      figure.addEventListener("pointerleave", () => { interactionPaused = false; });
-      figure.addEventListener("focusin", () => { interactionPaused = true; });
+      const showManualImage = (index) => {
+        pauseState.pauseForManualNavigation();
+        updateToggle();
+        showImage(index);
+      };
+      previous.addEventListener("click", () => showManualImage((activeIndex - 1 + images.length) % images.length));
+      next.addEventListener("click", () => showManualImage((activeIndex + 1) % images.length));
+      figure.addEventListener("pointerenter", () => pauseState.setPointerActive(true));
+      figure.addEventListener("pointerleave", () => pauseState.setPointerActive(false));
+      figure.addEventListener("focusin", () => pauseState.setFocusActive(true));
       figure.addEventListener("focusout", (event) => {
-        if (!figure.contains(event.relatedTarget)) interactionPaused = false;
+        if (!figure.contains(event.relatedTarget)) pauseState.setFocusActive(false);
       });
 
       const cycle = () => {
         if (!figure.isConnected) return;
-        if (!userPaused && !interactionPaused && !document.hidden) showImage((activeIndex + 1) % images.length);
+        if (pauseState.canAdvance(document.hidden)) showImage((activeIndex + 1) % images.length);
         window.setTimeout(cycle, CAROUSEL_INTERVAL_MS);
       };
       window.setTimeout(cycle, CAROUSEL_INTERVAL_MS);
-      figure.append(counter, toggle);
+      figure.append(previous, next, toggle, counter);
     }
   } else {
     figure.append(createElement("span", "image-placeholder"));

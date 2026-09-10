@@ -84,7 +84,7 @@ test("folder importer enforces exact image counts by record type", async (contex
   context.after(() => rm(temporaryRoot, { recursive: true, force: true }));
   const { projectRoot, importFolder } = await createProject(temporaryRoot);
   await writeManifest(importFolder, [{
-    record_type: "collection_specimen", id: "short-001", display_order: 1, catalog_number: "SRC 001",
+    record_type: "collection_specimen", id: "short-001", display_order: 1, catalog_number: "Specimen 001",
     name: "Short set", description: "Incomplete image set.", image_files: "images/front.jpg|images/back.jpg", image_alt: "Short set"
   }]);
   await assert.rejects(importInventory(importFolder, { projectRoot }), /requires exactly 3 image filenames/u);
@@ -97,12 +97,12 @@ test("folder importer validates, copies images, and routes all four record types
 
   const records = [
     {
-      record_type: "collection_specimen", id: "allende-001", display_order: 10, catalog_number: "SRC 001",
+      record_type: "collection_specimen", id: "allende-001", display_order: 10, catalog_number: "Specimen 001",
       name: "Allende", classification: "CV3", mass_grams: 24.6, description: "Collection specimen, with fusion crust.",
       image_files: imagePaths("collection_specimen", "allende", "JPG").join("|"), image_alt: "Allende specimen"
     },
     {
-      record_type: "sale_specimen", id: "campo-001", display_order: 20, catalog_number: "SRS 001",
+      record_type: "sale_specimen", id: "campo-001", display_order: 20, catalog_number: "Specimen 001",
       name: "Campo del Cielo", classification: "Iron, IAB-MG", mass_grams: 42.1, description: "Individual for sale.",
       price_usd: 85, status: "available", image_files: imagePaths("sale_specimen", "campo", "png").join("|"), image_alt: "Campo del Cielo specimen"
     },
@@ -154,7 +154,7 @@ test("importer rejects source and destination symlinks", async (context) => {
   const sourceReferences = ["images/link.jpg", ...imagePaths("collection_specimen", "source").slice(1)];
   for (const reference of sourceReferences.slice(1)) await writeImage(path.join(importFolder, reference));
   const record = {
-    record_type: "collection_specimen", id: "linked-001", display_order: 1, catalog_number: "SRC 001",
+    record_type: "collection_specimen", id: "linked-001", display_order: 1, catalog_number: "Specimen 001",
     name: "Linked", description: "Symlink source test.", image_files: sourceReferences.join("|"), image_alt: "Linked specimen"
   };
   await writeManifest(importFolder, [record]);
@@ -179,8 +179,8 @@ test("failed destination preflight leaves existing assets unchanged", async (con
   context.after(() => rm(temporaryRoot, { recursive: true, force: true }));
   const { projectRoot, importFolder } = await createProject(temporaryRoot);
   const records = [
-    { record_type: "collection_specimen", id: "first-001", display_order: 1, catalog_number: "SRC 001", name: "First", description: "First.", image_files: imagePaths("collection_specimen", "first").join("|"), image_alt: "First" },
-    { record_type: "collection_specimen", id: "second-001", display_order: 2, catalog_number: "SRC 002", name: "Second", description: "Second.", image_files: imagePaths("collection_specimen", "second").join("|"), image_alt: "Second" }
+    { record_type: "collection_specimen", id: "first-001", display_order: 1, catalog_number: "Specimen 001", name: "First", description: "First.", image_files: imagePaths("collection_specimen", "first").join("|"), image_alt: "First" },
+    { record_type: "collection_specimen", id: "second-001", display_order: 2, catalog_number: "Specimen 002", name: "Second", description: "Second.", image_files: imagePaths("collection_specimen", "second").join("|"), image_alt: "Second" }
   ];
   await writeRecordImages(importFolder, records);
   await writeManifest(importFolder, records);
@@ -201,7 +201,7 @@ test("importer rejects image content that does not match its extension", async (
   const fakeReferences = ["images/fake.jpg", ...imagePaths("collection_specimen", "valid").slice(1)];
   for (const reference of fakeReferences.slice(1)) await writeImage(path.join(importFolder, reference));
   await writeManifest(importFolder, [{
-    record_type: "collection_specimen", id: "fake-001", display_order: 1, catalog_number: "SRC 001",
+    record_type: "collection_specimen", id: "fake-001", display_order: 1, catalog_number: "Specimen 001",
     name: "Fake", description: "Invalid image test.", image_files: fakeReferences.join("|"), image_alt: "Fake"
   }]);
   await assert.rejects(importInventory(importFolder, { projectRoot }), /content does not match/u);
@@ -215,7 +215,7 @@ test("source replacement after validation cannot change staged bytes", async (co
   const source = path.join(importFolder, sourceReferences[0]);
   const outside = path.join(temporaryRoot, "outside.jpg");
   const record = {
-    record_type: "collection_specimen", id: "race-001", display_order: 1, catalog_number: "SRC 001",
+    record_type: "collection_specimen", id: "race-001", display_order: 1, catalog_number: "Specimen 001",
     name: "Race", description: "Race test.", image_files: sourceReferences.join("|"), image_alt: "Race"
   };
   await writeRecordImages(importFolder, [record]);
@@ -239,7 +239,7 @@ test("destination parent replacement during commit cannot escape the project", a
   context.after(() => rm(temporaryRoot, { recursive: true, force: true }));
   const { projectRoot, importFolder } = await createProject(temporaryRoot);
   const records = [
-    { record_type: "collection_specimen", id: "safe-001", display_order: 1, catalog_number: "SRC 001", name: "Safe", description: "Safe.", image_files: imagePaths("collection_specimen", "specimen").join("|"), image_alt: "Safe" },
+    { record_type: "collection_specimen", id: "safe-001", display_order: 1, catalog_number: "Specimen 001", name: "Safe", description: "Safe.", image_files: imagePaths("collection_specimen", "specimen").join("|"), image_alt: "Safe" },
     { record_type: "collection_book", id: "book-001", display_order: 1, catalog_number: "SRL 001", title: "Book", description: "Book.", image_files: imagePaths("collection_book", "book").join("|"), image_alt: "Book" }
   ];
   await writeRecordImages(importFolder, records);

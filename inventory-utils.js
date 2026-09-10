@@ -11,7 +11,26 @@
     }
   }
 
-  const api = { getSafeInquiryUrl };
+  function createCarouselPauseState(reducedMotion = false) {
+    let userPaused = Boolean(reducedMotion);
+    let pointerActive = false;
+    let focusActive = false;
+    return {
+      get userPaused() { return userPaused; },
+      toggleUserPaused() {
+        userPaused = !userPaused;
+        return userPaused;
+      },
+      pauseForManualNavigation() { userPaused = true; },
+      setPointerActive(active) { pointerActive = Boolean(active); },
+      setFocusActive(active) { focusActive = Boolean(active); },
+      canAdvance(pageHidden = false) {
+        return !userPaused && !pointerActive && !focusActive && !pageHidden;
+      }
+    };
+  }
+
+  const api = { getSafeInquiryUrl, createCarouselPauseState };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   globalScope.InventoryUtils = api;
 }(globalThis));

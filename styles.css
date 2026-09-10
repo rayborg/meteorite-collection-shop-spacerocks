@@ -358,14 +358,16 @@ textarea:focus-visible {
   box-shadow: 0 1rem 2.2rem rgba(30, 21, 13, .24);
 }
 
-.ledger-strip div {
+.ledger-strip a {
   position: relative;
   min-width: 0;
   padding: .82rem .75rem .72rem;
+  color: inherit;
   text-align: center;
+  text-decoration: none;
 }
 
-.ledger-strip div + div::before {
+.ledger-strip a + a::before {
   content: "";
   position: absolute;
   top: 22%;
@@ -373,6 +375,9 @@ textarea:focus-visible {
   height: 56%;
   border-left: 1px solid rgba(225, 201, 157, .3);
 }
+
+.ledger-strip a:hover { background: rgba(255, 255, 255, .06); }
+.ledger-strip a:focus-visible { z-index: 1; outline: 2px solid var(--brass-light); outline-offset: -3px; }
 
 .ledger-strip strong {
   display: block;
@@ -538,6 +543,27 @@ textarea:focus-visible {
 
 .carousel-toggle:hover { background: rgba(91, 43, 40, .94); }
 .carousel-toggle:focus-visible { outline: 2px solid var(--brass-light); outline-offset: 2px; }
+
+.carousel-arrow {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  color: #f2e4c8;
+  font-size: 1.25rem;
+  line-height: 1;
+  background: rgba(24, 20, 17, .72);
+  border: 1px solid rgba(219, 192, 128, .62);
+  transform: translateY(-50%);
+  backdrop-filter: blur(4px);
+}
+
+.carousel-previous { left: .7rem; }
+.carousel-next { right: .7rem; }
+.carousel-arrow:hover { background: rgba(91, 43, 40, .94); }
+.carousel-arrow:focus-visible { outline: 2px solid var(--brass-light); outline-offset: 2px; }
 
 .image-placeholder {
   position: relative;
@@ -998,8 +1024,8 @@ textarea:focus-visible {
   .interior-brand { padding-top: 5.5rem; }
   .hero-copy { grid-template-columns: 1fr; gap: 1rem; }
   .ledger-strip { width: calc(100% - 2rem); grid-template-columns: 1fr 1fr; }
-  .ledger-strip div:nth-child(3)::before { display: none; }
-  .ledger-strip div:nth-child(n + 3) { border-top: 1px solid rgba(225, 201, 157, .3); }
+  .ledger-strip a:nth-child(3)::before { display: none; }
+  .ledger-strip a:nth-child(n + 3) { border-top: 1px solid rgba(225, 201, 157, .3); }
   .introduction { grid-template-columns: 1fr; gap: 1.4rem; padding-block: 6rem; }
   .section-number { position: absolute; top: 5rem; right: 1rem; font-size: 6rem; }
   .introduction-heading { max-width: 28rem; }
