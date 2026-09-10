@@ -93,6 +93,8 @@ test("specimen cards rotate their image galleries every three seconds", async ()
   assert.ok(app.includes("pauseState.canAdvance(document.hidden)"), "carousel must check all pause conditions before advancing");
   assert.ok(css.includes(".carousel-toggle:focus-visible"), "carousel control must expose keyboard focus");
   assert.ok(css.includes(".carousel-arrow:focus-visible"), "carousel arrows must expose keyboard focus");
+  assert.match(css, /\.card-image img \{[^}]*object-fit: contain; object-position: center center;/u, "catalog images must remain centered and fully visible");
+  assert.match(css, /\.checkout-item-image img \{[^}]*object-fit: contain; object-position: center center;/u, "checkout images must remain centered and fully visible");
 });
 
 test("carousel pause state keeps overlapping pointer and focus interactions isolated", () => {

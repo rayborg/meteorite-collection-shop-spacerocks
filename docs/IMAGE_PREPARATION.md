@@ -13,9 +13,10 @@ This workflow applies to every collection and sale specimen image published by t
 
 1. Compare the proposed crop with the complete source image.
 2. Keep the entire specimen visible for normal face, reverse, profile, edge, and scale views. Intentional details may show only part of a specimen when the feature is unambiguous.
-3. Leave practical breathing room around fragile projections and frame edges.
-4. Keep the specimen at roughly the same apparent size across images in one listing. Perspective and intentional details may vary, but ordinary views should not jump between distant and extreme close-up framing.
-5. Prefer a 4:3 crop for catalog images. Retain a different orientation when it is necessary to show documentary information such as a scale reading.
+3. Center the specimen visually in both axes while leaving practical breathing room around fragile projections and frame edges. Approximate visual balance is more important than a mathematically exact pixel center.
+4. When a specimen is very small relative to its scale cube, center the combined specimen-and-cube composition rather than isolating the specimen at the frame center.
+5. Keep the specimen at roughly the same apparent size across images in one listing. Perspective and intentional details may vary, but ordinary views should not jump between distant and extreme close-up framing.
+6. Prefer a 4:3 crop for catalog images. Retain a different orientation when it is necessary to show documentary information such as a scale reading, and present it with centered `object-fit: contain` rather than cropping it to the card ratio.
 
 Crop and resize in separate operations. `sips` accepts crop arguments as height, width, then offset Y and X:
 
@@ -40,7 +41,7 @@ Run this gate after every crop, color, exposure, compression, or orientation cha
 
 1. Open every changed final image at full delivered resolution.
 2. Compare it with its source to confirm that the intended specimen or detail is present.
-3. Compare all images in the listing side by side for apparent size, framing, exposure, white balance, and orientation.
+3. Compare all images in the listing side by side for horizontal and vertical centering, apparent size, framing, exposure, white balance, and orientation.
 4. Check for clipped specimen edges, excessive empty background, blur, halos, compression artifacts, and accidental duplicate views.
 5. Confirm ordinary landscape images are 1600 x 1200 pixels when the source permits. Documentary portrait images may be 1200 x 1600 pixels.
 6. Confirm the JPEG remains reasonably sized for the web and contains no location metadata intended to remain private.

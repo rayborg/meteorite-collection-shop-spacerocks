@@ -21,6 +21,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Kaalijarv, Aguas Zarcas, and Bjurböle descriptions use verified official Meteoritical Bulletin records.
 - Books use one catalog with `listingType: "collection"` or `listingType: "sale"` and can be filtered by shelf. No book records have been imported yet.
 - Corrected image crops, carousel arrows, clickable homepage totals, specific descriptions, consistent specimen display numbers, documentation, and tests are published in commit `dfc9924`.
+- A new working-tree image pass has visually centered every adjustable specimen in both axes, using combined specimen-and-cube balance for very small specimens and complete source framing for the source-limited large NWA views. This pass is validated locally but not yet published.
 
 ## Durable Decisions
 
@@ -47,10 +48,13 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Changed both collection and sale display labels to `Specimen NNN` and clarified book shelf filtering.
 - Added the durable image workflow in `docs/IMAGE_PREPARATION.md`.
 - Published and live-verified the complete gallery and catalog refinement in commit `dfc9924`.
+- Audited all 40 images specifically for horizontal and vertical centering and prepared 31 corrected crops; 7 views were already acceptably centered or intentionally documentary/detail views, and 2 source-limited large NWA views retained their complete original framing.
+- Changed catalog and checkout image presentation to centered `object-fit: contain` so non-landscape images remain fully visible.
 
 ## Active Work
 
-- No implementation remains active from this session.
+- Obtain independent validation of the final centered images and presentation behavior.
+- Commit, push, and live-verify the centering update.
 
 ## Validation Evidence
 
@@ -63,13 +67,16 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Two independent final validators passed the corrected image and functional/content work with no remaining findings.
 - GitHub Actions run `34439704818` passed tests and deployed commit `dfc9924` successfully.
 - Live checks verified carousel arrows/pause integration, all four summary links, specimen labels, descriptions, book filters, and representative corrected image hashes.
+- The centering update passes all 21 local tests; all 40 repository images decode, retain required web dimensions, and byte-match the newly reviewed batch.
 
 ## Immediate Next Actions
 
-1. Supply sale prices when known.
-2. Configure a valid Formspree endpoint when checkout requests should be enabled.
-3. Import permanent-collection and sale book records when their data and photographs are ready.
-4. Design grouped browsing when multiple individually purchasable specimens share one meteorite identity.
+1. Complete independent centering validation.
+2. Commit, push, and verify the centered images on GitHub Pages.
+3. Supply sale prices when known.
+4. Configure a valid Formspree endpoint when checkout requests should be enabled.
+5. Import permanent-collection and sale book records when their data and photographs are ready.
+6. Design grouped browsing when multiple individually purchasable specimens share one meteorite identity.
 
 ## Unresolved Items
 
