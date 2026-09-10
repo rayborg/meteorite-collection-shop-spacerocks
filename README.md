@@ -102,6 +102,7 @@ Photographs belong in the corresponding directory under `assets/`. All paths mus
 ```
 
 Supported sale statuses are `available`, `reserved`, and `sold`.
+When `priceUsd` is omitted, sale cards and checkout display `TBD` rather than treating the item as free.
 
 ### Book record
 

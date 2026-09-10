@@ -39,7 +39,11 @@ function checkoutElement(tag, className, content) {
 }
 
 function formatPrice(price) {
-  return Number.isFinite(price) ? checkoutCurrency.format(price) : "Price on request";
+  return Number.isFinite(price) ? checkoutCurrency.format(price) : "TBD";
+}
+
+function formatSubtotal(items) {
+  return items.some((item) => !Number.isFinite(item.priceUsd)) ? "TBD" : formatPrice(CartStore.subtotal(items));
 }
 
 function createCheckoutItem(item) {
@@ -74,7 +78,7 @@ function createOrderSummary(items) {
   return [
     `Order request: ${orderReference}`,
     ...lines,
-    `Catalog subtotal: ${formatPrice(CartStore.subtotal(items))}`,
+    `Catalog subtotal: ${formatSubtotal(items)}`,
     "Shipping: To be calculated and confirmed before payment"
   ].join("\n");
 }
@@ -87,10 +91,10 @@ function renderCheckout() {
   checkoutElements.list.hidden = items.length === 0;
   checkoutElements.clear.hidden = items.length === 0;
   checkoutElements.itemCount.textContent = `${items.length} ${items.length === 1 ? "item" : "items"}`;
-  checkoutElements.subtotal.textContent = formatPrice(CartStore.subtotal(items));
+  checkoutElements.subtotal.textContent = formatSubtotal(items);
   checkoutElements.orderSummary.value = createOrderSummary(items);
   checkoutElements.orderReference.value = orderReference;
-  checkoutElements.cartSubtotal.value = formatPrice(CartStore.subtotal(items));
+  checkoutElements.cartSubtotal.value = formatSubtotal(items);
   checkoutElements.submit.disabled = items.length === 0 || !endpoint;
   checkoutElements.endpointNotice.hidden = Boolean(endpoint);
 }

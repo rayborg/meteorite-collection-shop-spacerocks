@@ -1,5 +1,175 @@
 {
   "schemaVersion": 1,
-  "updated": null,
-  "items": []
+  "updated": "2026-09-10",
+  "items": [
+    {
+      "id": "unclassified-meteorite-367-3g",
+      "displayOrder": 10,
+      "catalogNumber": "SRC 001",
+      "description": "A substantial 367.3 g unclassified specimen with a rounded dark exterior and exposed weathered interior areas. Classification and find locality have not been recorded.",
+      "image": "./assets/collection/unclassified-meteorite-367-3g-1-g01-01-hero.jpg",
+      "images": [
+        "./assets/collection/unclassified-meteorite-367-3g-1-g01-01-hero.jpg",
+        "./assets/collection/unclassified-meteorite-367-3g-2-g01-02-reverse.jpg",
+        "./assets/collection/unclassified-meteorite-367-3g-3-g01-03-detail.jpg"
+      ],
+      "imageAlt": "Front view of a rounded dark 367.3 g unclassified meteorite",
+      "name": "Unclassified Meteorite",
+      "classification": "Unclassified",
+      "massGrams": 367.3
+    },
+    {
+      "id": "wabar-impact-material-63-2g",
+      "displayOrder": 20,
+      "catalogNumber": "SRC 002",
+      "description": "A 63.2 g Wabar related artifact showing black impact glass fused to pale desert sand. This is cataloged as terrestrial impact material, not as a meteorite.",
+      "image": "./assets/collection/wabar-impact-material-63-2g-1-g02-01-hero.jpg",
+      "images": [
+        "./assets/collection/wabar-impact-material-63-2g-1-g02-01-hero.jpg",
+        "./assets/collection/wabar-impact-material-63-2g-2-g02-02-reverse.jpg",
+        "./assets/collection/wabar-impact-material-63-2g-3-g02-03-interface.jpg"
+      ],
+      "imageAlt": "Wabar impact glass fused to pale desert sand",
+      "name": "Wabar Impact Glass with Fused Sand",
+      "classification": "Impact material / related artifact",
+      "massGrams": 63.2,
+      "locality": "Wabar, Saudi Arabia"
+    },
+    {
+      "id": "wabar-fused-sand-30-4g",
+      "displayOrder": 30,
+      "catalogNumber": "SRC 003",
+      "description": "A 30.4 g fragment of pale Wabar sand fused by impact heat, with layered texture and small dark glassy areas. Cataloged as impact material rather than a meteorite.",
+      "image": "./assets/collection/wabar-fused-sand-30-4g-1-g03-01-hero.jpg",
+      "images": [
+        "./assets/collection/wabar-fused-sand-30-4g-1-g03-01-hero.jpg",
+        "./assets/collection/wabar-fused-sand-30-4g-2-g03-02-reverse.jpg",
+        "./assets/collection/wabar-fused-sand-30-4g-3-g03-03-profile.jpg"
+      ],
+      "imageAlt": "Front face of a pale 30.4 g Wabar impact-fused sand fragment",
+      "name": "Wabar Impact-Fused Sand",
+      "classification": "Impact-fused sand",
+      "massGrams": 30.4,
+      "locality": "Wabar, Saudi Arabia"
+    },
+    {
+      "id": "wabar-relic-iron-7-9g",
+      "displayOrder": 40,
+      "catalogNumber": "SRC 004",
+      "description": "A 7.9 g Wabar impact fragment combining dark glass, fused sand, and a remnant interpreted as relic meteoritic iron.",
+      "image": "./assets/collection/wabar-relic-iron-7-9g-1-g05-01-hero.jpg",
+      "images": [
+        "./assets/collection/wabar-relic-iron-7-9g-1-g05-01-hero.jpg",
+        "./assets/collection/wabar-relic-iron-7-9g-2-g05-02-reverse.jpg",
+        "./assets/collection/wabar-relic-iron-7-9g-3-g05-03-profile.jpg"
+      ],
+      "imageAlt": "Wabar impact glass fragment with fused sand and relic iron",
+      "name": "Wabar Impact Glass with Relic Iron",
+      "classification": "Impact glass / relic meteoritic iron",
+      "massGrams": 7.9,
+      "locality": "Wabar, Saudi Arabia"
+    },
+    {
+      "id": "wabar-pearl-0-7g",
+      "displayOrder": 50,
+      "catalogNumber": "SRC 005",
+      "description": "A small 0.7 g polished Wabar pearl with a glossy black surface and rounded oval form.",
+      "image": "./assets/collection/wabar-pearl-0-7g-1-g06-01-hero.jpg",
+      "images": [
+        "./assets/collection/wabar-pearl-0-7g-1-g06-01-hero.jpg",
+        "./assets/collection/wabar-pearl-0-7g-2-g06-02-reverse.jpg",
+        "./assets/collection/wabar-pearl-0-7g-3-g06-03-profile.jpg"
+      ],
+      "imageAlt": "Front view of a polished black 0.7 g Wabar pearl",
+      "name": "Wabar Pearl",
+      "classification": "Impact glass",
+      "massGrams": 0.7,
+      "locality": "Wabar, Saudi Arabia"
+    },
+    {
+      "id": "kaalijarv-36-4g",
+      "displayOrder": 60,
+      "catalogNumber": "SRC 006",
+      "description": "A thin, angular 36.4 g iron fragment with a weathered metallic surface. The Meteoritical Bulletin Database lists Kaalijarv as an official Iron, IAB-MG find from Estonia in 1937 (code 12217).",
+      "image": "./assets/collection/kaalijarv-36-4g-1-g07-01-hero.jpg",
+      "images": [
+        "./assets/collection/kaalijarv-36-4g-1-g07-01-hero.jpg",
+        "./assets/collection/kaalijarv-36-4g-2-g07-02-reverse.jpg",
+        "./assets/collection/kaalijarv-36-4g-3-g07-03-profile.jpg"
+      ],
+      "imageAlt": "Front view of a thin angular 36.4 g Kaalijarv iron fragment",
+      "name": "Kaalijarv",
+      "classification": "Iron, IAB-MG",
+      "massGrams": 36.4,
+      "locality": "Estonia",
+      "foundYear": 1937
+    },
+    {
+      "id": "unclassified-oc-57-6g",
+      "displayOrder": 70,
+      "catalogNumber": "SRC 007",
+      "description": "A 57.6 g cut wedge displaying a speckled interior. Cataloged as an unclassified ordinary chondrite; no official pairing or find locality is asserted.",
+      "image": "./assets/collection/unclassified-oc-57-6g-1-g08-01-hero.jpg",
+      "images": [
+        "./assets/collection/unclassified-oc-57-6g-1-g08-01-hero.jpg",
+        "./assets/collection/unclassified-oc-57-6g-2-g08-02-reverse.jpg",
+        "./assets/collection/unclassified-oc-57-6g-3-g08-03-profile.jpg"
+      ],
+      "imageAlt": "Cut speckled face of a 57.6 g unclassified ordinary chondrite wedge",
+      "name": "Unclassified Ordinary Chondrite",
+      "classification": "Unclassified ordinary chondrite",
+      "massGrams": 57.6
+    },
+    {
+      "id": "unclassified-nwa-oriented-47-4g",
+      "displayOrder": 80,
+      "catalogNumber": "SRC 008",
+      "description": "A 47.4 g unclassified Northwest Africa ordinary chondrite with a rounded, shield-like oriented form and visible surface cracking. No official pairing is asserted.",
+      "image": "./assets/collection/unclassified-nwa-oriented-47-4g-1-g09-01-hero.jpg",
+      "images": [
+        "./assets/collection/unclassified-nwa-oriented-47-4g-1-g09-01-hero.jpg",
+        "./assets/collection/unclassified-nwa-oriented-47-4g-2-g09-02-reverse.jpg",
+        "./assets/collection/unclassified-nwa-oriented-47-4g-3-g09-03-profile.jpg"
+      ],
+      "imageAlt": "Oriented 47.4 g unclassified Northwest Africa ordinary chondrite",
+      "name": "Unclassified NWA Oriented Ordinary Chondrite",
+      "classification": "Unclassified ordinary chondrite",
+      "massGrams": 47.4,
+      "locality": "Northwest Africa"
+    },
+    {
+      "id": "bjurbole-14g",
+      "displayOrder": 90,
+      "catalogNumber": "SRC 009",
+      "description": "A historic 14 g Bjurböle collection fragment with a gray brecciated surface and the visible specimen marking OCH 238. The Meteoritical Bulletin Database lists Bjurböle as an official L/LL4 fall from Finland in 1899 (code 5064).",
+      "image": "./assets/collection/bjurbole-14g-1-g13-01-marked.jpg",
+      "images": [
+        "./assets/collection/bjurbole-14g-1-g13-01-marked.jpg",
+        "./assets/collection/bjurbole-14g-2-g13-02-inclusion.jpg",
+        "./assets/collection/bjurbole-14g-3-g13-03-reverse.jpg"
+      ],
+      "imageAlt": "Marked face of the historic 14 g Bjurböle L/LL4 fragment",
+      "name": "Bjurböle",
+      "classification": "L/LL4",
+      "massGrams": 14,
+      "locality": "Finland"
+    },
+    {
+      "id": "unclassified-nwa-oc-13-8kg",
+      "displayOrder": 100,
+      "catalogNumber": "SRC 010",
+      "description": "A large unclassified Northwest Africa ordinary chondrite with a broad weathered exterior, pronounced sculpting, and visible cracking. No official pairing is asserted.",
+      "image": "./assets/collection/unclassified-nwa-oc-13-8kg-1-g14-01-hero.jpg",
+      "images": [
+        "./assets/collection/unclassified-nwa-oc-13-8kg-1-g14-01-hero.jpg",
+        "./assets/collection/unclassified-nwa-oc-13-8kg-2-g14-02-reverse.jpg",
+        "./assets/collection/unclassified-nwa-oc-13-8kg-3-g14-03-weight.jpg"
+      ],
+      "imageAlt": "Large 13.8 kg unclassified Northwest Africa ordinary chondrite",
+      "name": "Large Unclassified NWA Ordinary Chondrite",
+      "classification": "Unclassified ordinary chondrite",
+      "massGrams": 13800,
+      "locality": "Northwest Africa"
+    }
+  ]
 }

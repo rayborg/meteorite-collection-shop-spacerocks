@@ -121,7 +121,7 @@ function createPriceFooter(item, type) {
   const footer = createElement("div", "card-footer");
   const price = createElement("div", "price");
   price.append(createElement("small", "", "Price"));
-  price.append(document.createTextNode(Number.isFinite(item.priceUsd) ? currency.format(item.priceUsd) : "On request"));
+  price.append(document.createTextNode(Number.isFinite(item.priceUsd) ? currency.format(item.priceUsd) : "TBD"));
   footer.append(price);
 
   if (item.status === "available") {

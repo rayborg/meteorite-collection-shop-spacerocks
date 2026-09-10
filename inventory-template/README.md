@@ -13,7 +13,7 @@ Copy `inventory.csv` into a new folder containing the photographs you want to im
 
 Every row requires `record_type`, a stable lowercase `id`, a unique positive `display_order` within its destination catalog, `catalog_number`, `description`, `image_files`, and `image_alt`.
 
-Specimens also require `name`. Books require `title`. Sale records require `status`, using `available`, `reserved`, or `sold`. `price_usd` can remain blank when the price is available only on request.
+Specimens also require `name`. Books require `title`. Sale records require `status`, using `available`, `reserved`, or `sold`. `price_usd` can remain blank while the price is `TBD`.
 
 Use `|` between image filenames. The first image is the listing card image; all named images are copied and retained in the record.
 

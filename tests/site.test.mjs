@@ -71,6 +71,14 @@ test("cart items are normalized and unsafe persisted fields are discarded", () =
   assert.equal(CartStore.subtotal([item, { priceUsd: null }]), 125);
 });
 
+test("unpriced sale records display TBD throughout checkout", async () => {
+  const app = await read("app.js");
+  const checkout = await read("checkout.js");
+  assert.ok(app.includes(': "TBD"'), "sale cards must label an omitted price as TBD");
+  assert.ok(checkout.includes('return items.some((item) => !Number.isFinite(item.priceUsd)) ? "TBD"'), "unknown prices must keep the checkout subtotal TBD");
+  assert.doesNotMatch(`${app}\n${checkout}`, /(?:Price )?[Oo]n request/u);
+});
+
 test("the three related meteorite projects are linked safely", async () => {
   const pages = await Promise.all(["index.html", "collection.html", "specimens.html", "books.html", "research.html", "checkout.html"].map(read));
   const html = pages.join("\n");

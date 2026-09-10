@@ -1,6 +1,47 @@
 {
   "schemaVersion": 1,
-  "updated": null,
+  "updated": "2026-09-10",
   "currency": "USD",
-  "items": []
+  "items": [
+    {
+      "id": "wabar-impact-glass-7-2g",
+      "displayOrder": 10,
+      "catalogNumber": "SRS 001",
+      "description": "A 7.2 g Wabar impact fragment with black glass fused to pale desert sand, documented in five views including a close surface detail. This is related impact material, not a meteorite.",
+      "image": "./assets/sale-specimens/wabar-impact-glass-7-2g-1-g04-01-hero.jpg",
+      "images": [
+        "./assets/sale-specimens/wabar-impact-glass-7-2g-1-g04-01-hero.jpg",
+        "./assets/sale-specimens/wabar-impact-glass-7-2g-2-g04-02-reverse.jpg",
+        "./assets/sale-specimens/wabar-impact-glass-7-2g-3-g04-03-profile.jpg",
+        "./assets/sale-specimens/wabar-impact-glass-7-2g-4-g04-04-alternate.jpg",
+        "./assets/sale-specimens/wabar-impact-glass-7-2g-5-g04-05-closeup.jpg"
+      ],
+      "imageAlt": "Exact 7.2 g Wabar impact glass and fused sand specimen offered for sale",
+      "name": "Wabar Impact Glass with Fused Sand",
+      "classification": "Impact glass / fused sand",
+      "massGrams": 7.2,
+      "locality": "Wabar, Saudi Arabia",
+      "status": "available"
+    },
+    {
+      "id": "aguas-zarcas-4-97g",
+      "displayOrder": 20,
+      "catalogNumber": "SRS 002",
+      "description": "A 4.97 g Aguas Zarcas fragment documented in five views, including broad faces, edge profile, and end texture. The Meteoritical Bulletin Database lists Aguas Zarcas as an official CM2 fall from Costa Rica in 2019 (code 69696).",
+      "image": "./assets/sale-specimens/aguas-zarcas-4-97g-1-g10-01-hero.jpg",
+      "images": [
+        "./assets/sale-specimens/aguas-zarcas-4-97g-1-g10-01-hero.jpg",
+        "./assets/sale-specimens/aguas-zarcas-4-97g-2-g10-02-reverse.jpg",
+        "./assets/sale-specimens/aguas-zarcas-4-97g-3-g10-03-profile.jpg",
+        "./assets/sale-specimens/aguas-zarcas-4-97g-4-g10-04-edge.jpg",
+        "./assets/sale-specimens/aguas-zarcas-4-97g-5-g10-05-end.jpg"
+      ],
+      "imageAlt": "Broad face of the exact 4.97 g Aguas Zarcas CM2 specimen offered for sale",
+      "name": "Aguas Zarcas",
+      "classification": "CM2",
+      "massGrams": 4.97,
+      "locality": "Costa Rica",
+      "status": "available"
+    }
+  ]
 }
