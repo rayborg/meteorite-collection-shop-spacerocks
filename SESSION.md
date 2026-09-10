@@ -22,7 +22,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Books use one catalog with `listingType: "collection"` or `listingType: "sale"` and can be filtered by shelf. No book records have been imported yet.
 - Corrected image crops, carousel arrows, clickable homepage totals, specific descriptions, consistent specimen display numbers, documentation, and tests are published in commit `dfc9924`.
 - The centering pass is published in commit `6352407`: every adjustable specimen is visually centered in both axes, very small specimens use combined specimen-and-cube balance, and source-limited large NWA views retain complete source framing.
-- The current working tree repeats the linked inventory summary below every subpage banner and removes decorative rectangle overlays from banner artwork; this update is not yet published.
+- The linked inventory summary now appears below every subpage banner, and decorative rectangle overlays have been removed from banner artwork in published commit `cb80b63`.
 
 ## Durable Decisions
 
@@ -53,10 +53,11 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Changed catalog and checkout image presentation to centered `object-fit: contain` so non-landscape images remain fully visible.
 - Published and live-verified the complete image-centering update in commit `6352407`.
 - Added the linked collection, sale-specimen, book, and research summary bar to every subpage and removed the two decorative banner overlay rectangles.
+- Published and live-verified the complete subpage-summary and banner-cleanup update in commit `cb80b63`.
 
 ## Active Work
 
-- Commit, push, and live-verify the validated summary-bar and banner-cleanup update.
+- No implementation remains active from this session.
 
 ## Validation Evidence
 
@@ -74,14 +75,15 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - GitHub Actions run `34442380530` passed tests and deployed commit `6352407` successfully.
 - Live checks verified centered catalog/checkout containment and representative image hashes across every affected specimen group.
 - Local and independent validation for the current summary-bar and banner-cleanup update pass with no functional or layout findings.
+- GitHub Actions run `34452108226` passed tests and deployed commit `cb80b63` successfully.
+- Live checks verified all five subpage summary bars, the `10 / 2 / 0 / 3` data values, link destinations, banner order, and overlay removal.
 
 ## Immediate Next Actions
 
-1. Publish and live-verify the summary-bar and banner-cleanup update.
-2. Supply sale prices when known.
-3. Configure a valid Formspree endpoint when checkout requests should be enabled.
-4. Import permanent-collection and sale book records when their data and photographs are ready.
-5. Design grouped browsing when multiple individually purchasable specimens share one meteorite identity.
+1. Supply sale prices when known.
+2. Configure a valid Formspree endpoint when checkout requests should be enabled.
+3. Import permanent-collection and sale book records when their data and photographs are ready.
+4. Design grouped browsing when multiple individually purchasable specimens share one meteorite identity.
 
 ## Unresolved Items
 
@@ -99,3 +101,4 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - `2f7dd88`: Added automatic specimen image carousels and collection specimen labels.
 - `dfc9924`: Refined specimen galleries, catalog navigation, descriptions, labels, book filtering, image workflow, and corrected crops.
 - `6352407`: Centered specimen imagery, preserved source-limited framing, and centered contained image presentation.
+- `cb80b63`: Added linked inventory summaries to every subpage and removed banner overlay rectangles.
