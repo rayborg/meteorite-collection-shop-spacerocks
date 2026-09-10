@@ -23,7 +23,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Corrected image crops, carousel arrows, clickable homepage totals, specific descriptions, consistent specimen display numbers, documentation, and tests are published in commit `dfc9924`.
 - The centering pass is published in commit `6352407`: every adjustable specimen is visually centered in both axes, very small specimens use combined specimen-and-cube balance, and source-limited large NWA views retain complete source framing.
 - The linked inventory summary now appears below every subpage banner, and decorative rectangle overlays have been removed from banner artwork in published commit `cb80b63`.
-- The current working tree selects the strongest dramatic complete hero for every specimen carousel, with four improved opening views and updated primary alt text; this update is not yet published.
+- Every specimen carousel now opens with its strongest dramatic complete hero, with four improved opening views and updated primary alt text published in commit `da018e9`.
 
 ## Durable Decisions
 
@@ -56,10 +56,11 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Added the linked collection, sale-specimen, book, and research summary bar to every subpage and removed the two decorative banner overlay rectangles.
 - Published and live-verified the complete subpage-summary and banner-cleanup update in commit `cb80b63`.
 - Reviewed and ranked all 40 images for hero use, retaining 8 existing opening views and selecting stronger first images for the 367.3 g unclassified specimen, 63.2 g Wabar material, Kaalijarv, and the 47.4 g oriented NWA specimen.
+- Published and live-verified the hero-image ordering update in commit `da018e9`.
 
 ## Active Work
 
-- Validate, independently review, commit, push, and live-verify the hero-image ordering update.
+- No implementation remains active from this session.
 
 ## Validation Evidence
 
@@ -79,15 +80,17 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Local and independent validation for the current summary-bar and banner-cleanup update pass with no functional or layout findings.
 - GitHub Actions run `34452108226` passed tests and deployed commit `cb80b63` successfully.
 - Live checks verified all five subpage summary bars, the `10 / 2 / 0 / 3` data values, link destinations, banner order, and overlay removal.
-- Primary local validation for the current hero-image ordering update passes; independent implementation review and publication remain pending.
+- Primary local validation for the hero-image ordering update passed all 23 tests.
+- Independent validation passed all 12 hero choices with no findings.
+- GitHub Actions run `34530392802` passed tests and deployed commit `da018e9` successfully.
+- Live JSON checks verified all 12 opening images and all 40 unique gallery references.
 
 ## Immediate Next Actions
 
-1. Validate and publish the hero-image ordering update.
-2. Supply sale prices when known.
-3. Configure a valid Formspree endpoint when checkout requests should be enabled.
-4. Import permanent-collection and sale book records when their data and photographs are ready.
-5. Design grouped browsing when multiple individually purchasable specimens share one meteorite identity.
+1. Supply sale prices when known.
+2. Configure a valid Formspree endpoint when checkout requests should be enabled.
+3. Import permanent-collection and sale book records when their data and photographs are ready.
+4. Design grouped browsing when multiple individually purchasable specimens share one meteorite identity.
 
 ## Unresolved Items
 
@@ -106,3 +109,4 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - `dfc9924`: Refined specimen galleries, catalog navigation, descriptions, labels, book filtering, image workflow, and corrected crops.
 - `6352407`: Centered specimen imagery, preserved source-limited framing, and centered contained image presentation.
 - `cb80b63`: Added linked inventory summaries to every subpage and removed banner overlay rectangles.
+- `da018e9`: Selected and published the strongest dramatic hero image for each specimen carousel.
