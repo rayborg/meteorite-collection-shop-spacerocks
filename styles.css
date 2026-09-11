@@ -793,7 +793,7 @@ textarea:focus-visible {
 }
 
 .interior-title-band { padding: 1.25rem 0 1.4rem; color: var(--ink); background: rgba(33, 31, 28, .95); border-bottom: 1px solid var(--rule); }
-.interior-title-panel { padding-inline: 1rem; border-right: 1px solid rgba(213, 139, 128, .55); border-left: 1px solid rgba(213, 139, 128, .55); }
+.interior-title-panel { padding-inline: 1rem; }
 .interior-title-panel > p:first-child { margin: 0 0 .4rem; color: var(--brass-ink); font-family: var(--sans); font-size: .6rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .interior-title-panel > p:first-child a { text-underline-offset: .22rem; }
 .interior-title-panel > p:first-child span { margin-inline: .4rem; color: #8c7b62; }
