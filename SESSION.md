@@ -1,6 +1,6 @@
 # Spacerocks Cabinet Session Memory
 
-Last updated: 2026-09-10
+Last updated: 2026-09-11
 
 ## Project Goal
 
@@ -129,3 +129,4 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - `cb80b63`: Added linked inventory summaries to every subpage and removed banner overlay rectangles.
 - `da018e9`: Selected and published the strongest dramatic hero image for each specimen carousel.
 - `ae21acb`: Added Ksar Ghilane 022, private specimen-cost intake safeguards, corrected grouping, and wider Wabar framing.
+- `26fb24c`: Added the compact meteorite introduction and rotating homepage catalog highlights.
