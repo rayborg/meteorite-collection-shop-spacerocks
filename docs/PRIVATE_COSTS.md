@@ -22,7 +22,7 @@ The local ledger should be readable and writable only by its owner. The reposito
 
 ## Import Field
 
-`cost_usd` is the final optional column in `inventory.csv`.
+`cost_usd` is the penultimate optional column in new manifests, followed by optional `meteorite_id`. It remains the final column only in the accepted legacy header.
 
 - Use it only for `collection_specimen` and `sale_specimen` rows.
 - Use nonnegative decimal USD with no currency symbol, comma, exponent, or more than two fractional digits.

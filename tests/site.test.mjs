@@ -2,17 +2,155 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
+import vm from "node:vm";
 import { createRequire } from "node:module";
 import { stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const require = createRequire(import.meta.url);
-const { createCarouselPauseState, getHighlightWindow, getSafeInquiryUrl } = require("../inventory-utils.js");
+const InventoryUtils = require("../inventory-utils.js");
+const {
+  createCarouselPauseState,
+  getHighlightWindow,
+  getMeteoriteId,
+  getSafeInquiryUrl,
+  isValidMeteoriteSlug,
+  parseMeteoriteRequest,
+  resolveMeteoriteGroup
+} = InventoryUtils;
 const CartStore = require("../cart.js");
 
 async function read(relativePath) {
   return readFile(path.join(root, relativePath), "utf8");
+}
+
+class FakeNode {
+  constructor(tagName = "div") {
+    this.tagName = tagName.toUpperCase();
+    this.children = [];
+    this.attributes = new Map();
+    this.dataset = {};
+    this.listeners = {};
+    this.isConnected = false;
+    this._className = "";
+    this._text = "";
+    this.classList = {
+      add: (...names) => this.setClasses([...this.classes(), ...names]),
+      remove: (...names) => this.setClasses([...this.classes()].filter((name) => !names.includes(name))),
+      toggle: (name, force) => {
+        const names = this.classes();
+        const active = force === undefined ? !names.has(name) : force;
+        if (active) names.add(name);
+        else names.delete(name);
+        this.setClasses([...names]);
+        return active;
+      }
+    };
+  }
+
+  get className() { return this._className; }
+  set className(value) { this._className = String(value); }
+  classes() { return new Set(this._className.split(/\s+/u).filter(Boolean)); }
+  setClasses(names) { this._className = [...new Set(names)].join(" "); }
+  get textContent() { return this._text + this.children.map((child) => child.textContent).join(""); }
+  set textContent(value) { this._text = String(value); this.children = []; }
+  append(...children) { this.children.push(...children); }
+  replaceChildren(...children) { this.children = [...children]; this._text = ""; }
+  setAttribute(name, value) { this.attributes.set(name, String(value)); }
+  getAttribute(name) { return this.attributes.get(name) ?? null; }
+  addEventListener(type, listener) { this.listeners[type] = listener; }
+  click() { this.listeners.click?.({}); }
+  contains(candidate) { return this === candidate || this.children.some((child) => child.contains?.(candidate)); }
+  closest() { return null; }
+  focus() {}
+  querySelector(selector) { return this.querySelectorAll(selector)[0] || null; }
+  querySelectorAll(selector) {
+    const matches = [];
+    const visit = (node) => {
+      if (!(node instanceof FakeNode)) return;
+      const classMatch = selector.startsWith(".") && node.classes().has(selector.slice(1));
+      const tagMatch = !selector.startsWith(".") && node.tagName === selector.toUpperCase();
+      if (classMatch || tagMatch) matches.push(node);
+      node.children.forEach(visit);
+    };
+    this.children.forEach(visit);
+    return matches;
+  }
+  cloneNode(deep = false) {
+    const clone = new FakeNode(this.tagName);
+    clone.className = this.className;
+    clone._text = this._text;
+    if (deep) clone.children = this.children.map((child) => child.cloneNode?.(true) || child);
+    return clone;
+  }
+}
+
+async function runDetailPage({ search = "?meteorite=allende", collection = [], specimens = [], fail = [] } = {}) {
+  const nodes = new Map();
+  const register = (selector, node = new FakeNode()) => { nodes.set(selector, node); return node; };
+  const detailGrid = register("#specimen-detail-grid");
+  const heading = register("#specimen-detail-heading");
+  const summary = register("#specimen-detail-summary");
+  const links = register("#specimen-detail-links", new FakeNode("nav"));
+  const canonical = register("#specimen-canonical", new FakeNode("link"));
+  const description = register('meta[name="description"]', new FakeNode("meta"));
+  register("#collection-count");
+  register("#specimen-count");
+  register("#book-count");
+  register(".wordmark", new FakeNode("a"));
+  const menuButton = register(".menu-button", new FakeNode("button"));
+  menuButton.setAttribute("aria-expanded", "false");
+  const navigation = register("#site-navigation", new FakeNode("nav"));
+  navigation.append(new FakeNode("a"));
+  register("main", new FakeNode("main"));
+  register(".site-footer", new FakeNode("footer"));
+  const template = register("#empty-template", new FakeNode("template"));
+  template.content = new FakeNode("fragment");
+  template.content.append(new FakeNode("h3"), new FakeNode("p"));
+  const cartCount = new FakeNode("span");
+  const body = new FakeNode("body");
+  const document = {
+    body,
+    hidden: false,
+    title: "",
+    activeElement: null,
+    querySelector: (selector) => nodes.get(selector) || null,
+    querySelectorAll: (selector) => selector === ".cart-count" ? [cartCount] : detailGrid.querySelectorAll(selector),
+    createElement: (tag) => new FakeNode(tag),
+    createTextNode: (value) => { const node = new FakeNode("#text"); node.textContent = value; return node; }
+  };
+  const cartItems = [];
+  const datasets = {
+    "./data/collection.json": { items: collection },
+    "./data/sale-specimens.json": { items: specimens },
+    "./data/books.json": { items: [] }
+  };
+  const context = {
+    document,
+    InventoryUtils,
+    CartStore: {
+      add(item) { cartItems.push(CartStore.normalizeItem(item)); },
+      readItems() { return cartItems; }
+    },
+    fetch: async (file) => {
+      if (fail.includes(file)) return { ok: false, status: 500 };
+      return { ok: true, async json() { return datasets[file]; } };
+    },
+    URL,
+    Intl,
+    console: { error() {} },
+    window: {
+      location: { search, href: `https://example.test/specimen.html${search}` },
+      matchMedia: () => ({ matches: false }),
+      setTimeout() {},
+      addEventListener() {},
+      innerWidth: 1200
+    }
+  };
+  vm.runInNewContext(await read("app.js"), context);
+  await new Promise((resolve) => setImmediate(resolve));
+  return { cartItems, canonical, description, detailGrid, document, heading, links, summary };
 }
 
 test("inventory files use the supported empty-or-populated schema", async () => {
@@ -26,6 +164,10 @@ test("inventory files use the supported empty-or-populated schema", async () => 
     for (const item of data.items) {
       assert.equal(typeof item.id, "string", `${relativePath} item IDs must be strings`);
       assert.ok(item.id.trim(), `${relativePath} item IDs must not be blank`);
+      if (relativePath !== "data/books.json") {
+        assert.ok(isValidMeteoriteSlug(item.id), `${relativePath} IDs must be safe detail slugs`);
+        assert.ok(item.meteoriteId === undefined || isValidMeteoriteSlug(item.meteoriteId), `${relativePath} meteoriteId must be a safe optional slug`);
+      }
       for (const privateKey of ["cost_usd", "costUsd", "costUsdCents", "acquisitionCost"]) {
         assert.equal(privateKey in item, false, `${relativePath} must not publish ${privateKey}`);
       }
@@ -45,6 +187,38 @@ test("inventory files use the supported empty-or-populated schema", async () => 
         assert.match(image, /^\.\/assets\/(?:collection|sale-specimens|books)\/[a-z0-9][a-z0-9._-]*$/u, `${relativePath} image gallery paths must be safe relative assets`);
       }
     }
+  }
+});
+
+test("specimen requests are strict and physical aliases expand their meteorite group", () => {
+  assert.deepEqual(parseMeteoriteRequest("?meteorite=allende"), { ok: true, slug: "allende" });
+  for (const [query, reason] of [
+    ["", "missing"], ["?meteorite=", "blank"], ["?meteorite=a&meteorite=b", "duplicate"],
+    ["?meteorite=Mixed-Case", "malformed"], ["?meteorite=%E0%A4%A", "malformed"],
+    ["?meteorite=%3Cscript%3E", "malformed"], [`?meteorite=${"a".repeat(81)}`, "malformed"],
+    ["?other=allende", "malformed"], ["?meteorite=allende&other=x", "malformed"]
+  ]) assert.equal(parseMeteoriteRequest(query).reason, reason, query);
+
+  const records = [
+    { id: "stone-b", meteoriteId: "allende", name: "Allende", displayOrder: 2 },
+    { id: "stone-a", meteoriteId: "allende", name: "Allende", displayOrder: 1 },
+    { id: "singleton", name: "Singleton", displayOrder: 3 }
+  ];
+  assert.equal(getMeteoriteId(records[2]), "singleton");
+  assert.deepEqual(resolveMeteoriteGroup(records, "allende").members.map((item) => item.id), ["stone-a", "stone-b"]);
+  assert.deepEqual(resolveMeteoriteGroup(records, "stone-b").members.map((item) => item.id), ["stone-a", "stone-b"]);
+  assert.deepEqual(resolveMeteoriteGroup(records, "singleton").members.map((item) => item.id), ["singleton"]);
+  assert.equal(resolveMeteoriteGroup(records, "unknown"), null);
+});
+
+test("every current specimen has a singleton-safe detail address", async () => {
+  const collection = JSON.parse(await read("data/collection.json")).items;
+  const sale = JSON.parse(await read("data/sale-specimens.json")).items;
+  const records = [...collection, ...sale];
+  for (const item of records) {
+    const group = resolveMeteoriteGroup(records, item.id);
+    assert.equal(group.meteoriteId, item.id);
+    assert.deepEqual(group.members.map((member) => member.id), [item.id]);
   }
 });
 
@@ -80,6 +254,84 @@ test("unpriced sale records display TBD throughout checkout", async () => {
   assert.ok(app.includes(': "TBD"'), "sale cards must label an omitted price as TBD");
   assert.ok(checkout.includes('return items.some((item) => !Number.isFinite(item.priceUsd)) ? "TBD"'), "unknown prices must keep the checkout subtotal TBD");
   assert.doesNotMatch(`${app}\n${checkout}`, /(?:Price )?[Oo]n request/u);
+});
+
+test("catalog specimen links and controls use separate interactive regions", async () => {
+  const app = await read("app.js");
+  const css = await read("styles.css");
+  assert.ok(app.includes('`./specimen.html?meteorite=${encodeURIComponent(meteoriteId)}`'));
+  assert.ok(app.includes('createElement("a", "card-image-link")'));
+  assert.ok(app.includes('createElement(detailPage || !detailUrl ? "div" : "a", "card-info-link")'));
+  assert.match(app, /figure\.append\(previous, next, toggle, counter\)/u, "carousel controls remain direct figure children");
+  assert.match(app, /body\.append\(information\);\n  if \(kind === "sale"\) body\.append\(createPriceFooter/u, "cart footer remains a sibling of the information link");
+  assert.ok(css.includes(".card-image-link:focus-visible"));
+  assert.ok(css.includes(".card-info-link:focus-visible"));
+  assert.equal(CartStore.normalizeItem({ type: "specimen", id: "group-a", name: "A" }).key, "specimen:group-a");
+  assert.equal(CartStore.normalizeItem({ type: "specimen", id: "group-b", name: "B" }).key, "specimen:group-b");
+});
+
+test("detail page groups physical records and isolates required catalog failures from books", async () => {
+  const html = await read("specimen.html");
+  const app = await read("app.js");
+  assert.ok(html.includes('id="specimen-detail-grid"'));
+  assert.ok(html.includes('id="specimen-canonical"'));
+  assert.ok(html.includes('id="specimen-detail-heading"'));
+  assert.ok(html.includes('id="specimen-detail-summary"'));
+  assert.ok(app.includes('...state.collection.map((item) => ({ ...item, catalogSource: "collection" }))'));
+  assert.ok(app.includes('...state.specimens.map((item) => ({ ...item, catalogSource: "sale" }))'));
+  assert.ok(app.includes('dataStatus.collection !== "loaded" || dataStatus.specimens !== "loaded"'));
+  assert.ok(app.includes("const results = await Promise.allSettled"), "catalog requests must settle independently");
+  assert.doesNotMatch(app, /dataStatus\.books !== "loaded"/u, "book failure must not gate specimen detail");
+  assert.ok(app.includes('"Retained in the private collection · Not for sale"'));
+  assert.ok(app.includes('item.status === "available"'));
+  assert.ok(app.includes("canonicalUrl.searchParams.set(\"meteorite\", group.meteoriteId)"));
+  assert.ok(app.includes("elements.specimenDetailHeading.textContent = name"));
+  assert.ok(app.includes('appendSpecimenDetailLink("./collection.html"'));
+  assert.ok(app.includes('appendSpecimenDetailLink("./specimens.html"'));
+});
+
+test("detail runtime keeps grouped physical cards and cart actions independent", async () => {
+  const common = { meteoriteId: "allende", name: "Allende", classification: "CV3", description: "Fixture specimen." };
+  const result = await runDetailPage({
+    collection: [{ ...common, id: "private-a", displayOrder: 1, catalogNumber: "Specimen 001" }],
+    specimens: [
+      { ...common, id: "sale-a", displayOrder: 2, catalogNumber: "Specimen 002", status: "available" },
+      { ...common, id: "sale-b", displayOrder: 3, catalogNumber: "Specimen 003", status: "available", priceUsd: 25 },
+      { ...common, id: "sale-c", displayOrder: 4, catalogNumber: "Specimen 004", status: "reserved", priceUsd: 30 },
+      { ...common, id: "sale-d", displayOrder: 5, catalogNumber: "Specimen 005", status: "sold", priceUsd: 35 }
+    ],
+    fail: ["./data/books.json"]
+  });
+  assert.equal(result.heading.textContent, "Allende");
+  assert.equal(result.document.title, "Allende | The Spacerocks Cabinet");
+  assert.match(result.summary.textContent, /^5 physical specimens are documented/u);
+  assert.match(result.description.content, /^Allende: 5 physical specimens/u);
+  assert.equal(result.detailGrid.children.length, 5, "each physical record renders as its own card");
+  assert.equal(result.links.querySelectorAll("a").length, 2, "both trusted source catalogs are linked");
+  assert.equal(result.canonical.href, "https://example.test/specimen.html?meteorite=allende");
+  assert.match(result.detailGrid.textContent, /Retained in the private collection · Not for sale/u);
+  assert.match(result.detailGrid.textContent, /TBD/u, "unpriced available records remain TBD");
+  const addButtons = result.detailGrid.querySelectorAll(".add-cart-button");
+  assert.equal(addButtons.length, 2, "every available record, and no private, reserved, or sold record, has a cart action");
+  assert.deepEqual(addButtons.map((button) => button.dataset.cartKey), ["specimen:sale-a", "specimen:sale-b"]);
+  addButtons.forEach((button) => button.click());
+  assert.deepEqual(result.cartItems.map((item) => item.key), ["specimen:sale-a", "specimen:sale-b"]);
+});
+
+test("detail runtime exposes safe invalid, unknown, and partial-load states", async () => {
+  const invalid = await runDetailPage({ search: "?meteorite=%3Cscript%3E" });
+  assert.equal(invalid.heading.textContent, "Invalid specimen request");
+  assert.doesNotMatch(invalid.detailGrid.textContent, /script/u, "query text must never be reflected");
+  assert.equal(invalid.links.querySelectorAll("a").length, 2, "invalid requests must retain catalog navigation");
+
+  const unknown = await runDetailPage({ search: "?meteorite=unknown" });
+  assert.equal(unknown.heading.textContent, "Specimen not found");
+  assert.equal(unknown.links.querySelectorAll("a").length, 2, "unknown records must retain catalog navigation");
+
+  const partial = await runDetailPage({ fail: ["./data/collection.json"] });
+  assert.equal(partial.heading.textContent, "Specimen records unavailable");
+  assert.match(partial.summary.textContent, /could not both be loaded/u);
+  assert.equal(partial.links.querySelectorAll("a").length, 2, "load failures must retain catalog navigation");
 });
 
 test("specimen cards rotate their image galleries every three seconds", async () => {
@@ -183,7 +435,7 @@ test("each specimen carousel opens with its selected dramatic hero", async () =>
 });
 
 test("the three related meteorite projects are linked safely", async () => {
-  const pages = await Promise.all(["index.html", "collection.html", "specimens.html", "books.html", "research.html", "checkout.html"].map(read));
+  const pages = await Promise.all(["index.html", "collection.html", "specimens.html", "specimen.html", "books.html", "research.html", "checkout.html"].map(read));
   const html = pages.join("\n");
   const links = [
     "https://rayborg.github.io/Historical-meteorite-collections/",
@@ -194,8 +446,8 @@ test("the three related meteorite projects are linked safely", async () => {
     assert.ok(html.includes(`href="${link}"`), `missing ${link}`);
   }
   for (const page of pages) assert.doesNotMatch(page, /target="_blank"(?! rel="noopener noreferrer")/u);
-  assert.ok(pages[4].includes("searching historical catalogs, comparing current meteorite listings"));
-  assert.doesNotMatch(pages[4], /Connected projects|Choose a project to search archival catalogs/u);
+  assert.ok(pages[5].includes("searching historical catalogs, comparing current meteorite listings"));
+  assert.doesNotMatch(pages[5], /Connected projects|Choose a project to search archival catalogs/u);
 });
 
 test("all catalog pages load shared assets and cross-link from the homepage", async () => {
@@ -204,8 +456,12 @@ test("all catalog pages load shared assets and cross-link from the homepage", as
     assert.ok(html.includes(`./${asset}`));
     assert.ok((await read(asset)).length > 0, `${asset} must not be empty`);
   }
-  for (const page of ["collection.html", "specimens.html", "books.html", "research.html", "checkout.html"]) {
-    assert.ok(html.includes(`href="./${page}"`), `homepage must link to ${page}`);
+  for (const page of ["collection.html", "specimens.html", "specimen.html", "books.html", "research.html", "checkout.html"]) {
+    if (page === "specimen.html") {
+      assert.ok((await read("app.js")).includes("./specimen.html?meteorite="), "catalog cards must link to specimen.html");
+    } else {
+      assert.ok(html.includes(`href="./${page}"`), `homepage must link to ${page}`);
+    }
     const pageHtml = await read(page);
     assert.ok(pageHtml.includes("./styles.css"), `${page} must load shared styles`);
     assert.ok(pageHtml.includes("./app.js"), `${page} must load shared application code`);
@@ -225,7 +481,7 @@ test("all catalog pages load shared assets and cross-link from the homepage", as
     assert.match(html, new RegExp(`<a href="\\./${destination}"><strong id="${id}">`, "u"), `${id} summary must link to ${destination}`);
   }
   assert.match(html, /<a href="\.\/research\.html"><strong>3<\/strong><span>connected resources<\/span><\/a>/u);
-  for (const page of ["index.html", "collection.html", "specimens.html", "books.html", "research.html", "checkout.html"]) {
+  for (const page of ["index.html", "collection.html", "specimens.html", "specimen.html", "books.html", "research.html", "checkout.html"]) {
     const pageHtml = await read(page);
     assert.match(pageHtml, /<nav id="site-navigation"[\s\S]*?<a href="\.\/index\.html"(?: aria-current="page")?>Home<\/a>/u, `${page} must have an explicit primary Home link`);
     assert.ok(pageHtml.includes('href="./research.html"'), `${page} must link to the dedicated Research Desk`);
@@ -234,7 +490,7 @@ test("all catalog pages load shared assets and cross-link from the homepage", as
 });
 
 test("every page shows the linked inventory summary below an unobstructed banner", async () => {
-  const pageNames = ["index.html", "collection.html", "specimens.html", "books.html", "research.html", "checkout.html"];
+  const pageNames = ["index.html", "collection.html", "specimens.html", "specimen.html", "books.html", "research.html", "checkout.html"];
   for (const pageName of pageNames) {
     const html = await read(pageName);
     assert.equal((html.match(/class="ledger-strip"/gu) || []).length, 1, `${pageName} must contain one summary bar`);
@@ -259,7 +515,7 @@ test("books can be filtered between the permanent collection and sale inventory"
 });
 
 test("confirmed official branding is used and optimized for the web", async () => {
-  const pages = await Promise.all(["index.html", "collection.html", "specimens.html", "books.html", "research.html", "checkout.html"].map(read));
+  const pages = await Promise.all(["index.html", "collection.html", "specimens.html", "specimen.html", "books.html", "research.html", "checkout.html"].map(read));
   for (const html of pages) {
     assert.ok(html.includes("./assets/branding/spacerocks-logo.webp"));
     assert.ok(html.includes("Spacerocks"), "business name must use the one-word form");
@@ -284,7 +540,7 @@ test("confirmed official branding is used and optimized for the web", async () =
     assert.ok(html.slice(titleBand).includes("interior-title-panel"), "subpage title band must contain its title panel");
     assert.equal((html.match(/<h1\b/gu) || []).length, 1, "subpage must have one primary title");
   }
-  for (const [pageIndex, resultId] of [[1, "collection-result-count"], [2, "specimen-result-count"], [3, "book-result-count"]]) {
+  for (const [pageIndex, resultId] of [[1, "collection-result-count"], [2, "specimen-result-count"], [4, "book-result-count"]]) {
     const titleBand = pages[pageIndex].indexOf('<section class="interior-title-band"');
     const catalog = pages[pageIndex].indexOf('<section class="catalog-page');
     const result = pages[pageIndex].indexOf(`id="${resultId}"`);

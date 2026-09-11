@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="View a documented Spacerocks meteorite specimen record.">
+  <meta name="author" content="Raymond Borges Hink">
+  <meta name="theme-color" content="#211c17">
+  <meta property="og:title" content="Specimen Record | Spacerocks">
+  <meta property="og:description" content="A documented physical specimen from the Spacerocks collection or sale catalog.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://rayborg.github.io/meteorite-collection-shop-spacerocks/assets/branding/spacerocks-banner.webp">
+  <title>Specimen Record | The Spacerocks Cabinet</title>
+  <link id="specimen-canonical" rel="canonical" href="https://rayborg.github.io/meteorite-collection-shop-spacerocks/specimen.html">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./inventory-utils.js" defer></script>
+  <script src="./cart.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body class="interior-page" data-page="specimen">
+  <a class="skip-link" href="#specimen-content">Skip to specimen record</a>
+
+  <header class="site-header">
+    <a class="wordmark" href="./index.html" aria-label="The Spacerocks Cabinet, home">
+      <img class="wordmark-logo" src="./assets/branding/spacerocks-logo.webp" alt="" width="640" height="640">
+      <span><strong>Spacerocks</strong><small>Collector's Cabinet</small></span>
+    </a>
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-navigation">
+      <span></span><span></span><span></span><b>Menu</b>
+    </button>
+    <nav id="site-navigation" class="site-navigation" aria-label="Primary navigation">
+      <a href="./index.html">Home</a>
+      <a href="./collection.html">Collection</a>
+      <a href="./specimens.html">Specimens for sale</a>
+      <a href="./books.html">Books</a>
+      <a href="./research.html">Research desk</a>
+      <a class="cart-link" href="./checkout.html">Cart <span class="cart-count" aria-label="0 items in cart">0</span></a>
+      <a class="nav-coa" href="https://coa-sandbox.meteoriteresearch.org/" target="_blank" rel="noopener noreferrer">Official COA <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+
+  <main id="specimen-content">
+    <section class="interior-brand" aria-label="Spacerocks official banner">
+      <img class="hero-banner" src="./assets/branding/spacerocks-banner.webp" alt="Spacerocks: Pieces of other worlds" width="2025" height="777">
+    </section>
+    <section class="ledger-strip" aria-label="Cabinet inventory summary">
+      <a href="./collection.html"><strong id="collection-count">—</strong><span>collection records</span></a>
+      <a href="./specimens.html"><strong id="specimen-count">—</strong><span>specimens available</span></a>
+      <a href="./books.html"><strong id="book-count">—</strong><span>books available</span></a>
+      <a href="./research.html"><strong>3</strong><span>connected resources</span></a>
+    </section>
+    <section class="interior-title-band" aria-labelledby="specimen-detail-heading">
+      <div class="interior-title-panel page-shell">
+        <p><a href="./index.html">The cabinet</a> <span aria-hidden="true">/</span> Specimen record</p>
+        <h1 id="specimen-detail-heading">Loading specimen record</h1>
+        <p id="specimen-detail-summary">Consulting the collection and sale ledgers.</p>
+      </div>
+    </section>
+
+    <section class="specimen-detail-page page-shell" aria-label="Physical specimen records">
+      <nav id="specimen-detail-links" class="specimen-detail-actions" aria-label="Back to source catalogs"></nav>
+      <div id="specimen-detail-grid" class="card-grid specimen-detail-grid" aria-live="polite" aria-busy="true"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-mark" aria-hidden="true"><span>✦</span></div>
+    <p class="footer-title">The Spacerocks Cabinet</p>
+    <p>A personal meteorite collection, exchange, and working library maintained by Raymond Borges Hink.</p>
+    <nav aria-label="Footer navigation">
+      <a href="./index.html">Home</a>
+      <a href="./collection.html">Collection</a>
+      <a href="./specimens.html">Specimens for sale</a>
+      <a href="./books.html">Books</a>
+      <a href="./research.html">Research</a>
+    </nav>
+    <p class="footer-note">Availability is not final until confirmed directly. Sale terms will be stated with each listing.</p>
+  </footer>
+
+  <template id="empty-template">
+    <div class="empty-ledger"><span aria-hidden="true">✦</span><h3></h3><p></p></div>
+  </template>
+</body>
+</html>

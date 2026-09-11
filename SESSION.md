@@ -26,12 +26,15 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Every specimen carousel now opens with its strongest dramatic complete hero, with four improved opening views and updated primary alt text published in commit `da018e9`.
 - Ksar Ghilane 022 is published as collection `Specimen 011`, bringing the live catalog to 11 collection records and 43 images in commit `ae21acb`.
 - The homepage now has concise meteorite education and independently pausable rotating collection, sale, and book highlight groups, published in commit `26fb24c`.
+- The working tree adds static specimen detail pages, optional cross-catalog `meteoriteId` grouping, catalog card links, and independently actionable physical specimen cards. Existing records remain singleton pages without JSON migration.
+- Import validation now enforces 563,200 bytes per image, a 1,600-pixel long edge, and 1,677,722 bytes per record across AVIF, GIF, JPEG, PNG, and WebP.
 
 ## Durable Decisions
 
 - Use reader-facing `Specimen 001`, `Specimen 002`, and subsequent numbers in both collection and sale catalogs. Stable IDs remain the internal identity.
 - Every physical sale specimen is a separate record and cart item with its own ID, weight, photographs, price, and status.
-- A future meteorite-group browse view may group many sale specimens under a shared name such as NWA 869, cycle specimen previews and weights, and open the individually purchasable records. Grouping must not merge cart identity or inventory state.
+- Optional `meteoriteId` is the shared meteorite page identity; physical `id` remains globally unique across specimen catalogs and remains the cart identity. A missing `meteoriteId` falls back to `id`.
+- A meteorite detail page may group collection and sale records under a shared name such as NWA 869, while exposing every physical record and purchase action separately. Grouping must not merge cart identity or inventory state.
 - Specimen carousels rotate every 3 seconds, respect reduced motion, pause on interaction, and expose manual controls. Manual previous/next navigation pauses only that carousel until Play is selected.
 - Collection specimens require exactly 3 images. Sale specimens and all book records require exactly 5 images.
 - Catalog descriptions should describe the physical specimen and verified meteorite facts, not the number or type of photographs.
@@ -68,10 +71,12 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Replaced the tall generic homepage introduction with a short explanation of asteroid, lunar, and Martian meteorites and their scientific value.
 - Added 15-second rotating homepage record windows: 3 collection highlights, 2 sale highlights, and 2 book highlights, activated only when eligible inventory exceeds those slots.
 - Published and live-verified the compact introduction and rotating homepage highlights in commit `26fb24c`.
+- Added the static specimen detail route, strict request/group resolution, physical-ID aliases, grouped collection/sale rendering, catalog card links, and per-record cart controls.
+- Added optional specimen-only `meteorite_id` import support and hard dependency-free image byte/dimension validation without changing current catalog JSON or image assets.
 
 ## Active Work
 
-- No implementation remains active from this session.
+- The specimen detail-page implementation is complete and independently approved in the working tree; commit and deployment remain.
 
 ## Validation Evidence
 
@@ -102,20 +107,21 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Independent image validation passed the three Ksar images and all eight widened Wabar frames; focused revalidation confirmed the final G04 detail has complete moderate framing with no remaining findings.
 - GitHub Actions run `34564372935` passed all 24 tests and deployed commit `ae21acb` successfully.
 - Live checks verified 11 collection records, Ksar's public metadata and three images, `11 / 2 / 0 / 3` summary data, all 11 new/reframed image hashes, and absence of private cost fields.
+- The uncommitted specimen-page implementation passes all 43 local tests, including the exact 43-image catalog audit, synthetic detail-page runtime checks, importer limits, grouping, source-digest binding, and existing race protections.
+- Independent product validation passed all 13 current singleton pages, future mixed collection/sale groups, per-specimen cart actions, carousel controls, malformed and failed-load states, and responsive structure.
+- Independent importer validation passed adversarial JPEG, PNG, GIF, WebP, and still-AVIF structure/dimension checks, exact byte boundaries, WebP canvas/frame binding, AVIF primary-item binding, and same-inode source mutation rejection.
 
 ## Immediate Next Actions
 
 1. Supply sale prices when known.
 2. Configure a valid Formspree endpoint when checkout requests should be enabled.
 3. Import permanent-collection and sale book records when their data and photographs are ready.
-4. Design grouped browsing when multiple individually purchasable specimens share one meteorite identity.
 
 ## Unresolved Items
 
 - Sale prices remain `TBD` until supplied.
 - Checkout submission remains disabled until a valid Formspree endpoint is configured.
 - The books catalog is empty pending book records and photographs.
-- Grouped browsing for multiple sale specimens of one meteorite is a future feature; the individual inventory model already supports those specimens safely.
 
 ## Session Log
 

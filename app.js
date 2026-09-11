@@ -15,6 +15,12 @@ const state = {
   books: []
 };
 
+const dataStatus = {
+  collection: "pending",
+  specimens: "pending",
+  books: "pending"
+};
+
 const elements = {
   collectionHighlights: document.querySelector("#collection-highlights"),
   specimenHighlights: document.querySelector("#specimen-highlights"),
@@ -48,7 +54,13 @@ const elements = {
   wordmark: document.querySelector(".wordmark"),
   main: document.querySelector("main"),
   footer: document.querySelector(".site-footer"),
-  emptyTemplate: document.querySelector("#empty-template")
+  emptyTemplate: document.querySelector("#empty-template"),
+  specimenDetailGrid: document.querySelector("#specimen-detail-grid"),
+  specimenDetailHeading: document.querySelector("#specimen-detail-heading"),
+  specimenDetailSummary: document.querySelector("#specimen-detail-summary"),
+  specimenDetailLinks: document.querySelector("#specimen-detail-links"),
+  specimenCanonical: document.querySelector("#specimen-canonical"),
+  pageDescription: document.querySelector('meta[name="description"]')
 };
 
 const currency = new Intl.NumberFormat("en-US", {
@@ -77,8 +89,19 @@ function createEmptyState(title, description) {
   return fragment;
 }
 
-function createImage(item, kind) {
+function getSpecimenDetailUrl(item) {
+  const meteoriteId = InventoryUtils.getMeteoriteId(item);
+  return meteoriteId ? `./specimen.html?meteorite=${encodeURIComponent(meteoriteId)}` : null;
+}
+
+function createImage(item, kind, detailUrl = null) {
   const figure = createElement("div", "card-image");
+  const imageRegion = detailUrl ? createElement("a", "card-image-link") : figure;
+  if (detailUrl) {
+    imageRegion.href = detailUrl;
+    imageRegion.setAttribute("aria-label", `Open the record for ${text(item.name, "this specimen")}`);
+    figure.append(imageRegion);
+  }
   const images = kind === "book"
     ? [item.image].filter(Boolean)
     : [...new Set([item.image, ...(Array.isArray(item.images) ? item.images : [])].filter(Boolean))];
@@ -86,7 +109,7 @@ function createImage(item, kind) {
     const image = document.createElement("img");
     image.loading = "lazy";
     image.decoding = "async";
-    figure.append(image);
+    imageRegion.append(image);
 
     const label = text(item.name, "Specimen");
     const primaryAlt = text(item.imageAlt, `${label} primary view`);
@@ -149,7 +172,7 @@ function createImage(item, kind) {
       figure.append(previous, next, toggle, counter);
     }
   } else {
-    figure.append(createElement("span", "image-placeholder"));
+    imageRegion.append(createElement("span", "image-placeholder"));
   }
 
   if (kind !== "collection") {
@@ -205,15 +228,21 @@ function createPriceFooter(item, type) {
   return footer;
 }
 
-function createSpecimenCard(item, kind = "sale") {
+function createSpecimenCard(item, kind = "sale", { detailPage = false } = {}) {
   const article = createElement("article", `catalog-card ${kind === "collection" ? "collection-card" : "sale-card"}`);
-  article.append(createImage(item, kind));
+  const detailUrl = getSpecimenDetailUrl(item);
+  article.append(createImage(item, kind, detailPage ? null : detailUrl));
 
   const body = createElement("div", "card-body");
-  body.append(createElement("p", "card-catalog-number", text(item.catalogNumber, kind === "collection" ? "Cabinet record" : "Sale record")));
-  body.append(createElement("h3", "", text(item.name, "Unnamed specimen")));
-  body.append(createElement("p", "card-subtitle", text(item.classification, "Classification pending")));
-  if (item.description) body.append(createElement("p", "card-description", item.description));
+  const information = createElement(detailPage || !detailUrl ? "div" : "a", "card-info-link");
+  if (!detailPage && detailUrl) {
+    information.href = detailUrl;
+    information.setAttribute("aria-label", `Open the record for ${text(item.name, "this specimen")}`);
+  }
+  information.append(createElement("p", "card-catalog-number", text(item.catalogNumber, kind === "collection" ? "Cabinet record" : "Sale record")));
+  information.append(createElement("h3", "", text(item.name, "Unnamed specimen")));
+  information.append(createElement("p", "card-subtitle", text(item.classification, "Classification pending")));
+  if (item.description) information.append(createElement("p", "card-description", item.description));
 
   const metadata = createElement("dl", "card-meta");
   appendMeta(metadata, "Mass", Number.isFinite(item.massGrams) ? `${number.format(item.massGrams)} g` : null);
@@ -222,8 +251,14 @@ function createSpecimenCard(item, kind = "sale") {
   appendMeta(metadata, "Found", item.foundYear);
   appendMeta(metadata, "Acquired", item.acquiredYear);
   appendMeta(metadata, "Provenance", item.provenance);
-  if (metadata.children.length) body.append(metadata);
+  if (metadata.children.length) information.append(metadata);
+  body.append(information);
   if (kind === "sale") body.append(createPriceFooter(item, "specimen"));
+  if (kind === "collection" && detailPage) {
+    const footer = createElement("div", "card-footer");
+    footer.append(createElement("span", "retained-status", "Retained in the private collection · Not for sale"));
+    body.append(footer);
+  }
   article.append(body);
   return article;
 }
@@ -458,9 +493,90 @@ function populateClassifications() {
 }
 
 function updateCounts() {
-  if (elements.collectionCount) elements.collectionCount.textContent = number.format(state.collection.length);
-  if (elements.specimenCount) elements.specimenCount.textContent = number.format(state.specimens.filter((item) => item.status === "available").length);
-  if (elements.bookCount) elements.bookCount.textContent = number.format(state.books.filter((item) => item.status === "available").length);
+  if (elements.collectionCount) elements.collectionCount.textContent = dataStatus.collection === "loaded" ? number.format(state.collection.length) : "—";
+  if (elements.specimenCount) elements.specimenCount.textContent = dataStatus.specimens === "loaded" ? number.format(state.specimens.filter((item) => item.status === "available").length) : "—";
+  if (elements.bookCount) elements.bookCount.textContent = dataStatus.books === "loaded" ? number.format(state.books.filter((item) => item.status === "available").length) : "—";
+}
+
+function appendSpecimenDetailLink(href, label) {
+  const link = createElement("a", "button", label);
+  link.href = href;
+  elements.specimenDetailLinks.append(link);
+}
+
+function showSpecimenDetailState(title, description) {
+  elements.specimenDetailHeading.textContent = title;
+  elements.specimenDetailSummary.textContent = description;
+  elements.specimenDetailLinks.replaceChildren();
+  appendSpecimenDetailLink("./collection.html", "Browse the collection");
+  appendSpecimenDetailLink("./specimens.html", "Browse specimens for sale");
+  elements.specimenDetailGrid.replaceChildren(createEmptyState(title, description));
+  elements.specimenDetailGrid.setAttribute("aria-busy", "false");
+  document.title = `${title} | The Spacerocks Cabinet`;
+  elements.pageDescription.content = description;
+}
+
+function renderSpecimenDetail() {
+  if (!elements.specimenDetailGrid) return;
+  if (dataStatus.collection !== "loaded" || dataStatus.specimens !== "loaded") {
+    showSpecimenDetailState(
+      "Specimen records unavailable",
+      "The collection and sale ledgers could not both be loaded, so a complete meteorite group cannot be shown."
+    );
+    return;
+  }
+
+  const request = InventoryUtils.parseMeteoriteRequest(window.location.search);
+  if (!request.ok) {
+    const descriptions = {
+      missing: "No meteorite was specified. Open a specimen from the collection or sale catalog.",
+      blank: "The meteorite parameter is blank. Open a specimen from the collection or sale catalog.",
+      duplicate: "Only one meteorite parameter is permitted.",
+      malformed: "The meteorite parameter is malformed. Open a trusted catalog link instead."
+    };
+    showSpecimenDetailState("Invalid specimen request", descriptions[request.reason] || descriptions.malformed);
+    return;
+  }
+
+  const records = [
+    ...state.collection.map((item) => ({ ...item, catalogSource: "collection" })),
+    ...state.specimens.map((item) => ({ ...item, catalogSource: "sale" }))
+  ];
+  const group = InventoryUtils.resolveMeteoriteGroup(records, request.slug);
+  if (!group) {
+    showSpecimenDetailState(
+      "Specimen not found",
+      "No collection or sale record matches this meteorite address."
+    );
+    return;
+  }
+
+  const name = text(group.members[0].name, "Unnamed meteorite");
+  const count = group.members.length;
+  const description = `${count} physical ${count === 1 ? "specimen is" : "specimens are"} documented on this meteorite page.`;
+  elements.specimenDetailHeading.textContent = name;
+  elements.specimenDetailSummary.textContent = description;
+  document.title = `${name} | The Spacerocks Cabinet`;
+  elements.pageDescription.content = `${name}: ${description}`;
+  const canonicalUrl = new URL("./specimen.html", window.location.href);
+  canonicalUrl.searchParams.set("meteorite", group.meteoriteId);
+  elements.specimenCanonical.href = canonicalUrl.href;
+
+  elements.specimenDetailLinks.replaceChildren();
+  if (group.members.some((item) => item.catalogSource === "collection")) {
+    appendSpecimenDetailLink("./collection.html", "Back to collection");
+  }
+  if (group.members.some((item) => item.catalogSource === "sale")) {
+    appendSpecimenDetailLink("./specimens.html", "Back to specimens for sale");
+  }
+
+  elements.specimenDetailGrid.replaceChildren();
+  group.members.forEach((item) => {
+    const kind = item.catalogSource === "collection" ? "collection" : "sale";
+    elements.specimenDetailGrid.append(createSpecimenCard(item, kind, { detailPage: true }));
+  });
+  elements.specimenDetailGrid.classList.toggle("singleton-detail", count === 1);
+  elements.specimenDetailGrid.setAttribute("aria-busy", "false");
 }
 
 function compareCatalogOrder(a, b, labelKey) {
@@ -599,21 +715,28 @@ function setupInteractions() {
 }
 
 async function loadData() {
-  try {
-    const responses = await Promise.all(Object.values(DATA_FILES).map((path) => fetch(path)));
-    const failed = responses.find((response) => !response.ok);
-    if (failed) throw new Error(`Inventory request failed with status ${failed.status}`);
-    const datasets = await Promise.all(responses.map((response) => response.json()));
-    const [collection, specimens, books] = datasets;
-    state.collection = Array.isArray(collection.items) ? collection.items : [];
-    state.specimens = Array.isArray(specimens.items) ? specimens.items : [];
-    state.books = Array.isArray(books.items) ? books.items : [];
-  } catch (error) {
-    console.error("The inventory files could not be loaded.", error);
-  }
+  const entries = Object.entries(DATA_FILES);
+  const results = await Promise.allSettled(entries.map(async ([, file]) => {
+    const response = await fetch(file);
+    if (!response.ok) throw new Error(`Inventory request failed with status ${response.status}`);
+    const data = await response.json();
+    if (!data || !Array.isArray(data.items)) throw new Error("Inventory response does not contain an items array");
+    return data.items;
+  }));
+  results.forEach((result, index) => {
+    const key = entries[index][0];
+    if (result.status === "fulfilled") {
+      state[key] = result.value;
+      dataStatus[key] = "loaded";
+    } else {
+      dataStatus[key] = "error";
+      console.error(`The ${key} inventory file could not be loaded.`, result.reason);
+    }
+  });
 
   populateClassifications();
   updateCounts();
+  renderSpecimenDetail();
   renderHighlights();
   renderCollection();
   renderSpecimens();

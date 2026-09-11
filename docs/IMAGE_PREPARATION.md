@@ -45,13 +45,14 @@ Run this gate after every crop, color, exposure, compression, or orientation cha
 3. Compare all images in the listing side by side for horizontal and vertical centering, apparent size, framing, exposure, white balance, and orientation.
 4. Check for clipped specimen edges, excessive empty background, blur, halos, compression artifacts, and accidental duplicate views.
 5. Confirm ordinary landscape images are 1600 x 1200 pixels when the source permits. Documentary portrait images may be 1200 x 1600 pixels.
-6. Confirm the JPEG remains reasonably sized for the web and contains no location metadata intended to remain private.
-7. Regenerate and inspect a contact sheet for every listing affected by an image change.
-8. Do not import or publish until every changed image passes this gate.
+6. Confirm every image is no more than 563,200 bytes and no more than 1,600 pixels on its long edge. Confirm the complete image list for one record is no more than 1,677,722 bytes.
+7. Confirm the file contains no location metadata intended to remain private.
+8. Regenerate and inspect a contact sheet for every listing affected by an image change.
+9. Do not import or publish until every changed image passes this gate. The importer enforces the byte and dimension ceilings and performs bounded structural validation for still AVIF, GIF, JPEG, PNG, and WebP. AVIS image sequences are rejected. It fails closed on malformed structure or dimensions but does not decode compressed AV1 or other image pixels, so manual visual inspection remains required.
 
 ## Inventory And Publication
 
-1. Update the manifest with a stable ID, reader-facing `Specimen NNN` number, exact weight, listing type, description, and ordered image list.
+1. Update the manifest with a stable physical `id`, reader-facing `Specimen NNN` number, exact weight, listing type, description, and ordered image list. Use the optional `meteorite_id` only when multiple physical records should share one meteorite page; `id` remains the cart identity.
 2. Keep descriptions specimen-specific. Do not describe the photography process or image count in catalog prose.
 3. Add Meteoritical Bulletin facts only when the identity is confirmed and each claim is supported by the official entry. Keep meteorite-level history separate from provenance claims about the physical specimen.
 4. Run the importer without `--write` and confirm record, type, and image totals.
