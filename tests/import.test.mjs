@@ -779,7 +779,7 @@ test("same-inode same-size source mutation with restored mtime is rejected by di
         const after = await stat(source);
         assert.equal(after.ino, before.ino);
         assert.equal(after.size, before.size);
-        assert.equal(after.mtimeMs, before.mtimeMs);
+        assert.equal(Math.trunc(after.mtimeMs), Math.trunc(before.mtimeMs));
       }
     }
   }), /Image bytes changed before staging/u);

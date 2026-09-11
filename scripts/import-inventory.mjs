@@ -693,7 +693,7 @@ function extensionType(extension) {
 }
 
 function sameFileIdentity(actual, expected) {
-  return actual.dev === expected.dev && actual.ino === expected.ino && actual.size === expected.size && actual.mtimeMs === expected.mtimeMs;
+  return actual.dev === expected.dev && actual.ino === expected.ino && actual.size === expected.size && Math.trunc(actual.mtimeMs) === Math.trunc(expected.mtimeMs);
 }
 
 async function openSourceNoFollow(source) {
