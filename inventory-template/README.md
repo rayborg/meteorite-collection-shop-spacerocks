@@ -15,6 +15,8 @@ Every row requires `record_type`, a stable lowercase `id`, a unique positive `di
 
 Specimens also require `name`. Books require `title`. Sale records require `status`, using `available`, `reserved`, or `sold`. `price_usd` can remain blank while the price is `TBD`.
 
+`cost_usd` is an optional specimen-only acquisition-cost input. It is suggested when the cost is known, accepts nonnegative USD with up to two decimal places, and is intentionally omitted from all public catalog JSON. Keep every cost-bearing manifest outside the public repository and record the value in the external private ledger described in `docs/PRIVATE_COSTS.md`. Blank values do not imply zero cost. Books cannot use this field.
+
 Use `|` between image filenames. The first image is the listing card image; all named images are copied and retained in the record.
 
 The importer enforces these exact image counts:
@@ -31,11 +33,11 @@ Supported image formats are AVIF, GIF, JPEG, PNG, and WebP. The importer verifie
 Each record occupies one CSV row. Quote text containing commas.
 
 ```csv
-record_type,id,display_order,catalog_number,name,title,classification,author,year,mass_grams,dimensions,locality,found_year,acquired_year,provenance,edition,publisher,format,condition,description,price_usd,status,image_files,image_alt
-collection_specimen,allende-001,10,Specimen 001,Allende,,CV3,,,24.6,31 x 22 x 8 mm,Chihuahua Mexico,1969,2024,Ex. Example Collection,,,,,Complete individual with dark fusion crust.,,,allende-front.jpg|allende-back.jpg|allende-profile.jpg,Allende individual showing dark fusion crust
-sale_specimen,campo-001,20,Specimen 001,Campo del Cielo,,Iron IAB-MG,,,42.1,34 x 21 x 14 mm,Chaco Argentina,1576,,Dealer provenance,,,,,Clean individual with natural regmaglypts.,85,available,campo-front.jpg|campo-back.jpg|campo-profile.jpg|campo-detail.jpg|campo-scale.jpg,Campo del Cielo individual offered for sale
-collection_book,burke-001,10,SRL 001,,Cosmic Debris,,John G. Burke,1986,,,,,,Private library,,University of California Press,Hardcover,Very good,Reference copy retained in the working library.,,,cosmic-debris-cover.jpg|cosmic-debris-back.jpg|cosmic-debris-spine.jpg|cosmic-debris-title.jpg|cosmic-debris-condition.jpg,Cover of Cosmic Debris by John G. Burke
-sale_book,nininger-001,20,SRB 001,,Find a Falling Star,,H. H. Nininger,1972,,,,,,,,Paul S. Eriksson,Hardcover,Good,Clean copy with light jacket wear.,45,available,nininger-cover.jpg|nininger-back.jpg|nininger-spine.jpg|nininger-title.jpg|nininger-condition.jpg,Front cover of Find a Falling Star
+record_type,id,display_order,catalog_number,name,title,classification,author,year,mass_grams,dimensions,locality,found_year,acquired_year,provenance,edition,publisher,format,condition,description,price_usd,status,image_files,image_alt,cost_usd
+collection_specimen,allende-001,10,Specimen 001,Allende,,CV3,,,24.6,31 x 22 x 8 mm,Chihuahua Mexico,1969,2024,Ex. Example Collection,,,,,Complete individual with dark fusion crust.,,,allende-front.jpg|allende-back.jpg|allende-profile.jpg,Allende individual showing dark fusion crust,
+sale_specimen,campo-001,20,Specimen 001,Campo del Cielo,,Iron IAB-MG,,,42.1,34 x 21 x 14 mm,Chaco Argentina,1576,,Dealer provenance,,,,,Clean individual with natural regmaglypts.,85,available,campo-front.jpg|campo-back.jpg|campo-profile.jpg|campo-detail.jpg|campo-scale.jpg,Campo del Cielo individual offered for sale,
+collection_book,burke-001,10,SRL 001,,Cosmic Debris,,John G. Burke,1986,,,,,,Private library,,University of California Press,Hardcover,Very good,Reference copy retained in the working library.,,,cosmic-debris-cover.jpg|cosmic-debris-back.jpg|cosmic-debris-spine.jpg|cosmic-debris-title.jpg|cosmic-debris-condition.jpg,Cover of Cosmic Debris by John G. Burke,
+sale_book,nininger-001,20,SRB 001,,Find a Falling Star,,H. H. Nininger,1972,,,,,,,,Paul S. Eriksson,Hardcover,Good,Clean copy with light jacket wear.,45,available,nininger-cover.jpg|nininger-back.jpg|nininger-spine.jpg|nininger-title.jpg|nininger-condition.jpg,Front cover of Find a Falling Star,
 ```
 
 ## Commands

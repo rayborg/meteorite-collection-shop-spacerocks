@@ -24,6 +24,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - The centering pass is published in commit `6352407`: every adjustable specimen is visually centered in both axes, very small specimens use combined specimen-and-cube balance, and source-limited large NWA views retain complete source framing.
 - The linked inventory summary now appears below every subpage banner, and decorative rectangle overlays have been removed from banner artwork in published commit `cb80b63`.
 - Every specimen carousel now opens with its strongest dramatic complete hero, with four improved opening views and updated primary alt text published in commit `da018e9`.
+- The current working tree adds Ksar Ghilane 022 as collection `Specimen 011`, bringing the prepared catalog to 11 collection records and 43 images; this update is not yet published.
 
 ## Durable Decisions
 
@@ -35,6 +36,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Catalog descriptions should describe the physical specimen and verified meteorite facts, not the number or type of photographs.
 - Wabar impact products are related terrestrial impact material and must not be represented as meteorites.
 - Avoid automatic color normalization when it could alter genuine material color. Apply the quality gate in `docs/IMAGE_PREPARATION.md` after every image change.
+- Acquisition cost is an optional, suggested specimen intake field. Because the repository is public, actual costs belong only in the owner-only external ledger documented in `docs/PRIVATE_COSTS.md`; importer validation must never publish or return them.
 
 ## Completed Work
 
@@ -57,15 +59,19 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Published and live-verified the complete subpage-summary and banner-cleanup update in commit `cb80b63`.
 - Reviewed and ranked all 40 images for hero use, retaining 8 existing opening views and selecting stronger first images for the 367.3 g unclassified specimen, 63.2 g Wabar material, Kaalijarv, and the 47.4 g oriented NWA specimen.
 - Published and live-verified the hero-image ordering update in commit `da018e9`.
+- Confirmed that source folders 10-12 are one Aguas Zarcas specimen and that the former 12-photo folder 13 contains two stones: Ksar Ghilane 022 in `053441`-`053523` and Bjurböle in `053626`-`053851`.
+- Added three centered, optimized Ksar Ghilane 022 images and verified official MetBull record 82150: ungrouped achondrite, Tatawin, Tunisia, find 2023.
+- Added specimen-only private `cost_usd` intake validation, public-data denylist tests, external-ledger documentation, and a permission-restricted external ledger.
+- Widened eight Wabar/impact-artifact frames that appeared oversized while preserving centered composition and required gallery counts.
 
 ## Active Work
 
-- No implementation remains active from this session.
+- Commit, push, and live-verify the independently approved Ksar/private-cost/Wabar update.
 
 ## Validation Evidence
 
 - The initial inventory passed importer dry-run/write checks at 12 records and 40 images.
-- Local validation currently passes 23 tests, including overlapping pointer/focus carousel pause state, the six-page summary structure, and selected hero-image ordering.
+- Local validation currently passes 24 tests, including private-cost non-exposure and the prepared 11-record collection.
 - Independent carousel validation exercised all 12 specimen galleries with a fake clock.
 - Independent image audits inspected every final crop and all source comparisons.
 - The current image audit concluded that automatic gray-world or normalization would risk altering genuine specimen colors.
@@ -84,13 +90,17 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Independent validation passed all 12 hero choices with no findings.
 - GitHub Actions run `34530392802` passed tests and deployed commit `da018e9` successfully.
 - Live JSON checks verified all 12 opening images and all 40 unique gallery references.
+- The current update passes importer dry-run at 13 total records and 43 images; all 11 new/reframed files decode at 1600 x 1200, and no acquisition-cost value appears in tracked/public data.
+- Independent security/content validation passed Ksar metadata, source grouping, importer cost isolation, external-ledger permissions, and public leakage scans with no findings.
+- Independent image validation passed the three Ksar images and all eight widened Wabar frames; focused revalidation confirmed the final G04 detail has complete moderate framing with no remaining findings.
 
 ## Immediate Next Actions
 
-1. Supply sale prices when known.
-2. Configure a valid Formspree endpoint when checkout requests should be enabled.
-3. Import permanent-collection and sale book records when their data and photographs are ready.
-4. Design grouped browsing when multiple individually purchasable specimens share one meteorite identity.
+1. Publish and live-verify the Ksar/private-cost/Wabar update.
+2. Supply sale prices when known.
+3. Configure a valid Formspree endpoint when checkout requests should be enabled.
+4. Import permanent-collection and sale book records when their data and photographs are ready.
+5. Design grouped browsing when multiple individually purchasable specimens share one meteorite identity.
 
 ## Unresolved Items
 

@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 
-import { headers, importInventory, isContained, optionalNumber, parseCsv, parseManifest } from "../scripts/import-inventory.mjs";
+import { headers, importInventory, isContained, optionalNumber, optionalUsdCents, parseCsv, parseManifest } from "../scripts/import-inventory.mjs";
 
 const imageFixtures = {
   ".jpg": Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10]),
@@ -62,6 +62,10 @@ test("CSV parser preserves quoted descriptions and documentation examples stay v
   assert.throws(() => parseCsv('a,b\n"quoted"trailing,value\n'), /after a closing quote/u);
   assert.throws(() => optionalNumber("0x10", "display_order", 2, { integer: true }), /integer digits/u);
   assert.throws(() => optionalNumber("1e3", "mass_grams", 2), /decimal digits/u);
+  assert.equal(optionalUsdCents("123", "cost_usd", 2), 12300);
+  assert.equal(optionalUsdCents("123.45", "cost_usd", 2), 12345);
+  assert.throws(() => optionalUsdCents("123.456", "cost_usd", 2), /at most two fractional digits/u);
+  assert.throws(() => optionalUsdCents("$123", "cost_usd", 2), /nonnegative decimal USD/u);
   assert.equal(isContained(path.join(path.sep, "catalog"), path.join(path.sep, "catalog", "..photos", "image.jpg")), true);
   assert.throws(() => parseManifest("id,name\nitem,Example\n"), /exact column order/u);
   const documentation = await readFile(new URL("../inventory-template/README.md", import.meta.url), "utf8");
@@ -99,7 +103,7 @@ test("folder importer validates, copies images, and routes all four record types
     {
       record_type: "collection_specimen", id: "allende-001", display_order: 10, catalog_number: "Specimen 001",
       name: "Allende", classification: "CV3", mass_grams: 24.6, description: "Collection specimen, with fusion crust.",
-      image_files: imagePaths("collection_specimen", "allende", "JPG").join("|"), image_alt: "Allende specimen"
+      image_files: imagePaths("collection_specimen", "allende", "JPG").join("|"), image_alt: "Allende specimen", cost_usd: "12.34"
     },
     {
       record_type: "sale_specimen", id: "campo-001", display_order: 20, catalog_number: "Specimen 001",
@@ -136,12 +140,39 @@ test("folder importer validates, copies images, and routes all four record types
   const specimens = JSON.parse(await readFile(path.join(projectRoot, "data/sale-specimens.json"), "utf8"));
   const books = JSON.parse(await readFile(path.join(projectRoot, "data/books.json"), "utf8"));
   assert.equal(collection.items[0].name, "Allende");
+  assert.doesNotMatch(JSON.stringify(collection), /cost_usd|costUsd|acquisitionCost/u);
   assert.equal(specimens.items[0].priceUsd, 85);
   assert.deepEqual(books.items.map((book) => book.listingType), ["collection", "sale"]);
   assert.equal(books.items[1].status, "available");
   await access(path.join(projectRoot, "assets/collection/allende-001-1-allende-1.jpg"));
   await access(path.join(projectRoot, "assets/sale-specimens/campo-001-1-campo-1.png"));
   await access(path.join(projectRoot, "assets/books/burke-001-1-burke-1.webp"));
+});
+
+test("private specimen costs are validated but never published", async (context) => {
+  const temporaryRoot = await mkdtemp(path.join(os.tmpdir(), "spacerocks-private-cost-"));
+  context.after(() => rm(temporaryRoot, { recursive: true, force: true }));
+  const { projectRoot, importFolder } = await createProject(temporaryRoot);
+  const specimen = {
+    record_type: "collection_specimen", id: "private-cost-001", display_order: 1, catalog_number: "Specimen 001",
+    name: "Private cost specimen", description: "Cost privacy test.", cost_usd: "12.34",
+    image_files: imagePaths("collection_specimen", "private-cost").join("|"), image_alt: "Private cost specimen"
+  };
+  await writeRecordImages(importFolder, [specimen]);
+  await writeManifest(importFolder, [specimen]);
+  const summary = await importInventory(importFolder, { write: true, projectRoot });
+  const publicData = await readFile(path.join(projectRoot, "data/collection.json"), "utf8");
+  assert.doesNotMatch(JSON.stringify(summary), /cost|1234/u);
+  assert.doesNotMatch(publicData, /cost_usd|costUsd|costUsdCents|acquisitionCost|12\.34/u);
+
+  const book = {
+    record_type: "collection_book", id: "private-cost-book", display_order: 1, catalog_number: "Book 001",
+    title: "Private Cost Book", description: "Cost rejection test.", cost_usd: "12.34",
+    image_files: imagePaths("collection_book", "private-cost-book").join("|"), image_alt: "Private Cost Book"
+  };
+  await writeRecordImages(importFolder, [book]);
+  await writeManifest(importFolder, [book]);
+  await assert.rejects(importInventory(importFolder, { projectRoot }), /cost_usd is supported only for specimen records/u);
 });
 
 test("importer rejects source and destination symlinks", async (context) => {

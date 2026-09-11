@@ -26,6 +26,9 @@ test("inventory files use the supported empty-or-populated schema", async () => 
     for (const item of data.items) {
       assert.equal(typeof item.id, "string", `${relativePath} item IDs must be strings`);
       assert.ok(item.id.trim(), `${relativePath} item IDs must not be blank`);
+      for (const privateKey of ["cost_usd", "costUsd", "costUsdCents", "acquisitionCost"]) {
+        assert.equal(privateKey in item, false, `${relativePath} must not publish ${privateKey}`);
+      }
       assert.ok(item.displayOrder === undefined || (Number.isInteger(item.displayOrder) && item.displayOrder > 0), `${relativePath} display orders must be positive integers`);
       const isBooks = relativePath === "data/books.json";
       if (isBooks) assert.ok(item.listingType === "collection" || item.listingType === "sale", `${relativePath} books need a collection or sale listingType`);
@@ -122,7 +125,7 @@ test("all specimen records use reader-facing specimen numbers", async () => {
   const sale = JSON.parse(await read("data/sale-specimens.json"));
   assert.deepEqual(
     collection.items.map((item) => item.catalogNumber),
-    Array.from({ length: 10 }, (_, index) => `Specimen ${String(index + 1).padStart(3, "0")}`)
+    Array.from({ length: 11 }, (_, index) => `Specimen ${String(index + 1).padStart(3, "0")}`)
   );
   assert.deepEqual(sale.items.map((item) => item.catalogNumber), ["Specimen 001", "Specimen 002"]);
   for (const item of [...collection.items, ...sale.items]) {
@@ -145,7 +148,8 @@ test("each specimen carousel opens with its selected dramatic hero", async () =>
     ["unclassified-nwa-oriented-47-4g", "unclassified-nwa-oriented-47-4g-2-g09-02-reverse.jpg"],
     ["aguas-zarcas-4-97g", "aguas-zarcas-4-97g-1-g10-01-hero.jpg"],
     ["bjurbole-14g", "bjurbole-14g-1-g13-01-marked.jpg"],
-    ["unclassified-nwa-oc-13-8kg", "unclassified-nwa-oc-13-8kg-1-g14-01-hero.jpg"]
+    ["unclassified-nwa-oc-13-8kg", "unclassified-nwa-oc-13-8kg-1-g14-01-hero.jpg"],
+    ["ksar-ghilane-022-31-35g", "ksar-ghilane-022-31-35g-1-g15-01-polished-face.jpg"]
   ]);
   for (const item of [...collection.items, ...sale.items]) {
     assert.equal(item.image, item.images[0], `${item.id} card image must match its first carousel image`);

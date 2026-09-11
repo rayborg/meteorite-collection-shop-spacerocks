@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-09-10",
+  "updated": "2026-09-11",
   "items": [
     {
       "id": "unclassified-meteorite-367-3g",
@@ -170,6 +170,24 @@
       "classification": "Unclassified ordinary chondrite",
       "massGrams": 13800,
       "locality": "Northwest Africa"
+    },
+    {
+      "id": "ksar-ghilane-022-31-35g",
+      "displayOrder": 110,
+      "catalogNumber": "Specimen 011",
+      "description": "Ksar Ghilane 022 is an officially recognized ungrouped achondrite found in Tatawin, Tunisia, in 2023 and described in the Meteoritical Bulletin as an Mg-rich clinopyroxenite composed predominantly of augite. This 31.35 g polished end cut displays a pale gray granular face crossed by a darker network and is held in the permanent collection (code 82150).",
+      "image": "./assets/collection/ksar-ghilane-022-31-35g-1-g15-01-polished-face.jpg",
+      "images": [
+        "./assets/collection/ksar-ghilane-022-31-35g-1-g15-01-polished-face.jpg",
+        "./assets/collection/ksar-ghilane-022-31-35g-2-g15-02-reverse.jpg",
+        "./assets/collection/ksar-ghilane-022-31-35g-3-g15-03-profile.jpg"
+      ],
+      "imageAlt": "Polished face of the 31.35 g Ksar Ghilane 022 ungrouped achondrite with pale gray angular grains crossed by a dark network beside a scale cube",
+      "name": "Ksar Ghilane 022",
+      "classification": "Ungrouped achondrite",
+      "massGrams": 31.35,
+      "locality": "Tatawin, Tunisia",
+      "foundYear": 2023
     }
   ]
 }

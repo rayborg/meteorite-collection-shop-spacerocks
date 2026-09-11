@@ -30,7 +30,8 @@ const headers = [
   "price_usd",
   "status",
   "image_files",
-  "image_alt"
+  "image_alt",
+  "cost_usd"
 ];
 
 const typeConfig = {
@@ -130,6 +131,17 @@ function optionalNumber(value, label, rowNumber, { integer = false } = {}) {
   return parsed;
 }
 
+function optionalUsdCents(value, label, rowNumber) {
+  if (!value) return null;
+  if (!/^\d+(?:\.\d{1,2})?$/u.test(value)) {
+    throw new Error(`Row ${rowNumber}: ${label} must use nonnegative decimal USD with at most two fractional digits`);
+  }
+  const [whole, fraction = ""] = value.split(".");
+  const cents = Number(whole) * 100 + Number(fraction.padEnd(2, "0"));
+  if (!Number.isSafeInteger(cents)) throw new Error(`Row ${rowNumber}: ${label} exceeds the supported range`);
+  return cents;
+}
+
 function addValue(target, key, value) {
   if (value !== null && value !== undefined && value !== "") target[key] = value;
 }
@@ -196,6 +208,10 @@ async function buildRecord(row, rowNumber, inputDirectory, canonicalInput, proje
   if (config.kind === "book" && !row.title) throw new Error(`Row ${rowNumber}: title is required for books`);
   if (config.listingType === "sale" && !saleStatuses.has(row.status)) {
     throw new Error(`Row ${rowNumber}: sale status must be available, reserved, or sold`);
+  }
+  if (row.cost_usd) {
+    if (config.kind !== "specimen") throw new Error(`Row ${rowNumber}: cost_usd is supported only for specimen records`);
+    optionalUsdCents(row.cost_usd, "cost_usd", rowNumber);
   }
 
   const imageReferences = row.image_files.split("|").map((value) => value.trim()).filter(Boolean);
@@ -480,4 +496,4 @@ if (process.argv[1] && path.resolve(process.argv[1]) === scriptPath) {
   });
 }
 
-export { headers, importInventory, isContained, mergeItems, optionalNumber, parseCsv, parseManifest };
+export { headers, importInventory, isContained, mergeItems, optionalNumber, optionalUsdCents, parseCsv, parseManifest };
