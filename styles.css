@@ -950,6 +950,9 @@ textarea:focus-visible {
 .research-heading { max-width: 48rem; margin: 0 auto 3rem; text-align: center; }
 .research-heading h2::after { content: "◆"; display: block; margin: 1rem 0; color: var(--brass); font-size: .58rem; }
 .research-heading > p:last-child { margin: 0; color: var(--ink-soft); font-style: italic; }
+.research-section.research-page { padding-block: 2.75rem 5rem; }
+.research-page .research-heading { margin-bottom: 1.75rem; }
+.research-page .research-heading .eyebrow { margin-bottom: .45rem; }
 
 .resource-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
 
