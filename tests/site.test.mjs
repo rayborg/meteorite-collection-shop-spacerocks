@@ -194,6 +194,8 @@ test("the three related meteorite projects are linked safely", async () => {
     assert.ok(html.includes(`href="${link}"`), `missing ${link}`);
   }
   for (const page of pages) assert.doesNotMatch(page, /target="_blank"(?! rel="noopener noreferrer")/u);
+  assert.ok(pages[4].includes("searching historical catalogs, comparing current meteorite listings"));
+  assert.doesNotMatch(pages[4], /Connected projects|Choose a project to search archival catalogs/u);
 });
 
 test("all catalog pages load shared assets and cross-link from the homepage", async () => {

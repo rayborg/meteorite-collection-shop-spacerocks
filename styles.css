@@ -794,11 +794,11 @@ textarea:focus-visible {
 
 .interior-title-band { padding: 1.25rem 0 1.4rem; color: var(--ink); background: rgba(33, 31, 28, .95); border-bottom: 1px solid var(--rule); }
 .interior-title-panel { padding-left: 1rem; border-left: 1px solid rgba(213, 139, 128, .55); }
-.interior-title-panel > p:first-child { margin: 0 0 .4rem; color: var(--brass-ink); font-family: var(--sans); font-size: .52rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.interior-title-panel > p:first-child { margin: 0 0 .4rem; color: var(--brass-ink); font-family: var(--sans); font-size: .6rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .interior-title-panel > p:first-child a { text-underline-offset: .22rem; }
 .interior-title-panel > p:first-child span { margin-inline: .4rem; color: #8c7b62; }
 .interior-title-panel h1 { margin: 0; font-family: var(--display); font-size: clamp(1.8rem, 2.8vw, 2.75rem); font-weight: 400; letter-spacing: -.025em; line-height: 1; }
-.interior-title-panel > p:last-child { max-width: 37rem; margin: .55rem 0 0; color: var(--ink-soft); font-size: .8rem; font-style: italic; line-height: 1.45; }
+.interior-title-panel > p:last-child { max-width: 42rem; margin: .55rem 0 0; color: var(--ink-soft); font-size: .9rem; font-style: italic; line-height: 1.45; }
 .collection-title-panel { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 2.5rem; }
 .collection-title-panel > :not(.catalog-title-count) { grid-column: 1; }
 .catalog-title-count {
@@ -950,9 +950,7 @@ textarea:focus-visible {
 .research-heading { max-width: 48rem; margin: 0 auto 3rem; text-align: center; }
 .research-heading h2::after { content: "◆"; display: block; margin: 1rem 0; color: var(--brass); font-size: .58rem; }
 .research-heading > p:last-child { margin: 0; color: var(--ink-soft); font-style: italic; }
-.research-section.research-page { padding-block: 2.75rem 5rem; }
-.research-page .research-heading { margin-bottom: 1.75rem; }
-.research-page .research-heading .eyebrow { margin-bottom: .45rem; }
+.research-section.research-page { padding-block: 2.25rem 5rem; }
 
 .resource-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
 
