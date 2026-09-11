@@ -15,8 +15,8 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 
 ## Current State
 
-- The live catalog contains 10 permanent-collection specimens and 2 individually purchasable specimens.
-- The inventory references 40 optimized JPEGs: 3 per collection specimen and 5 per sale specimen.
+- The live catalog contains 11 permanent-collection specimens and 2 individually purchasable specimens.
+- The inventory references 43 optimized JPEGs: 3 per collection specimen and 5 per sale specimen.
 - The two sale prices are intentionally unset and display as `TBD` in cards and checkout.
 - Kaalijarv, Aguas Zarcas, and Bjurböle descriptions use verified official Meteoritical Bulletin records.
 - Books use one catalog with `listingType: "collection"` or `listingType: "sale"` and can be filtered by shelf. No book records have been imported yet.
@@ -24,7 +24,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - The centering pass is published in commit `6352407`: every adjustable specimen is visually centered in both axes, very small specimens use combined specimen-and-cube balance, and source-limited large NWA views retain complete source framing.
 - The linked inventory summary now appears below every subpage banner, and decorative rectangle overlays have been removed from banner artwork in published commit `cb80b63`.
 - Every specimen carousel now opens with its strongest dramatic complete hero, with four improved opening views and updated primary alt text published in commit `da018e9`.
-- The current working tree adds Ksar Ghilane 022 as collection `Specimen 011`, bringing the prepared catalog to 11 collection records and 43 images; this update is not yet published.
+- Ksar Ghilane 022 is published as collection `Specimen 011`, bringing the live catalog to 11 collection records and 43 images in commit `ae21acb`.
 
 ## Durable Decisions
 
@@ -63,10 +63,11 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Added three centered, optimized Ksar Ghilane 022 images and verified official MetBull record 82150: ungrouped achondrite, Tatawin, Tunisia, find 2023.
 - Added specimen-only private `cost_usd` intake validation, public-data denylist tests, external-ledger documentation, and a permission-restricted external ledger.
 - Widened eight Wabar/impact-artifact frames that appeared oversized while preserving centered composition and required gallery counts.
+- Published and live-verified Ksar Ghilane 022, private-cost intake safeguards, corrected source grouping, and widened Wabar framing in commit `ae21acb`.
 
 ## Active Work
 
-- Commit, push, and live-verify the independently approved Ksar/private-cost/Wabar update.
+- No implementation remains active from this session.
 
 ## Validation Evidence
 
@@ -93,14 +94,15 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - The current update passes importer dry-run at 13 total records and 43 images; all 11 new/reframed files decode at 1600 x 1200, and no acquisition-cost value appears in tracked/public data.
 - Independent security/content validation passed Ksar metadata, source grouping, importer cost isolation, external-ledger permissions, and public leakage scans with no findings.
 - Independent image validation passed the three Ksar images and all eight widened Wabar frames; focused revalidation confirmed the final G04 detail has complete moderate framing with no remaining findings.
+- GitHub Actions run `34564372935` passed all 24 tests and deployed commit `ae21acb` successfully.
+- Live checks verified 11 collection records, Ksar's public metadata and three images, `11 / 2 / 0 / 3` summary data, all 11 new/reframed image hashes, and absence of private cost fields.
 
 ## Immediate Next Actions
 
-1. Publish and live-verify the Ksar/private-cost/Wabar update.
-2. Supply sale prices when known.
-3. Configure a valid Formspree endpoint when checkout requests should be enabled.
-4. Import permanent-collection and sale book records when their data and photographs are ready.
-5. Design grouped browsing when multiple individually purchasable specimens share one meteorite identity.
+1. Supply sale prices when known.
+2. Configure a valid Formspree endpoint when checkout requests should be enabled.
+3. Import permanent-collection and sale book records when their data and photographs are ready.
+4. Design grouped browsing when multiple individually purchasable specimens share one meteorite identity.
 
 ## Unresolved Items
 
@@ -120,3 +122,4 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - `6352407`: Centered specimen imagery, preserved source-limited framing, and centered contained image presentation.
 - `cb80b63`: Added linked inventory summaries to every subpage and removed banner overlay rectangles.
 - `da018e9`: Selected and published the strongest dramatic hero image for each specimen carousel.
+- `ae21acb`: Added Ksar Ghilane 022, private specimen-cost intake safeguards, corrected grouping, and wider Wabar framing.
