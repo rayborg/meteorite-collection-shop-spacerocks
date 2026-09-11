@@ -26,8 +26,8 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Every specimen carousel now opens with its strongest dramatic complete hero, with four improved opening views and updated primary alt text published in commit `da018e9`.
 - Ksar Ghilane 022 is published as collection `Specimen 011`, bringing the live catalog to 11 collection records and 43 images in commit `ae21acb`.
 - The homepage now has concise meteorite education and independently pausable rotating collection, sale, and book highlight groups, published in commit `26fb24c`.
-- The working tree adds static specimen detail pages, optional cross-catalog `meteoriteId` grouping, catalog card links, and independently actionable physical specimen cards. Existing records remain singleton pages without JSON migration.
-- Import validation now enforces 563,200 bytes per image, a 1,600-pixel long edge, and 1,677,722 bytes per record across AVIF, GIF, JPEG, PNG, and WebP.
+- The live site has static specimen detail pages, optional cross-catalog `meteoriteId` grouping, catalog card links, and independently actionable physical specimen cards, published in commit `1106a35`. Existing records remain singleton pages without JSON migration.
+- Import validation now enforces 563,200 bytes per image, a 1,600-pixel long edge, and 1,677,722 bytes per record across still AVIF, GIF, JPEG, PNG, and WebP; cross-platform source-race validation was completed in commit `e8d0308`.
 
 ## Durable Decisions
 
@@ -76,7 +76,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 
 ## Active Work
 
-- The specimen detail-page implementation is complete and independently approved in the working tree; commit and deployment remain.
+- No implementation remains active from this session.
 
 ## Validation Evidence
 
@@ -107,9 +107,10 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Independent image validation passed the three Ksar images and all eight widened Wabar frames; focused revalidation confirmed the final G04 detail has complete moderate framing with no remaining findings.
 - GitHub Actions run `34564372935` passed all 24 tests and deployed commit `ae21acb` successfully.
 - Live checks verified 11 collection records, Ksar's public metadata and three images, `11 / 2 / 0 / 3` summary data, all 11 new/reframed image hashes, and absence of private cost fields.
-- The uncommitted specimen-page implementation passes all 43 local tests, including the exact 43-image catalog audit, synthetic detail-page runtime checks, importer limits, grouping, source-digest binding, and existing race protections.
+- The specimen-page implementation passes all 43 local tests, including the exact 43-image catalog audit, synthetic detail-page runtime checks, importer limits, grouping, source-digest binding, and existing race protections.
 - Independent product validation passed all 13 current singleton pages, future mixed collection/sale groups, per-specimen cart actions, carousel controls, malformed and failed-load states, and responsive structure.
 - Independent importer validation passed adversarial JPEG, PNG, GIF, WebP, and still-AVIF structure/dimension checks, exact byte boundaries, WebP canvas/frame binding, AVIF primary-item binding, and same-inode source mutation rejection.
+- GitHub Actions run `34580364362` passed all 43 tests and deployed commit `e8d0308`; the preceding run exposed and was superseded after correcting a Linux sub-millisecond timestamp assertion in the digest-race test.
 
 ## Immediate Next Actions
 
@@ -136,3 +137,5 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - `da018e9`: Selected and published the strongest dramatic hero image for each specimen carousel.
 - `ae21acb`: Added Ksar Ghilane 022, private specimen-cost intake safeguards, corrected grouping, and wider Wabar framing.
 - `26fb24c`: Added the compact meteorite introduction and rotating homepage catalog highlights.
+- `1106a35`: Added specimen product pages, future meteorite grouping, card click-through links, and image import safeguards.
+- `e8d0308`: Made source-digest race validation portable across macOS and Linux filesystem timestamp precision.
