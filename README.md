@@ -14,6 +14,7 @@ The site is organized across six pages:
 - `checkout.html` contains the persistent cart and checkout-request form.
 
 Every page repeats the linked live inventory summary directly below the unobstructed official banner.
+Homepage highlight groups rotate through eligible collection specimens, sale specimens, and books when more records exist than the visible slots. Rotation pauses for reduced-motion users and while a visitor interacts with that group.
 
 ## Local preview
 

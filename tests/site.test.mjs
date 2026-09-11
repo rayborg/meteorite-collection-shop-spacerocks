@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const require = createRequire(import.meta.url);
-const { createCarouselPauseState, getSafeInquiryUrl } = require("../inventory-utils.js");
+const { createCarouselPauseState, getHighlightWindow, getSafeInquiryUrl } = require("../inventory-utils.js");
 const CartStore = require("../cart.js");
 
 async function read(relativePath) {
@@ -118,6 +118,31 @@ test("carousel pause state keeps overlapping pointer and focus interactions isol
   assert.equal(state.toggleUserPaused(), false);
   assert.equal(state.canAdvance(), true, "Play must resume an inactive carousel");
   assert.equal(createCarouselPauseState(true).canAdvance(), false, "reduced motion must start paused");
+});
+
+test("homepage highlight windows rotate through complete inventories", async () => {
+  const records = ["A", "B", "C", "D", "E"];
+  assert.deepEqual(getHighlightWindow(records, 0, 3), ["A", "B", "C"]);
+  assert.deepEqual(getHighlightWindow(records, 3, 3), ["D", "E", "A"]);
+  assert.deepEqual(getHighlightWindow(records, -1, 2), ["E", "A"]);
+  assert.deepEqual(getHighlightWindow([], 0, 3), []);
+  const app = await read("app.js");
+  const home = await read("index.html");
+  assert.ok(app.includes("const HIGHLIGHT_ROTATION_MS = 15000;"));
+  assert.ok(app.includes("limit: 3") && (app.match(/limit: 2/gu) || []).length === 2);
+  assert.ok(app.includes("pauseState.canAdvance(document.hidden)"));
+  assert.ok(app.includes('container.addEventListener("pointerenter"'));
+  assert.ok(app.includes('container.addEventListener("focusin"'));
+  assert.equal((home.match(/aria-live="off"/gu) || []).length, 3, "rotating highlights must not trigger repeated live announcements");
+});
+
+test("homepage gives newcomers a compact factual meteorite introduction", async () => {
+  const home = await read("index.html");
+  const css = await read("styles.css");
+  assert.ok(home.includes("Most meteorites are fragments of asteroids"));
+  assert.ok(home.includes("the Moon or Mars"));
+  assert.doesNotMatch(home, /A field collection with a paper trail|The first catalog release is being prepared/u);
+  assert.match(css, /\.introduction \{[^}]*padding-block: 3rem 2\.75rem;/u);
 });
 
 test("all specimen records use reader-facing specimen numbers", async () => {

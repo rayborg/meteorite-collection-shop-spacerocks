@@ -30,7 +30,14 @@
     };
   }
 
-  const api = { getSafeInquiryUrl, createCarouselPauseState };
+  function getHighlightWindow(items, offset, limit) {
+    if (!Array.isArray(items) || !items.length || !Number.isInteger(limit) || limit < 1) return [];
+    const count = Math.min(limit, items.length);
+    const start = ((Math.trunc(offset) % items.length) + items.length) % items.length;
+    return Array.from({ length: count }, (_, index) => items[(start + index) % items.length]);
+  }
+
+  const api = { getSafeInquiryUrl, createCarouselPauseState, getHighlightWindow };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   globalScope.InventoryUtils = api;
 }(globalThis));

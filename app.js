@@ -7,6 +7,7 @@ const DATA_FILES = {
 };
 
 const CAROUSEL_INTERVAL_MS = 3000;
+const HIGHLIGHT_ROTATION_MS = 15000;
 
 const state = {
   collection: [],
@@ -360,41 +361,84 @@ function renderBooks() {
   elements.bookGrid.setAttribute("aria-busy", "false");
 }
 
+function renderRotatingHighlights(container, records, { limit, createCard, emptyTitle, emptyDescription, label }) {
+  if (!container) return;
+  let offset = 0;
+  const render = () => {
+    container.setAttribute("aria-busy", "true");
+    container.replaceChildren();
+    if (records.length) {
+      InventoryUtils.getHighlightWindow(records, offset, limit).forEach((item) => container.append(createCard(item)));
+    } else {
+      container.append(createEmptyState(emptyTitle, emptyDescription));
+    }
+    container.setAttribute("aria-busy", "false");
+  };
+  render();
+
+  if (records.length <= limit) return;
+  const summary = container.closest("section")?.querySelector(".section-summary");
+  if (!summary) return;
+  const pauseState = InventoryUtils.createCarouselPauseState(window.matchMedia?.("(prefers-reduced-motion: reduce)").matches);
+  const toggle = createElement("button", "highlight-toggle");
+  toggle.type = "button";
+  const updateToggle = () => {
+    toggle.textContent = `${pauseState.userPaused ? "Play" : "Pause"} ${label}`;
+    toggle.setAttribute("aria-label", `${pauseState.userPaused ? "Play" : "Pause"} rotating ${label}`);
+  };
+  updateToggle();
+  toggle.addEventListener("click", () => {
+    pauseState.toggleUserPaused();
+    updateToggle();
+  });
+  container.addEventListener("pointerenter", () => pauseState.setPointerActive(true));
+  container.addEventListener("pointerleave", () => pauseState.setPointerActive(false));
+  container.addEventListener("focusin", () => pauseState.setFocusActive(true));
+  container.addEventListener("focusout", (event) => {
+    if (!container.contains(event.relatedTarget)) pauseState.setFocusActive(false);
+  });
+  summary.append(toggle);
+
+  const cycle = () => {
+    if (!container.isConnected) return;
+    if (pauseState.canAdvance(document.hidden)) {
+      offset = (offset + limit) % records.length;
+      render();
+    }
+    window.setTimeout(cycle, HIGHLIGHT_ROTATION_MS);
+  };
+  window.setTimeout(cycle, HIGHLIGHT_ROTATION_MS);
+}
+
 function renderHighlights() {
-  if (elements.collectionHighlights) {
-    elements.collectionHighlights.replaceChildren();
-    const records = [...state.collection].sort((a, b) => compareCatalogOrder(a, b, "name")).slice(0, 3);
-    if (records.length) records.forEach((item) => elements.collectionHighlights.append(createSpecimenCard(item, "collection")));
-    else elements.collectionHighlights.append(createEmptyState(
-      "Collection highlights are being prepared",
-      "The first selected records will appear here when the collection folders are reviewed."
-    ));
-    elements.collectionHighlights.setAttribute("aria-busy", "false");
-  }
+  const collectionRecords = [...state.collection].sort((a, b) => compareCatalogOrder(a, b, "name"));
+  renderRotatingHighlights(elements.collectionHighlights, collectionRecords, {
+    limit: 3,
+    createCard: (item) => createSpecimenCard(item, "collection"),
+    emptyTitle: "Collection highlights are being prepared",
+    emptyDescription: "The first selected records will appear here when the collection folders are reviewed.",
+    label: "collection highlights"
+  });
 
-  if (elements.specimenHighlights) {
-    elements.specimenHighlights.replaceChildren();
-    const records = state.specimens.filter((item) => item.status === "available")
-      .sort((a, b) => compareCatalogOrder(a, b, "name")).slice(0, 3);
-    if (records.length) records.forEach((item) => elements.specimenHighlights.append(createSpecimenCard(item)));
-    else elements.specimenHighlights.append(createEmptyState(
-      "The first sale highlights are being assembled",
-      "Documented specimens will appear here after the incoming folders and photographs are reviewed."
-    ));
-    elements.specimenHighlights.setAttribute("aria-busy", "false");
-  }
+  const specimenRecords = state.specimens.filter((item) => item.status === "available")
+    .sort((a, b) => compareCatalogOrder(a, b, "name"));
+  renderRotatingHighlights(elements.specimenHighlights, specimenRecords, {
+    limit: 2,
+    createCard: (item) => createSpecimenCard(item),
+    emptyTitle: "The first sale highlights are being assembled",
+    emptyDescription: "Documented specimens will appear here after the incoming folders and photographs are reviewed.",
+    label: "sale highlights"
+  });
 
-  if (elements.bookHighlights) {
-    elements.bookHighlights.replaceChildren();
-    const records = state.books.filter((item) => item.listingType !== "collection" && item.status === "available")
-      .sort((a, b) => compareCatalogOrder(a, b, "title")).slice(0, 4);
-    if (records.length) records.forEach((item) => elements.bookHighlights.append(createBookCard(item)));
-    else elements.bookHighlights.append(createEmptyState(
-      "Book highlights are forthcoming",
-      "Selected reference and collectible volumes will appear here when the library inventory is supplied."
-    ));
-    elements.bookHighlights.setAttribute("aria-busy", "false");
-  }
+  const bookRecords = state.books.filter((item) => item.listingType !== "collection" && item.status === "available")
+    .sort((a, b) => compareCatalogOrder(a, b, "title"));
+  renderRotatingHighlights(elements.bookHighlights, bookRecords, {
+    limit: 2,
+    createCard: (item) => createBookCard(item),
+    emptyTitle: "Book highlights are forthcoming",
+    emptyDescription: "Selected reference and collectible volumes will appear here when the library inventory is supplied.",
+    label: "book highlights"
+  });
 }
 
 function populateClassifications() {

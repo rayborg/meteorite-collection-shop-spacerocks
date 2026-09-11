@@ -25,6 +25,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - The linked inventory summary now appears below every subpage banner, and decorative rectangle overlays have been removed from banner artwork in published commit `cb80b63`.
 - Every specimen carousel now opens with its strongest dramatic complete hero, with four improved opening views and updated primary alt text published in commit `da018e9`.
 - Ksar Ghilane 022 is published as collection `Specimen 011`, bringing the live catalog to 11 collection records and 43 images in commit `ae21acb`.
+- The current working tree replaces the homepage cabinet introduction with concise meteorite education and adds independently pausable rotating collection, sale, and book highlight groups; this update is not yet published.
 
 ## Durable Decisions
 
@@ -64,15 +65,18 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Added specimen-only private `cost_usd` intake validation, public-data denylist tests, external-ledger documentation, and a permission-restricted external ledger.
 - Widened eight Wabar/impact-artifact frames that appeared oversized while preserving centered composition and required gallery counts.
 - Published and live-verified Ksar Ghilane 022, private-cost intake safeguards, corrected source grouping, and widened Wabar framing in commit `ae21acb`.
+- Replaced the tall generic homepage introduction with a short explanation of asteroid, lunar, and Martian meteorites and their scientific value.
+- Added 15-second rotating homepage record windows: 3 collection highlights, 2 sale highlights, and 2 book highlights, activated only when eligible inventory exceeds those slots.
 
 ## Active Work
 
-- No implementation remains active from this session.
+- Commit, push, and live-verify the independently approved compact introduction and rotating homepage highlights.
 
 ## Validation Evidence
 
 - The initial inventory passed importer dry-run/write checks at 12 records and 40 images.
-- Local validation currently passes 24 tests, including private-cost non-exposure and the prepared 11-record collection.
+- Primary local validation for the homepage introduction/highlight update passes 26 tests.
+- Independent fake-clock validation passed 15-second thresholds/wrapping, all 11 collection records, future 3+ sale/book fixtures, group-local controls, reduced motion, interaction/visibility pauses, and detached timer cleanup.
 - Independent carousel validation exercised all 12 specimen galleries with a fake clock.
 - Independent image audits inspected every final crop and all source comparisons.
 - The current image audit concluded that automatic gray-world or normalization would risk altering genuine specimen colors.
@@ -99,10 +103,11 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 
 ## Immediate Next Actions
 
-1. Supply sale prices when known.
-2. Configure a valid Formspree endpoint when checkout requests should be enabled.
-3. Import permanent-collection and sale book records when their data and photographs are ready.
-4. Design grouped browsing when multiple individually purchasable specimens share one meteorite identity.
+1. Publish and live-verify the homepage introduction/highlight update.
+2. Supply sale prices when known.
+3. Configure a valid Formspree endpoint when checkout requests should be enabled.
+4. Import permanent-collection and sale book records when their data and photographs are ready.
+5. Design grouped browsing when multiple individually purchasable specimens share one meteorite identity.
 
 ## Unresolved Items
 
