@@ -284,10 +284,12 @@ test("confirmed official branding is used and optimized for the web", async () =
     assert.ok(html.slice(titleBand).includes("interior-title-panel"), "subpage title band must contain its title panel");
     assert.equal((html.match(/<h1\b/gu) || []).length, 1, "subpage must have one primary title");
   }
-  const collectionBand = pages[1].indexOf('<section class="interior-title-band"');
-  const collectionCatalog = pages[1].indexOf('<section class="catalog-page');
-  const collectionResult = pages[1].indexOf('id="collection-result-count"');
-  assert.ok(collectionBand < collectionResult && collectionResult < collectionCatalog, "collection record count must share the title pane");
+  for (const [pageIndex, resultId] of [[1, "collection-result-count"], [2, "specimen-result-count"], [3, "book-result-count"]]) {
+    const titleBand = pages[pageIndex].indexOf('<section class="interior-title-band"');
+    const catalog = pages[pageIndex].indexOf('<section class="catalog-page');
+    const result = pages[pageIndex].indexOf(`id="${resultId}"`);
+    assert.ok(titleBand < result && result < catalog, `${resultId} must share its title pane`);
+  }
   const logo = await stat(path.join(root, "assets/branding/spacerocks-logo.webp"));
   const banner = await stat(path.join(root, "assets/branding/spacerocks-banner.webp"));
   assert.ok(logo.size < 250_000, "web logo should remain below 250 KB");
