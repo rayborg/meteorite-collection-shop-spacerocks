@@ -46,9 +46,10 @@ Run this gate after every crop, color, exposure, compression, or orientation cha
 4. Check for clipped specimen edges, excessive empty background, blur, halos, compression artifacts, and accidental duplicate views.
 5. Confirm ordinary landscape images are 1600 x 1200 pixels when the source permits. Documentary portrait images may be 1200 x 1600 pixels.
 6. Confirm every image is no more than 563,200 bytes and no more than 1,600 pixels on its long edge. Confirm the complete image list for one record is no more than 1,677,722 bytes.
-7. Confirm the file contains no location metadata intended to remain private.
-8. Regenerate and inspect a contact sheet for every listing affected by an image change.
-9. Do not import or publish until every changed image passes this gate. The importer enforces the byte and dimension ceilings and performs bounded structural validation for still AVIF, GIF, JPEG, PNG, and WebP. AVIS image sequences are rejected. It fails closed on malformed structure or dimensions but does not decode compressed AV1 or other image pixels, so manual visual inspection remains required.
+7. Treat the 1,600-pixel delivered file as the full-resolution web image: visitors can open the current carousel view directly, so inspect the entire frame at that size.
+8. Confirm the file contains no location metadata intended to remain private.
+9. Regenerate and inspect a contact sheet for every listing affected by an image change.
+10. Do not import or publish until every changed image passes this gate. The importer enforces the byte and dimension ceilings and performs bounded structural validation for still AVIF, GIF, JPEG, PNG, and WebP. AVIS image sequences are rejected. It fails closed on malformed structure or dimensions but does not decode compressed AV1 or other image pixels, so manual visual inspection remains required.
 
 ## Inventory And Publication
 

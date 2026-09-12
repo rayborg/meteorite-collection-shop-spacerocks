@@ -531,6 +531,7 @@ textarea:focus-visible {
   inset: 0;
   display: grid;
   place-items: center;
+  cursor: zoom-in;
 }
 
 .card-image-link:focus-visible { outline: 3px solid var(--brass-light); outline-offset: -5px; }

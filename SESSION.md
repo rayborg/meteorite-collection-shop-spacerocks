@@ -28,6 +28,8 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - The homepage now has concise meteorite education and independently pausable rotating collection, sale, and book highlight groups, published in commit `26fb24c`.
 - The live site has static specimen detail pages, optional cross-catalog `meteoriteId` grouping, catalog card links, and independently actionable physical specimen cards, published in commit `1106a35`. Existing records remain singleton pages without JSON migration.
 - Import validation now enforces 563,200 bytes per image, a 1,600-pixel long edge, and 1,677,722 bytes per record across still AVIF, GIF, JPEG, PNG, and WebP; cross-platform source-race validation was completed in commit `e8d0308`.
+- The current working tree makes each active carousel photograph open its exact 1,600-pixel web-resolution file while specimen information continues to open the product page.
+- A new 43-image framing/matte audit approved 34 views, corrected six source-backed crops, and identified all three 13.8 kg NWA views as requiring a new white-matte photo session because no originals are available.
 
 ## Durable Decisions
 
@@ -76,7 +78,8 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 
 ## Active Work
 
-- No implementation remains active from this session.
+- Publish and live-verify the full-resolution carousel links and six corrected white-matte crops.
+- New white-matte photographs are still required for all three 13.8 kg NWA views; no recoverable source originals were found.
 
 ## Validation Evidence
 
@@ -111,18 +114,23 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Independent product validation passed all 13 current singleton pages, future mixed collection/sale groups, per-specimen cart actions, carousel controls, malformed and failed-load states, and responsive structure.
 - Independent importer validation passed adversarial JPEG, PNG, GIF, WebP, and still-AVIF structure/dimension checks, exact byte boundaries, WebP canvas/frame binding, AVIF primary-item binding, and same-inode source mutation rejection.
 - GitHub Actions run `34580364362` passed all 43 tests and deployed commit `e8d0308`; the preceding run exposed and was superseded after correcting a Linux sub-millisecond timestamp assertion in the digest-race test.
+- The new framing audit reviewed all 43 specimen images: 34 passed unchanged, six source-backed Wabar/Aguas crops were corrected and independently approved, and three source-unavailable 13.8 kg NWA images remain documented reshoot exceptions.
+- All six corrected files are 1600 x 1200 JPEGs, preserve their DCI-P3 profile, contain no GPS coordinates, decode successfully, and remain within individual and per-record byte limits.
+- Independent fake-clock validation confirmed that initial, manual, and automatic carousel changes keep the full-resolution image link synchronized while product information and cart controls remain separate.
 
 ## Immediate Next Actions
 
-1. Supply sale prices when known.
-2. Configure a valid Formspree endpoint when checkout requests should be enabled.
-3. Import permanent-collection and sale book records when their data and photographs are ready.
+1. Reshoot all three 13.8 kg NWA views on a sufficiently large white/neutral matte, keeping the complete specimen visible and retaining a readable full weight view.
+2. Supply sale prices when known.
+3. Configure a valid Formspree endpoint when checkout requests should be enabled.
+4. Import permanent-collection and sale book records when their data and photographs are ready.
 
 ## Unresolved Items
 
 - Sale prices remain `TBD` until supplied.
 - Checkout submission remains disabled until a valid Formspree endpoint is configured.
 - The books catalog is empty pending book records and photographs.
+- The three 13.8 kg NWA images use a room/granite/foil setting rather than a complete white matte, and the weight view clips the specimen; source recovery found no wider originals, so safe correction requires a reshoot rather than masking or synthesis.
 
 ## Session Log
 

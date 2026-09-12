@@ -94,24 +94,22 @@ function getSpecimenDetailUrl(item) {
   return meteoriteId ? `./specimen.html?meteorite=${encodeURIComponent(meteoriteId)}` : null;
 }
 
-function createImage(item, kind, detailUrl = null) {
+function createImage(item, kind) {
   const figure = createElement("div", "card-image");
-  const imageRegion = detailUrl ? createElement("a", "card-image-link") : figure;
-  if (detailUrl) {
-    imageRegion.href = detailUrl;
-    imageRegion.setAttribute("aria-label", `Open the record for ${text(item.name, "this specimen")}`);
-    figure.append(imageRegion);
-  }
   const images = kind === "book"
     ? [item.image].filter(Boolean)
     : [...new Set([item.image, ...(Array.isArray(item.images) ? item.images : [])].filter(Boolean))];
   if (images.length) {
+    const imageRegion = createElement("a", "card-image-link");
+    imageRegion.target = "_blank";
+    imageRegion.rel = "noopener noreferrer";
+    figure.append(imageRegion);
     const image = document.createElement("img");
     image.loading = "lazy";
     image.decoding = "async";
     imageRegion.append(image);
 
-    const label = text(item.name, "Specimen");
+    const label = kind === "book" ? text(item.title, "Book") : text(item.name, "Specimen");
     const primaryAlt = text(item.imageAlt, `${label} primary view`);
     let activeIndex = 0;
     let counter;
@@ -119,6 +117,8 @@ function createImage(item, kind, detailUrl = null) {
       activeIndex = index;
       image.src = images[activeIndex];
       image.alt = activeIndex === 0 ? primaryAlt : `${label}, alternate view ${activeIndex + 1} of ${images.length}`;
+      imageRegion.href = images[activeIndex];
+      imageRegion.setAttribute("aria-label", `Open full-resolution image ${activeIndex + 1} of ${images.length} for ${label} in a new tab`);
       if (counter) counter.textContent = `${activeIndex + 1} / ${images.length}`;
     };
     showImage(0);
@@ -172,7 +172,7 @@ function createImage(item, kind, detailUrl = null) {
       figure.append(previous, next, toggle, counter);
     }
   } else {
-    imageRegion.append(createElement("span", "image-placeholder"));
+    figure.append(createElement("span", "image-placeholder"));
   }
 
   if (kind !== "collection") {
@@ -231,7 +231,7 @@ function createPriceFooter(item, type) {
 function createSpecimenCard(item, kind = "sale", { detailPage = false } = {}) {
   const article = createElement("article", `catalog-card ${kind === "collection" ? "collection-card" : "sale-card"}`);
   const detailUrl = getSpecimenDetailUrl(item);
-  article.append(createImage(item, kind, detailPage ? null : detailUrl));
+  article.append(createImage(item, kind));
 
   const body = createElement("div", "card-body");
   const information = createElement(detailPage || !detailUrl ? "div" : "a", "card-info-link");

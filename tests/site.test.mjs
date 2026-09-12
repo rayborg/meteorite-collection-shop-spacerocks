@@ -256,15 +256,20 @@ test("unpriced sale records display TBD throughout checkout", async () => {
   assert.doesNotMatch(`${app}\n${checkout}`, /(?:Price )?[Oo]n request/u);
 });
 
-test("catalog specimen links and controls use separate interactive regions", async () => {
+test("carousel images open full resolution while specimen information opens product pages", async () => {
   const app = await read("app.js");
   const css = await read("styles.css");
   assert.ok(app.includes('`./specimen.html?meteorite=${encodeURIComponent(meteoriteId)}`'));
   assert.ok(app.includes('createElement("a", "card-image-link")'));
+  assert.ok(app.includes('imageRegion.href = images[activeIndex]'));
+  assert.ok(app.includes('imageRegion.target = "_blank"'));
+  assert.ok(app.includes('imageRegion.rel = "noopener noreferrer"'));
+  assert.ok(app.includes("Open full-resolution image"));
   assert.ok(app.includes('createElement(detailPage || !detailUrl ? "div" : "a", "card-info-link")'));
   assert.match(app, /figure\.append\(previous, next, toggle, counter\)/u, "carousel controls remain direct figure children");
   assert.match(app, /body\.append\(information\);\n  if \(kind === "sale"\) body\.append\(createPriceFooter/u, "cart footer remains a sibling of the information link");
   assert.ok(css.includes(".card-image-link:focus-visible"));
+  assert.match(css, /\.card-image-link \{[^}]*cursor: zoom-in;/u);
   assert.ok(css.includes(".card-info-link:focus-visible"));
   assert.equal(CartStore.normalizeItem({ type: "specimen", id: "group-a", name: "A" }).key, "specimen:group-a");
   assert.equal(CartStore.normalizeItem({ type: "specimen", id: "group-b", name: "B" }).key, "specimen:group-b");
@@ -290,8 +295,16 @@ test("detail page groups physical records and isolates required catalog failures
   assert.ok(app.includes('appendSpecimenDetailLink("./specimens.html"'));
 });
 
-test("detail runtime keeps grouped physical cards and cart actions independent", async () => {
-  const common = { meteoriteId: "allende", name: "Allende", classification: "CV3", description: "Fixture specimen." };
+test("detail runtime keeps grouped physical cards, full-resolution links, and cart actions independent", async () => {
+  const common = {
+    meteoriteId: "allende",
+    name: "Allende",
+    classification: "CV3",
+    description: "Fixture specimen.",
+    image: "./assets/sale-specimens/allende-face.jpg",
+    images: ["./assets/sale-specimens/allende-face.jpg", "./assets/sale-specimens/allende-reverse.jpg"],
+    imageAlt: "Allende specimen"
+  };
   const result = await runDetailPage({
     collection: [{ ...common, id: "private-a", displayOrder: 1, catalogNumber: "Specimen 001" }],
     specimens: [
@@ -311,6 +324,13 @@ test("detail runtime keeps grouped physical cards and cart actions independent",
   assert.equal(result.canonical.href, "https://example.test/specimen.html?meteorite=allende");
   assert.match(result.detailGrid.textContent, /Retained in the private collection · Not for sale/u);
   assert.match(result.detailGrid.textContent, /TBD/u, "unpriced available records remain TBD");
+  const firstCard = result.detailGrid.children[0];
+  const imageLink = firstCard.querySelector(".card-image-link");
+  assert.equal(imageLink.href, common.images[0]);
+  assert.equal(imageLink.target, "_blank");
+  assert.equal(imageLink.rel, "noopener noreferrer");
+  firstCard.querySelector(".carousel-next").click();
+  assert.equal(imageLink.href, common.images[1], "the full-resolution link must follow the active carousel image");
   const addButtons = result.detailGrid.querySelectorAll(".add-cart-button");
   assert.equal(addButtons.length, 2, "every available record, and no private, reserved, or sold record, has a cart action");
   assert.deepEqual(addButtons.map((button) => button.dataset.cartKey), ["specimen:sale-a", "specimen:sale-b"]);

@@ -16,6 +16,7 @@ The site is organized across seven pages:
 
 Every page repeats the linked live inventory summary directly below the unobstructed official banner.
 Homepage highlight groups rotate through eligible collection specimens, sale specimens, and books when more records exist than the visible slots. Rotation pauses for reduced-motion users and while a visitor interacts with that group.
+Clicking a displayed carousel image opens that exact web-resolution photograph in a new tab. Clicking the specimen information opens its meteorite detail page.
 
 ## Local preview
 
