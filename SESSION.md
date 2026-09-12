@@ -28,7 +28,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - The homepage now has concise meteorite education and independently pausable rotating collection, sale, and book highlight groups, published in commit `26fb24c`.
 - The live site has static specimen detail pages, optional cross-catalog `meteoriteId` grouping, catalog card links, and independently actionable physical specimen cards, published in commit `1106a35`. Existing records remain singleton pages without JSON migration.
 - Import validation now enforces 563,200 bytes per image, a 1,600-pixel long edge, and 1,677,722 bytes per record across still AVIF, GIF, JPEG, PNG, and WebP; cross-platform source-race validation was completed in commit `e8d0308`.
-- Each active carousel photograph now opens its exact 1,600-pixel web-resolution file while specimen information continues to open the product page, published with six corrected source-backed crops in commit `9ba161b`.
+- Each active carousel photograph opens its exact 1,600-pixel web-resolution file while specimen information continues to open the product page; the previously published new-tab treatment is being replaced with the standard in-page commerce gallery pattern.
 - The 43-image framing/matte audit approved 40 views and identified all three 13.8 kg NWA views as requiring a new white-matte photo session because no originals are available.
 
 ## Durable Decisions
@@ -38,6 +38,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Optional `meteoriteId` is the shared meteorite page identity; physical `id` remains globally unique across specimen catalogs and remains the cart identity. A missing `meteoriteId` falls back to `id`.
 - A meteorite detail page may group collection and sale records under a shared name such as NWA 869, while exposing every physical record and purchase action separately. Grouping must not merge cart identity or inventory state.
 - Specimen carousels rotate every 3 seconds, respect reduced motion, pause on interaction, and expose manual controls. Manual previous/next navigation pauses only that carousel until Play is selected.
+- Enlarged product imagery must use an in-page modal gallery rather than a raw-image tab. It must open on the selected view, retain gallery navigation, close by button, Escape, or backdrop, and return keyboard focus to its opener.
 - Collection specimens require exactly 3 images. Sale specimens and all book records require exactly 5 images.
 - Catalog descriptions should describe the physical specimen and verified meteorite facts, not the number or type of photographs.
 - Wabar impact products are related terrestrial impact material and must not be represented as meteorites.
@@ -78,7 +79,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 
 ## Active Work
 
-- No implementation remains active from this session.
+- Replace raw-image new tabs with the researched, accessible in-page image-gallery overlay and publish the correction.
 - New white-matte photographs are still required for all three 13.8 kg NWA views; no recoverable source originals were found.
 
 ## Validation Evidence
@@ -119,6 +120,8 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Independent fake-clock validation confirmed that initial, manual, and automatic carousel changes keep the full-resolution image link synchronized while product information and cart controls remain separate.
 - GitHub Actions run `34664041847` passed all 43 tests and deployed commit `9ba161b`.
 - Live Chrome checks passed at 1440 x 1000 and 390 x 844 across the homepage, both specimen catalogs, and representative collection/sale product pages with synchronized carousel links, separate information links, no browser errors, and no horizontal overflow. The deployed script and all six corrected images byte-match the committed files.
+- Commerce UX research supports an in-page gallery overlay: Baymard documents the pattern across 543 desktop/mobile/app examples and reports image zoom on 93% of desktop commerce sites; Shopify Dawn uses a product modal. The implementation follows MDN and W3C modal-dialog guidance.
+- Independent Chrome validation passed the in-page viewer at 1440 x 1000 and 390 x 844 after corrections for long-open homepage rotation, exact scroll restoration, and cyclic keyboard focus. Image selection, mouse/touch/arrow navigation, Close/Escape/backdrop dismissal, focus return, inert background, cart separation, and a future single-image book fixture all passed.
 
 ## Immediate Next Actions
 

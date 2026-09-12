@@ -8,6 +8,7 @@ const DATA_FILES = {
 
 const CAROUSEL_INTERVAL_MS = 3000;
 const HIGHLIGHT_ROTATION_MS = 15000;
+let imageViewer = null;
 
 const state = {
   collection: [],
@@ -94,15 +95,102 @@ function getSpecimenDetailUrl(item) {
   return meteoriteId ? `./specimen.html?meteorite=${encodeURIComponent(meteoriteId)}` : null;
 }
 
+function openImageViewer(images, initialIndex, label, primaryAlt, trigger) {
+  if (!imageViewer) {
+    const dialog = createElement("dialog", "image-viewer");
+    dialog.id = "image-viewer";
+    const close = createElement("button", "image-viewer-close", "Close");
+    close.type = "button";
+    close.autofocus = true;
+    close.setAttribute("aria-label", "Close full-resolution image viewer");
+    const previous = createElement("button", "image-viewer-arrow image-viewer-previous", "←");
+    previous.type = "button";
+    previous.setAttribute("aria-label", "Previous full-resolution image");
+    const image = createElement("img", "image-viewer-image");
+    const next = createElement("button", "image-viewer-arrow image-viewer-next", "→");
+    next.type = "button";
+    next.setAttribute("aria-label", "Next full-resolution image");
+    const count = createElement("span", "image-viewer-count");
+    count.setAttribute("aria-hidden", "true");
+    dialog.append(close, previous, image, next, count);
+
+    imageViewer = { dialog, close, previous, image, next, count, images: [], index: 0, label: "", primaryAlt: "", trigger: null };
+    const showImage = (index) => {
+      imageViewer.index = (index + imageViewer.images.length) % imageViewer.images.length;
+      imageViewer.image.src = imageViewer.images[imageViewer.index];
+      imageViewer.image.alt = imageViewer.index === 0
+        ? imageViewer.primaryAlt
+        : `${imageViewer.label}, alternate view ${imageViewer.index + 1} of ${imageViewer.images.length}`;
+      imageViewer.count.textContent = `${imageViewer.index + 1} / ${imageViewer.images.length}`;
+      imageViewer.dialog.setAttribute("aria-label", `Full-resolution image ${imageViewer.index + 1} of ${imageViewer.images.length} for ${imageViewer.label}`);
+    };
+    close.addEventListener("click", () => dialog.close());
+    previous.addEventListener("click", () => showImage(imageViewer.index - 1));
+    next.addEventListener("click", () => showImage(imageViewer.index + 1));
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+    dialog.addEventListener("keydown", (event) => {
+      if (event.key === "Tab") {
+        const controls = [close, previous, next].filter((control) => !control.hidden);
+        const first = controls[0];
+        const last = controls.at(-1);
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+        return;
+      }
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      showImage(imageViewer.index + (event.key === "ArrowLeft" ? -1 : 1));
+    });
+    dialog.addEventListener("close", () => {
+      const scrollY = imageViewer.scrollY;
+      document.body.classList.remove("image-viewer-open");
+      document.body.style.top = "";
+      const scrollBehavior = document.documentElement.style.scrollBehavior;
+      document.documentElement.style.scrollBehavior = "auto";
+      window.scrollTo(0, scrollY);
+      document.documentElement.style.scrollBehavior = scrollBehavior;
+      imageViewer.trigger?.focus();
+      imageViewer.trigger = null;
+    });
+    document.body.append(dialog);
+  }
+
+  imageViewer.images = images;
+  imageViewer.label = label;
+  imageViewer.primaryAlt = primaryAlt;
+  imageViewer.trigger = trigger;
+  const multipleImages = images.length > 1;
+  imageViewer.previous.hidden = !multipleImages;
+  imageViewer.next.hidden = !multipleImages;
+  imageViewer.count.hidden = !multipleImages;
+  imageViewer.index = initialIndex;
+  imageViewer.image.src = images[initialIndex];
+  imageViewer.image.alt = initialIndex === 0 ? primaryAlt : `${label}, alternate view ${initialIndex + 1} of ${images.length}`;
+  imageViewer.count.textContent = `${initialIndex + 1} / ${images.length}`;
+  imageViewer.dialog.setAttribute("aria-label", `Full-resolution image ${initialIndex + 1} of ${images.length} for ${label}`);
+  imageViewer.scrollY = window.scrollY;
+  document.body.style.top = `-${imageViewer.scrollY}px`;
+  document.body.classList.add("image-viewer-open");
+  imageViewer.dialog.showModal();
+}
+
 function createImage(item, kind) {
   const figure = createElement("div", "card-image");
   const images = kind === "book"
     ? [item.image].filter(Boolean)
     : [...new Set([item.image, ...(Array.isArray(item.images) ? item.images : [])].filter(Boolean))];
   if (images.length) {
-    const imageRegion = createElement("a", "card-image-link");
-    imageRegion.target = "_blank";
-    imageRegion.rel = "noopener noreferrer";
+    const imageRegion = createElement("button", "card-image-link");
+    imageRegion.type = "button";
+    imageRegion.setAttribute("aria-haspopup", "dialog");
+    imageRegion.setAttribute("aria-controls", "image-viewer");
     figure.append(imageRegion);
     const image = document.createElement("img");
     image.loading = "lazy";
@@ -113,12 +201,12 @@ function createImage(item, kind) {
     const primaryAlt = text(item.imageAlt, `${label} primary view`);
     let activeIndex = 0;
     let counter;
+    imageRegion.addEventListener("click", () => openImageViewer(images, activeIndex, label, primaryAlt, imageRegion));
     const showImage = (index) => {
       activeIndex = index;
       image.src = images[activeIndex];
       image.alt = activeIndex === 0 ? primaryAlt : `${label}, alternate view ${activeIndex + 1} of ${images.length}`;
-      imageRegion.href = images[activeIndex];
-      imageRegion.setAttribute("aria-label", `Open full-resolution image ${activeIndex + 1} of ${images.length} for ${label} in a new tab`);
+      imageRegion.setAttribute("aria-label", `Enlarge image ${activeIndex + 1} of ${images.length} for ${label}`);
       if (counter) counter.textContent = `${activeIndex + 1} / ${images.length}`;
     };
     showImage(0);
@@ -165,7 +253,7 @@ function createImage(item, kind) {
 
       const cycle = () => {
         if (!figure.isConnected) return;
-        if (pauseState.canAdvance(document.hidden)) showImage((activeIndex + 1) % images.length);
+        if (!imageViewer?.dialog.open && pauseState.canAdvance(document.hidden)) showImage((activeIndex + 1) % images.length);
         window.setTimeout(cycle, CAROUSEL_INTERVAL_MS);
       };
       window.setTimeout(cycle, CAROUSEL_INTERVAL_MS);
@@ -436,7 +524,7 @@ function renderRotatingHighlights(container, records, { limit, createCard, empty
 
   const cycle = () => {
     if (!container.isConnected) return;
-    if (pauseState.canAdvance(document.hidden)) {
+    if (!imageViewer?.dialog.open && pauseState.canAdvance(document.hidden)) {
       offset = (offset + limit) % records.length;
       render();
     }

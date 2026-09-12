@@ -32,6 +32,7 @@ class FakeNode {
     this.attributes = new Map();
     this.dataset = {};
     this.listeners = {};
+    this.style = {};
     this.isConnected = false;
     this._className = "";
     this._text = "";
@@ -60,10 +61,16 @@ class FakeNode {
   setAttribute(name, value) { this.attributes.set(name, String(value)); }
   getAttribute(name) { return this.attributes.get(name) ?? null; }
   addEventListener(type, listener) { this.listeners[type] = listener; }
-  click() { this.listeners.click?.({}); }
+  click() { this.listeners.click?.({ target: this }); }
   contains(candidate) { return this === candidate || this.children.some((child) => child.contains?.(candidate)); }
   closest() { return null; }
-  focus() {}
+  focus() { this.focused = true; }
+  showModal() { this.open = true; this.setAttribute("open", ""); }
+  close() {
+    this.open = false;
+    this.attributes.delete("open");
+    this.listeners.close?.({ target: this });
+  }
   querySelector(selector) { return this.querySelectorAll(selector)[0] || null; }
   querySelectorAll(selector) {
     const matches = [];
@@ -110,8 +117,10 @@ async function runDetailPage({ search = "?meteorite=allende", collection = [], s
   template.content.append(new FakeNode("h3"), new FakeNode("p"));
   const cartCount = new FakeNode("span");
   const body = new FakeNode("body");
+  const documentElement = new FakeNode("html");
   const document = {
     body,
+    documentElement,
     hidden: false,
     title: "",
     activeElement: null,
@@ -145,7 +154,9 @@ async function runDetailPage({ search = "?meteorite=allende", collection = [], s
       matchMedia: () => ({ matches: false }),
       setTimeout() {},
       addEventListener() {},
-      innerWidth: 1200
+      innerWidth: 1200,
+      scrollY: 240,
+      scrollTo(_x, y) { this.scrollY = y; }
     }
   };
   vm.runInNewContext(await read("app.js"), context);
@@ -256,20 +267,26 @@ test("unpriced sale records display TBD throughout checkout", async () => {
   assert.doesNotMatch(`${app}\n${checkout}`, /(?:Price )?[Oo]n request/u);
 });
 
-test("carousel images open full resolution while specimen information opens product pages", async () => {
+test("carousel images open an in-page full-resolution viewer while specimen information opens product pages", async () => {
   const app = await read("app.js");
   const css = await read("styles.css");
   assert.ok(app.includes('`./specimen.html?meteorite=${encodeURIComponent(meteoriteId)}`'));
-  assert.ok(app.includes('createElement("a", "card-image-link")'));
-  assert.ok(app.includes('imageRegion.href = images[activeIndex]'));
-  assert.ok(app.includes('imageRegion.target = "_blank"'));
-  assert.ok(app.includes('imageRegion.rel = "noopener noreferrer"'));
-  assert.ok(app.includes("Open full-resolution image"));
+  assert.ok(app.includes('createElement("button", "card-image-link")'));
+  assert.ok(app.includes('createElement("dialog", "image-viewer")'));
+  assert.ok(app.includes('imageViewer.dialog.showModal()'));
+  assert.ok(app.includes('if (event.target === dialog) dialog.close()'));
+  assert.ok(app.includes('if (event.key === "Tab")'));
+  assert.ok(app.includes('document.activeElement === last'));
+  assert.ok(app.includes('event.key !== "ArrowLeft" && event.key !== "ArrowRight"'));
+  assert.ok(app.includes('imageViewer.trigger?.focus()'));
+  assert.ok(app.includes('window.scrollTo(0, scrollY)'));
+  assert.doesNotMatch(app, /imageRegion\.target|imageRegion\.href/u);
   assert.ok(app.includes('createElement(detailPage || !detailUrl ? "div" : "a", "card-info-link")'));
   assert.match(app, /figure\.append\(previous, next, toggle, counter\)/u, "carousel controls remain direct figure children");
   assert.match(app, /body\.append\(information\);\n  if \(kind === "sale"\) body\.append\(createPriceFooter/u, "cart footer remains a sibling of the information link");
   assert.ok(css.includes(".card-image-link:focus-visible"));
   assert.match(css, /\.card-image-link \{[^}]*cursor: zoom-in;/u);
+  assert.ok(css.includes(".image-viewer::backdrop"));
   assert.ok(css.includes(".card-info-link:focus-visible"));
   assert.equal(CartStore.normalizeItem({ type: "specimen", id: "group-a", name: "A" }).key, "specimen:group-a");
   assert.equal(CartStore.normalizeItem({ type: "specimen", id: "group-b", name: "B" }).key, "specimen:group-b");
@@ -295,7 +312,7 @@ test("detail page groups physical records and isolates required catalog failures
   assert.ok(app.includes('appendSpecimenDetailLink("./specimens.html"'));
 });
 
-test("detail runtime keeps grouped physical cards, full-resolution links, and cart actions independent", async () => {
+test("detail runtime keeps grouped physical cards, image viewer, and cart actions independent", async () => {
   const common = {
     meteoriteId: "allende",
     name: "Allende",
@@ -325,12 +342,40 @@ test("detail runtime keeps grouped physical cards, full-resolution links, and ca
   assert.match(result.detailGrid.textContent, /Retained in the private collection · Not for sale/u);
   assert.match(result.detailGrid.textContent, /TBD/u, "unpriced available records remain TBD");
   const firstCard = result.detailGrid.children[0];
-  const imageLink = firstCard.querySelector(".card-image-link");
-  assert.equal(imageLink.href, common.images[0]);
-  assert.equal(imageLink.target, "_blank");
-  assert.equal(imageLink.rel, "noopener noreferrer");
+  const imageButton = firstCard.querySelector(".card-image-link");
+  assert.equal(imageButton.tagName, "BUTTON");
+  assert.equal(imageButton.type, "button");
+  assert.equal(imageButton.getAttribute("aria-haspopup"), "dialog");
+  assert.equal(imageButton.getAttribute("aria-controls"), "image-viewer");
+  imageButton.click();
+  const viewer = result.document.body.querySelector(".image-viewer");
+  assert.equal(viewer.open, true);
+  assert.equal(viewer.querySelector(".image-viewer-image").src, common.images[0]);
+  assert.equal(result.document.body.style.top, "-240px");
+  const viewerClose = viewer.querySelector(".image-viewer-close");
+  const viewerPrevious = viewer.querySelector(".image-viewer-previous");
+  const viewerNext = viewer.querySelector(".image-viewer-next");
+  let tabPrevented = false;
+  result.document.activeElement = viewerNext;
+  viewer.listeners.keydown({ key: "Tab", shiftKey: false, preventDefault() { tabPrevented = true; } });
+  assert.equal(tabPrevented, true);
+  assert.equal(viewerClose.focused, true, "forward Tab must wrap to Close");
+  let reverseTabPrevented = false;
+  result.document.activeElement = viewerClose;
+  viewer.listeners.keydown({ key: "Tab", shiftKey: true, preventDefault() { reverseTabPrevented = true; } });
+  assert.equal(reverseTabPrevented, true);
+  assert.equal(viewerNext.focused, true, "reverse Tab must wrap to Next");
+  viewer.querySelector(".image-viewer-next").click();
+  assert.equal(viewer.querySelector(".image-viewer-image").src, common.images[1]);
+  viewerClose.click();
+  assert.equal(viewer.open, false);
+  assert.equal(result.document.body.style.top, "");
+  assert.equal(imageButton.focused, true, "closing the viewer must restore focus to its opener");
   firstCard.querySelector(".carousel-next").click();
-  assert.equal(imageLink.href, common.images[1], "the full-resolution link must follow the active carousel image");
+  imageButton.click();
+  assert.equal(viewer.querySelector(".image-viewer-image").src, common.images[1], "the viewer must open on the active carousel image");
+  viewer.listeners.click({ target: viewer });
+  assert.equal(viewer.open, false, "selecting the backdrop must close the viewer");
   const addButtons = result.detailGrid.querySelectorAll(".add-cart-button");
   assert.equal(addButtons.length, 2, "every available record, and no private, reserved, or sold record, has a cart action");
   assert.deepEqual(addButtons.map((button) => button.dataset.cartKey), ["specimen:sale-a", "specimen:sale-b"]);
@@ -366,6 +411,7 @@ test("specimen cards rotate their image galleries every three seconds", async ()
   assert.ok(app.includes('figure.addEventListener("pointerenter"'), "carousel must pause during pointer interaction");
   assert.ok(app.includes('figure.addEventListener("focusin"'), "carousel must pause during keyboard interaction");
   assert.ok(app.includes("pauseState.canAdvance(document.hidden)"), "carousel must check all pause conditions before advancing");
+  assert.match(app, /!imageViewer\?\.dialog\.open && pauseState\.canAdvance\(document\.hidden\)/u, "carousel and highlight rotation must pause while the image viewer is open");
   assert.ok(css.includes(".carousel-toggle:focus-visible"), "carousel control must expose keyboard focus");
   assert.ok(css.includes(".carousel-arrow:focus-visible"), "carousel arrows must expose keyboard focus");
   assert.match(css, /\.card-image img \{[^}]*object-fit: contain; object-position: center center;/u, "catalog images must remain centered and fully visible");
