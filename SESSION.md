@@ -28,7 +28,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - The homepage now has concise meteorite education and independently pausable rotating collection, sale, and book highlight groups, published in commit `26fb24c`.
 - The live site has static specimen detail pages, optional cross-catalog `meteoriteId` grouping, catalog card links, and independently actionable physical specimen cards, published in commit `1106a35`. Existing records remain singleton pages without JSON migration.
 - Import validation now enforces 563,200 bytes per image, a 1,600-pixel long edge, and 1,677,722 bytes per record across still AVIF, GIF, JPEG, PNG, and WebP; cross-platform source-race validation was completed in commit `e8d0308`.
-- Each active carousel photograph opens its exact 1,600-pixel web-resolution file while specimen information continues to open the product page; the previously published new-tab treatment is being replaced with the standard in-page commerce gallery pattern.
+- Each active carousel photograph opens its exact 1,600-pixel web-resolution file in a standard in-page commerce gallery while specimen information continues to open the product page, published in commit `725f85c`.
 - The 43-image framing/matte audit approved 40 views and identified all three 13.8 kg NWA views as requiring a new white-matte photo session because no originals are available.
 
 ## Durable Decisions
@@ -79,7 +79,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 
 ## Active Work
 
-- Replace raw-image new tabs with the researched, accessible in-page image-gallery overlay and publish the correction.
+- No implementation remains active from this session.
 - New white-matte photographs are still required for all three 13.8 kg NWA views; no recoverable source originals were found.
 
 ## Validation Evidence
@@ -122,6 +122,8 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Live Chrome checks passed at 1440 x 1000 and 390 x 844 across the homepage, both specimen catalogs, and representative collection/sale product pages with synchronized carousel links, separate information links, no browser errors, and no horizontal overflow. The deployed script and all six corrected images byte-match the committed files.
 - Commerce UX research supports an in-page gallery overlay: Baymard documents the pattern across 543 desktop/mobile/app examples and reports image zoom on 93% of desktop commerce sites; Shopify Dawn uses a product modal. The implementation follows MDN and W3C modal-dialog guidance.
 - Independent Chrome validation passed the in-page viewer at 1440 x 1000 and 390 x 844 after corrections for long-open homepage rotation, exact scroll restoration, and cyclic keyboard focus. Image selection, mouse/touch/arrow navigation, Close/Escape/backdrop dismissal, focus return, inert background, cart separation, and a future single-image book fixture all passed.
+- GitHub Actions run `34665737389` passed all 43 tests and deployed commit `725f85c`.
+- Live Chrome checks passed the gallery on the homepage, both specimen catalogs, and representative collection/sale product pages at 1440 x 1000 and 390 x 844. Every view stayed in-page, opened on the selected photograph, navigated and returned correctly, preserved focus, produced no browser errors or overflow, and served an `app.js` byte-identical to the committed file.
 
 ## Immediate Next Actions
 
@@ -153,3 +155,4 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - `1106a35`: Added specimen product pages, future meteorite grouping, card click-through links, and image import safeguards.
 - `e8d0308`: Made source-digest race validation portable across macOS and Linux filesystem timestamp precision.
 - `9ba161b`: Opened each active carousel image at full web resolution and published six independently approved Wabar/Aguas crop corrections.
+- `725f85c`: Replaced raw-image tabs with the researched, accessible in-page commerce gallery overlay.
