@@ -28,8 +28,8 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - The homepage now has concise meteorite education and independently pausable rotating collection, sale, and book highlight groups, published in commit `26fb24c`.
 - The live site has static specimen detail pages, optional cross-catalog `meteoriteId` grouping, catalog card links, and independently actionable physical specimen cards, published in commit `1106a35`. Existing records remain singleton pages without JSON migration.
 - Import validation now enforces 563,200 bytes per image, a 1,600-pixel long edge, and 1,677,722 bytes per record across still AVIF, GIF, JPEG, PNG, and WebP; cross-platform source-race validation was completed in commit `e8d0308`.
-- The current working tree makes each active carousel photograph open its exact 1,600-pixel web-resolution file while specimen information continues to open the product page.
-- A new 43-image framing/matte audit approved 34 views, corrected six source-backed crops, and identified all three 13.8 kg NWA views as requiring a new white-matte photo session because no originals are available.
+- Each active carousel photograph now opens its exact 1,600-pixel web-resolution file while specimen information continues to open the product page, published with six corrected source-backed crops in commit `9ba161b`.
+- The 43-image framing/matte audit approved 40 views and identified all three 13.8 kg NWA views as requiring a new white-matte photo session because no originals are available.
 
 ## Durable Decisions
 
@@ -78,7 +78,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 
 ## Active Work
 
-- Publish and live-verify the full-resolution carousel links and six corrected white-matte crops.
+- No implementation remains active from this session.
 - New white-matte photographs are still required for all three 13.8 kg NWA views; no recoverable source originals were found.
 
 ## Validation Evidence
@@ -117,6 +117,8 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - The new framing audit reviewed all 43 specimen images: 34 passed unchanged, six source-backed Wabar/Aguas crops were corrected and independently approved, and three source-unavailable 13.8 kg NWA images remain documented reshoot exceptions.
 - All six corrected files are 1600 x 1200 JPEGs, preserve their DCI-P3 profile, contain no GPS coordinates, decode successfully, and remain within individual and per-record byte limits.
 - Independent fake-clock validation confirmed that initial, manual, and automatic carousel changes keep the full-resolution image link synchronized while product information and cart controls remain separate.
+- GitHub Actions run `34664041847` passed all 43 tests and deployed commit `9ba161b`.
+- Live Chrome checks passed at 1440 x 1000 and 390 x 844 across the homepage, both specimen catalogs, and representative collection/sale product pages with synchronized carousel links, separate information links, no browser errors, and no horizontal overflow. The deployed script and all six corrected images byte-match the committed files.
 
 ## Immediate Next Actions
 
@@ -147,3 +149,4 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - `26fb24c`: Added the compact meteorite introduction and rotating homepage catalog highlights.
 - `1106a35`: Added specimen product pages, future meteorite grouping, card click-through links, and image import safeguards.
 - `e8d0308`: Made source-digest race validation portable across macOS and Linux filesystem timestamp precision.
+- `9ba161b`: Opened each active carousel image at full web resolution and published six independently approved Wabar/Aguas crop corrections.
