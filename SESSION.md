@@ -31,6 +31,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Each active carousel photograph opens its exact 1,600-pixel web-resolution file in a standard in-page commerce gallery while specimen information continues to open the product page, published in commit `725f85c`.
 - The 43-image framing/matte audit approved 40 views and identified all three 13.8 kg NWA views as requiring a new white-matte photo session because no originals are available.
 - The published Excel-compatible specimen ledger uses one global `Specimen 001` through `Specimen 013` sequence, four structured Meteoritical Bulletin associations, and deterministic metadata sync into the image-backed public catalogs in commit `dc7bb2e`.
+- The shop now has a deterministic, read-only `coa-batch-input-v1` exporter for all 13 specimens and 43 prepared catalog photographs, with reviewed identity/occurrence assertions, source and image hashes, a closed schema, and external-only atomic output.
 
 ## Durable Decisions
 
@@ -47,6 +48,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Wabar impact products are related terrestrial impact material and must not be represented as meteorites.
 - Avoid automatic color normalization when it could alter genuine material color. Apply the quality gate in `docs/IMAGE_PREPARATION.md` after every image change.
 - Acquisition cost is an optional, suggested specimen intake field. Because the repository is public, actual costs belong only in the owner-only external ledger documented in `docs/PRIVATE_COSTS.md`; importer validation must never publish or return them.
+- COA exports contain no sale state, prices, buyer data, acquisition data, or wall-clock fields. Every exported photograph is explicitly disclosed as a prepared catalog image rather than an original camera file.
 
 ## Completed Work
 
@@ -128,6 +130,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - GitHub Actions run `34665737389` passed all 43 tests and deployed commit `725f85c`.
 - Live Chrome checks passed the gallery on the homepage, both specimen catalogs, and representative collection/sale product pages at 1440 x 1000 and 390 x 844. Every view stayed in-page, opened on the selected photograph, navigated and returned correctly, preserved focus, produced no browser errors or overflow, and served an `app.js` byte-identical to the committed file.
 - The specimen-ledger implementation passes all 47 tests and dry-run/check convergence for 13 specimens and four MetBull associations. Independent validation verified all official source pages, Excel-compatible CSV parsing and Unicode, exact blank semantics, deterministic/transactional writes and rollback, image-byte preservation, importer resynchronization, privacy boundaries, site/cart behavior, and exact public price handling through the supported `$1,000,000.00` ceiling.
+- Focused COA exporter tests cover exact record/category/photo counts, lexical masses, physical descriptions, closed-schema validation, reviewed assertion tampering, path/root traversal, symlink and non-file inputs, duplicate photos, primary selection, privacy fields, deterministic external writes, and no-overwrite behavior.
 - GitHub Actions run `34760770619` passed all 47 tests and deployed commit `dc7bb2e`.
 - Live verification confirmed that the downloadable ledger, curated meteorite data, and both generated specimen catalogs byte-match the committed files. Desktop/mobile catalog and product-page checks passed with all 13 records, 43 images, cart behavior, and in-page galleries intact.
 

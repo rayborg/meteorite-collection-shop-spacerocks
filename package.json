@@ -5,7 +5,8 @@
   "description": "A personal meteorite collection, specimen exchange, bookshop, and research portal.",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "validate": "node --check app.js && node --check cart.js && node --check checkout.js && node --check scripts/import-inventory.mjs && node --check scripts/sync-specimen-ledger.mjs && npm run ledger:check && npm test",
+    "validate": "node --check app.js && node --check cart.js && node --check checkout.js && node --check scripts/import-inventory.mjs && node --check scripts/sync-specimen-ledger.mjs && node --check scripts/export-coa-batch.mjs && npm run ledger:check && npm run coa:export -- --check && npm test",
+    "coa:export": "node scripts/export-coa-batch.mjs",
     "import:inventory": "node scripts/import-inventory.mjs",
     "ledger:check": "node scripts/sync-specimen-ledger.mjs --check",
     "ledger:sync": "node scripts/sync-specimen-ledger.mjs",

@@ -53,6 +53,8 @@ See `inventory-template/README.md` for the exact column order, field rules, imag
 
 Physical-specimen metadata is also maintained in the Excel-compatible master sheet at `data/specimen-ledger.csv`. It uses one global sequence across both specimen catalogs and associates official meteorites by Meteoritical Bulletin code without duplicating official facts in the sheet. Run `npm run ledger:sync` to preview changes, `npm run ledger:sync -- --write` to apply them, and `npm run ledger:check` to detect drift. See `docs/SPECIMEN_LEDGER.md` for the schema and workflow.
 
+The read-only COA exporter combines the synchronized ledger, reviewed assertions, catalogs, and prepared catalog photographs into the versioned `coa-batch-input-v1` contract. Run `npm run coa:export -- --check` to validate all sources without writing, or `npm run coa:export -- --output "/absolute/path/outside-this-repository/coa-batch.json"` to create an atomic deterministic export. See `docs/COA_EXPORT.md` for the contract, provenance hashes, and output safety rules.
+
 Every imported image must be at most 563,200 bytes and 1,600 pixels on its long edge. One record's complete carousel must total at most 1,677,722 bytes. The dependency-free importer performs bounded structural and dimension validation for still AVIF, GIF, JPEG, PNG, and WebP and rejects malformed or unparseable files. AVIS image sequences are rejected. The importer does not decode compressed AV1 or other image pixels, so prepared images still require visual review.
 
 Each collection specimen requires 3 images. Each sale specimen and every book record require 5 images.

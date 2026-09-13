@@ -1,0 +1,132 @@
+{
+  "schemaVersion": "1.0.0",
+  "specimens": [
+    {
+      "specimenId": "Specimen 001",
+      "objectCategory": "meteorite",
+      "identityKind": "unclassified-meteorite",
+      "occurrence": {
+        "kind": "unknown",
+        "date": null,
+        "datePrecision": "unknown"
+      },
+      "locationPrecision": "unknown"
+    },
+    {
+      "specimenId": "Specimen 002",
+      "objectCategory": "impact-material",
+      "identityKind": "cataloged-impact-material",
+      "occurrence": {
+        "kind": "impact-site-association",
+        "date": null,
+        "datePrecision": "unknown"
+      },
+      "locationPrecision": "locality"
+    },
+    {
+      "specimenId": "Specimen 003",
+      "objectCategory": "impact-material",
+      "identityKind": "cataloged-impact-material",
+      "occurrence": {
+        "kind": "impact-site-association",
+        "date": null,
+        "datePrecision": "unknown"
+      },
+      "locationPrecision": "locality"
+    },
+    {
+      "specimenId": "Specimen 004",
+      "objectCategory": "impact-material",
+      "identityKind": "cataloged-impact-material",
+      "occurrence": {
+        "kind": "impact-site-association",
+        "date": null,
+        "datePrecision": "unknown"
+      },
+      "locationPrecision": "locality"
+    },
+    {
+      "specimenId": "Specimen 005",
+      "objectCategory": "impact-material",
+      "identityKind": "cataloged-impact-material",
+      "occurrence": {
+        "kind": "impact-site-association",
+        "date": null,
+        "datePrecision": "unknown"
+      },
+      "locationPrecision": "locality"
+    },
+    {
+      "specimenId": "Specimen 006",
+      "locationPrecision": "country"
+    },
+    {
+      "specimenId": "Specimen 007",
+      "objectCategory": "meteorite",
+      "identityKind": "unclassified-meteorite",
+      "occurrence": {
+        "kind": "unknown",
+        "date": null,
+        "datePrecision": "unknown"
+      },
+      "locationPrecision": "unknown"
+    },
+    {
+      "specimenId": "Specimen 008",
+      "objectCategory": "meteorite",
+      "identityKind": "unclassified-meteorite",
+      "occurrence": {
+        "kind": "unknown",
+        "date": null,
+        "datePrecision": "unknown"
+      },
+      "locationPrecision": "region"
+    },
+    {
+      "specimenId": "Specimen 009",
+      "occurrence": {
+        "kind": "fall",
+        "date": "1899",
+        "datePrecision": "year",
+        "sourceUrl": "https://www.lpi.usra.edu/meteor/metbull.php?code=5064"
+      },
+      "locationPrecision": "country"
+    },
+    {
+      "specimenId": "Specimen 010",
+      "objectCategory": "meteorite",
+      "identityKind": "unclassified-meteorite",
+      "occurrence": {
+        "kind": "unknown",
+        "date": null,
+        "datePrecision": "unknown"
+      },
+      "locationPrecision": "region"
+    },
+    {
+      "specimenId": "Specimen 011",
+      "locationPrecision": "locality"
+    },
+    {
+      "specimenId": "Specimen 012",
+      "objectCategory": "impact-material",
+      "identityKind": "cataloged-impact-material",
+      "occurrence": {
+        "kind": "impact-site-association",
+        "date": null,
+        "datePrecision": "unknown"
+      },
+      "locationPrecision": "locality"
+    },
+    {
+      "specimenId": "Specimen 013",
+      "occurrence": {
+        "kind": "fall",
+        "date": "2019-04-23",
+        "datePrecision": "day",
+        "sourceUrl": "https://www.lpi.usra.edu/meteor/metbull.php?code=69696"
+      },
+      "locationPrecision": "country"
+    }
+  ]
+}
