@@ -30,7 +30,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Import validation now enforces 563,200 bytes per image, a 1,600-pixel long edge, and 1,677,722 bytes per record across still AVIF, GIF, JPEG, PNG, and WebP; cross-platform source-race validation was completed in commit `e8d0308`.
 - Each active carousel photograph opens its exact 1,600-pixel web-resolution file in a standard in-page commerce gallery while specimen information continues to open the product page, published in commit `725f85c`.
 - The 43-image framing/matte audit approved 40 views and identified all three 13.8 kg NWA views as requiring a new white-matte photo session because no originals are available.
-- The working tree adds an Excel-compatible specimen ledger with one global `Specimen 001` through `Specimen 013` sequence, four structured Meteoritical Bulletin associations, and a deterministic metadata sync into the image-backed public catalogs.
+- The published Excel-compatible specimen ledger uses one global `Specimen 001` through `Specimen 013` sequence, four structured Meteoritical Bulletin associations, and deterministic metadata sync into the image-backed public catalogs in commit `dc7bb2e`.
 
 ## Durable Decisions
 
@@ -82,7 +82,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 
 ## Active Work
 
-- Publish and live-verify the global specimen-ledger workflow and generated metadata.
+- No implementation remains active from this session.
 - New white-matte photographs are still required for all three 13.8 kg NWA views; no recoverable source originals were found.
 
 ## Validation Evidence
@@ -128,6 +128,8 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - GitHub Actions run `34665737389` passed all 43 tests and deployed commit `725f85c`.
 - Live Chrome checks passed the gallery on the homepage, both specimen catalogs, and representative collection/sale product pages at 1440 x 1000 and 390 x 844. Every view stayed in-page, opened on the selected photograph, navigated and returned correctly, preserved focus, produced no browser errors or overflow, and served an `app.js` byte-identical to the committed file.
 - The specimen-ledger implementation passes all 47 tests and dry-run/check convergence for 13 specimens and four MetBull associations. Independent validation verified all official source pages, Excel-compatible CSV parsing and Unicode, exact blank semantics, deterministic/transactional writes and rollback, image-byte preservation, importer resynchronization, privacy boundaries, site/cart behavior, and exact public price handling through the supported `$1,000,000.00` ceiling.
+- GitHub Actions run `34760770619` passed all 47 tests and deployed commit `dc7bb2e`.
+- Live verification confirmed that the downloadable ledger, curated meteorite data, and both generated specimen catalogs byte-match the committed files. Desktop/mobile catalog and product-page checks passed with all 13 records, 43 images, cart behavior, and in-page galleries intact.
 
 ## Immediate Next Actions
 
@@ -160,3 +162,4 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - `e8d0308`: Made source-digest race validation portable across macOS and Linux filesystem timestamp precision.
 - `9ba161b`: Opened each active carousel image at full web resolution and published six independently approved Wabar/Aguas crop corrections.
 - `725f85c`: Replaced raw-image tabs with the researched, accessible in-page commerce gallery overlay.
+- `dc7bb2e`: Added the global Excel-compatible specimen ledger, structured MetBull associations, deterministic catalog sync, and current 13-specimen sheet.
