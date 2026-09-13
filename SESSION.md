@@ -1,6 +1,6 @@
 # Spacerocks Cabinet Session Memory
 
-Last updated: 2026-09-11
+Last updated: 2026-09-13
 
 ## Project Goal
 
@@ -30,6 +30,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Import validation now enforces 563,200 bytes per image, a 1,600-pixel long edge, and 1,677,722 bytes per record across still AVIF, GIF, JPEG, PNG, and WebP; cross-platform source-race validation was completed in commit `e8d0308`.
 - Each active carousel photograph opens its exact 1,600-pixel web-resolution file in a standard in-page commerce gallery while specimen information continues to open the product page, published in commit `725f85c`.
 - The 43-image framing/matte audit approved 40 views and identified all three 13.8 kg NWA views as requiring a new white-matte photo session because no originals are available.
+- The working tree adds an Excel-compatible specimen ledger with one global `Specimen 001` through `Specimen 013` sequence, four structured Meteoritical Bulletin associations, and a deterministic metadata sync into the image-backed public catalogs.
 
 ## Durable Decisions
 
@@ -39,6 +40,8 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - A meteorite detail page may group collection and sale records under a shared name such as NWA 869, while exposing every physical record and purchase action separately. Grouping must not merge cart identity or inventory state.
 - Specimen carousels rotate every 3 seconds, respect reduced motion, pause on interaction, and expose manual controls. Manual previous/next navigation pauses only that carousel until Play is selected.
 - Enlarged product imagery must use an in-page modal gallery rather than a raw-image tab. It must open on the selected view, retain gallery navigation, close by button, Escape, or backdrop, and return keyboard focus to its opener.
+- `specimenId` is the permanent global ledger number across collection and sale specimens; `catalogNumber` remains the separate reader-facing sequence within each public catalog, and stable `id` remains the physical/cart identity.
+- `data/specimen-ledger.csv` owns specimen-specific public metadata. `data/meteorites.json` owns reviewed official meteorite facts keyed by `metbullCode`; associated spreadsheet rows must not duplicate name, classification, locality, or found year.
 - Collection specimens require exactly 3 images. Sale specimens and all book records require exactly 5 images.
 - Catalog descriptions should describe the physical specimen and verified meteorite facts, not the number or type of photographs.
 - Wabar impact products are related terrestrial impact material and must not be represented as meteorites.
@@ -79,7 +82,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 
 ## Active Work
 
-- No implementation remains active from this session.
+- Publish and live-verify the global specimen-ledger workflow and generated metadata.
 - New white-matte photographs are still required for all three 13.8 kg NWA views; no recoverable source originals were found.
 
 ## Validation Evidence
@@ -124,6 +127,7 @@ Maintain and publish the Spacerocks Cabinet as a dark archival catalog for a per
 - Independent Chrome validation passed the in-page viewer at 1440 x 1000 and 390 x 844 after corrections for long-open homepage rotation, exact scroll restoration, and cyclic keyboard focus. Image selection, mouse/touch/arrow navigation, Close/Escape/backdrop dismissal, focus return, inert background, cart separation, and a future single-image book fixture all passed.
 - GitHub Actions run `34665737389` passed all 43 tests and deployed commit `725f85c`.
 - Live Chrome checks passed the gallery on the homepage, both specimen catalogs, and representative collection/sale product pages at 1440 x 1000 and 390 x 844. Every view stayed in-page, opened on the selected photograph, navigated and returned correctly, preserved focus, produced no browser errors or overflow, and served an `app.js` byte-identical to the committed file.
+- The specimen-ledger implementation passes all 47 tests and dry-run/check convergence for 13 specimens and four MetBull associations. Independent validation verified all official source pages, Excel-compatible CSV parsing and Unicode, exact blank semantics, deterministic/transactional writes and rollback, image-byte preservation, importer resynchronization, privacy boundaries, site/cart behavior, and exact public price handling through the supported `$1,000,000.00` ceiling.
 
 ## Immediate Next Actions
 

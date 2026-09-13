@@ -1,9 +1,10 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-09-11",
+  "updated": "2026-09-13",
   "items": [
     {
       "id": "unclassified-meteorite-367-3g",
+      "specimenId": "Specimen 001",
       "displayOrder": 10,
       "catalogNumber": "Specimen 001",
       "description": "A substantial 367.3 g unclassified specimen with a rounded dark exterior and exposed weathered interior areas. Classification and find locality have not been recorded.",
@@ -20,6 +21,7 @@
     },
     {
       "id": "wabar-impact-material-63-2g",
+      "specimenId": "Specimen 002",
       "displayOrder": 20,
       "catalogNumber": "Specimen 002",
       "description": "A 63.2 g Wabar related artifact showing black impact glass fused to pale desert sand. This is cataloged as terrestrial impact material, not as a meteorite.",
@@ -37,6 +39,7 @@
     },
     {
       "id": "wabar-fused-sand-30-4g",
+      "specimenId": "Specimen 003",
       "displayOrder": 30,
       "catalogNumber": "Specimen 003",
       "description": "A 30.4 g fragment of pale Wabar sand fused by impact heat, with layered texture and small dark glassy areas. Cataloged as impact material rather than a meteorite.",
@@ -54,6 +57,7 @@
     },
     {
       "id": "wabar-relic-iron-7-9g",
+      "specimenId": "Specimen 004",
       "displayOrder": 40,
       "catalogNumber": "Specimen 004",
       "description": "A 7.9 g Wabar impact fragment combining dark glass, fused sand, and a remnant interpreted as relic meteoritic iron.",
@@ -71,6 +75,7 @@
     },
     {
       "id": "wabar-pearl-0-7g",
+      "specimenId": "Specimen 005",
       "displayOrder": 50,
       "catalogNumber": "Specimen 005",
       "description": "A small 0.7 g polished Wabar pearl with a glossy black surface and rounded oval form.",
@@ -88,6 +93,7 @@
     },
     {
       "id": "kaalijarv-36-4g",
+      "specimenId": "Specimen 006",
       "displayOrder": 60,
       "catalogNumber": "Specimen 006",
       "description": "A thin, angular 36.4 g iron fragment with a weathered metallic surface. Kaalijarv is an officially recognized IAB-MG iron meteorite found in Estonia in 1937; the Meteoritical Bulletin Database records 2.25 kg for the meteorite (code 12217).",
@@ -99,6 +105,7 @@
       ],
       "imageAlt": "Upright view of a thin angular 36.4 g Kaalijarv iron fragment with layered metallic texture",
       "name": "Kaalijarv",
+      "metbullCode": "12217",
       "classification": "Iron, IAB-MG",
       "massGrams": 36.4,
       "locality": "Estonia",
@@ -106,6 +113,7 @@
     },
     {
       "id": "unclassified-oc-57-6g",
+      "specimenId": "Specimen 007",
       "displayOrder": 70,
       "catalogNumber": "Specimen 007",
       "description": "A 57.6 g cut wedge displaying a speckled interior. Cataloged as an unclassified ordinary chondrite; no official pairing or find locality is asserted.",
@@ -122,6 +130,7 @@
     },
     {
       "id": "unclassified-nwa-oriented-47-4g",
+      "specimenId": "Specimen 008",
       "displayOrder": 80,
       "catalogNumber": "Specimen 008",
       "description": "A 47.4 g unclassified Northwest Africa ordinary chondrite with a rounded, shield-like oriented form and visible surface cracking. No official pairing is asserted.",
@@ -139,9 +148,10 @@
     },
     {
       "id": "bjurbole-14g",
+      "specimenId": "Specimen 009",
       "displayOrder": 90,
       "catalogNumber": "Specimen 009",
-      "description": "A historic 14 g Bjurböle collection fragment with a gray brecciated surface and the visible specimen marking OCH 238. Bjurböle is an officially recognized L/LL4 ordinary chondrite that fell in Uusimaa, Finland, in 1899; the Meteoritical Bulletin Database records 330 kg for the meteorite (code 5064).",
+      "description": "A historic 14 g collection fragment with a gray brecciated surface and the visible specimen marking OCH 238. Bjurböle is an officially recognized L/LL4 ordinary chondrite that fell in Uusimaa, Finland, in 1899; the Meteoritical Bulletin Database records 330 kg for the meteorite (code 5064).",
       "image": "./assets/collection/bjurbole-14g-1-g13-01-marked.jpg",
       "images": [
         "./assets/collection/bjurbole-14g-1-g13-01-marked.jpg",
@@ -150,12 +160,14 @@
       ],
       "imageAlt": "Marked face of the historic 14 g Bjurböle L/LL4 fragment",
       "name": "Bjurböle",
+      "metbullCode": "5064",
       "classification": "L/LL4",
       "massGrams": 14,
       "locality": "Finland"
     },
     {
       "id": "unclassified-nwa-oc-13-8kg",
+      "specimenId": "Specimen 010",
       "displayOrder": 100,
       "catalogNumber": "Specimen 010",
       "description": "A large unclassified Northwest Africa ordinary chondrite with a broad weathered exterior, pronounced sculpting, and visible cracking. No official pairing is asserted.",
@@ -173,9 +185,10 @@
     },
     {
       "id": "ksar-ghilane-022-31-35g",
+      "specimenId": "Specimen 011",
       "displayOrder": 110,
       "catalogNumber": "Specimen 011",
-      "description": "Ksar Ghilane 022 is an officially recognized ungrouped achondrite found in Tatawin, Tunisia, in 2023 and described in the Meteoritical Bulletin as an Mg-rich clinopyroxenite composed predominantly of augite. This 31.35 g polished end cut displays a pale gray granular face crossed by a darker network and is held in the permanent collection (code 82150).",
+      "description": "This 31.35 g polished end cut displays a pale gray granular face crossed by a darker network and is held in the permanent collection. Ksar Ghilane 022 is an officially recognized ungrouped achondrite found in Tatawin, Tunisia, in 2023 and described in the Meteoritical Bulletin as an Mg-rich clinopyroxenite composed predominantly of augite (code 82150).",
       "image": "./assets/collection/ksar-ghilane-022-31-35g-1-g15-01-polished-face.jpg",
       "images": [
         "./assets/collection/ksar-ghilane-022-31-35g-1-g15-01-polished-face.jpg",
@@ -184,6 +197,7 @@
       ],
       "imageAlt": "Polished face of the 31.35 g Ksar Ghilane 022 ungrouped achondrite with pale gray angular grains crossed by a dark network beside a scale cube",
       "name": "Ksar Ghilane 022",
+      "metbullCode": "82150",
       "classification": "Ungrouped achondrite",
       "massGrams": 31.35,
       "locality": "Tatawin, Tunisia",

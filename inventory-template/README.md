@@ -57,3 +57,5 @@ npm run import:inventory -- "/absolute/path/to/import-folder" --write
 ```
 
 The importer copies images into the correct `assets/` folder and updates the matching JSON catalog. Existing IDs are updated; new IDs are appended and then sorted by `display_order`. Nothing is deleted automatically.
+
+After importing a physical specimen, add or update its row in `data/specimen-ledger.csv` and run `npm run ledger:sync -- --write`. The global ledger owns specimen-specific metadata and structured Meteoritical Bulletin associations; `docs/SPECIMEN_LEDGER.md` documents its fields. Book imports do not use the specimen ledger.

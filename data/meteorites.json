@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-09-13",
+  "items": [
+    {
+      "metbullCode": "5064",
+      "name": "Bjurböle",
+      "classification": "L/LL4",
+      "locality": "Finland",
+      "summary": "Bjurböle is an officially recognized L/LL4 ordinary chondrite that fell in Uusimaa, Finland, in 1899; the Meteoritical Bulletin Database records 330 kg for the meteorite (code 5064).",
+      "sourceUrl": "https://www.lpi.usra.edu/meteor/metbull.php?code=5064"
+    },
+    {
+      "metbullCode": "12217",
+      "name": "Kaalijarv",
+      "classification": "Iron, IAB-MG",
+      "locality": "Estonia",
+      "foundYear": 1937,
+      "summary": "Kaalijarv is an officially recognized IAB-MG iron meteorite found in Estonia in 1937; the Meteoritical Bulletin Database records 2.25 kg for the meteorite (code 12217).",
+      "sourceUrl": "https://www.lpi.usra.edu/meteor/metbull.php?code=12217"
+    },
+    {
+      "metbullCode": "69696",
+      "name": "Aguas Zarcas",
+      "classification": "CM2",
+      "locality": "Costa Rica",
+      "summary": "Aguas Zarcas is an officially recognized CM2 carbonaceous chondrite that fell in Alajuela, Costa Rica, on April 23, 2019. The Meteoritical Bulletin reports that the first recovered stone broke through a house, a 280 g piece struck a doghouse, and hundreds of stones totaling about 27 kg were recovered, including approximately 11 kg collected before rain reached the fall site (code 69696).",
+      "sourceUrl": "https://www.lpi.usra.edu/meteor/metbull.php?code=69696"
+    },
+    {
+      "metbullCode": "82150",
+      "name": "Ksar Ghilane 022",
+      "classification": "Ungrouped achondrite",
+      "locality": "Tatawin, Tunisia",
+      "foundYear": 2023,
+      "summary": "Ksar Ghilane 022 is an officially recognized ungrouped achondrite found in Tatawin, Tunisia, in 2023 and described in the Meteoritical Bulletin as an Mg-rich clinopyroxenite composed predominantly of augite (code 82150).",
+      "sourceUrl": "https://www.lpi.usra.edu/meteor/metbull.php?code=82150"
+    }
+  ]
+}

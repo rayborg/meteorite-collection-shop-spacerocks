@@ -1,10 +1,11 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-09-10",
+  "updated": "2026-09-13",
   "currency": "USD",
   "items": [
     {
       "id": "wabar-impact-glass-7-2g",
+      "specimenId": "Specimen 012",
       "displayOrder": 10,
       "catalogNumber": "Specimen 001",
       "description": "A 7.2 g Wabar impact fragment showing black glass fused directly to pale desert sand, with a jagged boundary between the glassy melt and granular substrate. This is related impact material, not a meteorite.",
@@ -25,9 +26,10 @@
     },
     {
       "id": "aguas-zarcas-4-97g",
+      "specimenId": "Specimen 013",
       "displayOrder": 20,
       "catalogNumber": "Specimen 002",
-      "description": "This 4.97 g fragment is from Aguas Zarcas, an officially recognized CM2 carbonaceous chondrite that fell in Alajuela, Costa Rica, on April 23, 2019. The Meteoritical Bulletin reports that the first recovered stone broke through a house, a 280 g piece struck a doghouse, and hundreds of stones totaling about 27 kg were recovered, including approximately 11 kg collected before rain reached the fall site (code 69696).",
+      "description": "The exact 4.97 g fragment offered here has dark fusion crust and an exposed interior face. Aguas Zarcas is an officially recognized CM2 carbonaceous chondrite that fell in Alajuela, Costa Rica, on April 23, 2019. The Meteoritical Bulletin reports that the first recovered stone broke through a house, a 280 g piece struck a doghouse, and hundreds of stones totaling about 27 kg were recovered, including approximately 11 kg collected before rain reached the fall site (code 69696).",
       "image": "./assets/sale-specimens/aguas-zarcas-4-97g-1-g10-01-hero.jpg",
       "images": [
         "./assets/sale-specimens/aguas-zarcas-4-97g-1-g10-01-hero.jpg",
@@ -38,6 +40,7 @@
       ],
       "imageAlt": "Broad face of the exact 4.97 g Aguas Zarcas CM2 specimen offered for sale",
       "name": "Aguas Zarcas",
+      "metbullCode": "69696",
       "classification": "CM2",
       "massGrams": 4.97,
       "locality": "Costa Rica",

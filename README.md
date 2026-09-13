@@ -51,6 +51,8 @@ npm run import:inventory -- "/absolute/path/to/import-folder" --write
 
 See `inventory-template/README.md` for the exact column order, field rules, image-count requirements, and complete examples. Follow `docs/IMAGE_PREPARATION.md` for cropping, color, quality-review, and publication requirements, and `docs/PRIVATE_COSTS.md` for acquisition-cost handling. Imported rows are upserted by stable `id`; nothing is deleted automatically. The first filename in `image_files` becomes the card image, and the remaining `|`-separated images are retained in the record.
 
+Physical-specimen metadata is also maintained in the Excel-compatible master sheet at `data/specimen-ledger.csv`. It uses one global sequence across both specimen catalogs and associates official meteorites by Meteoritical Bulletin code without duplicating official facts in the sheet. Run `npm run ledger:sync` to preview changes, `npm run ledger:sync -- --write` to apply them, and `npm run ledger:check` to detect drift. See `docs/SPECIMEN_LEDGER.md` for the schema and workflow.
+
 Every imported image must be at most 563,200 bytes and 1,600 pixels on its long edge. One record's complete carousel must total at most 1,677,722 bytes. The dependency-free importer performs bounded structural and dimension validation for still AVIF, GIF, JPEG, PNG, and WebP and rejects malformed or unparseable files. AVIS image sequences are rejected. The importer does not decode compressed AV1 or other image pixels, so prepared images still require visual review.
 
 Each collection specimen requires 3 images. Each sale specimen and every book record require 5 images.
@@ -68,6 +70,7 @@ Photographs belong in the corresponding directory under `assets/`. All paths mus
 ```json
 {
   "id": "collection-001",
+  "specimenId": "Specimen 001",
   "displayOrder": 10,
   "catalogNumber": "Specimen 001",
   "name": "Meteorite name",
@@ -90,6 +93,7 @@ Photographs belong in the corresponding directory under `assets/`. All paths mus
 ```json
 {
   "id": "sale-001",
+  "specimenId": "Specimen 012",
   "displayOrder": 10,
   "catalogNumber": "Specimen 001",
   "name": "Meteorite name",
@@ -110,7 +114,7 @@ Photographs belong in the corresponding directory under `assets/`. All paths mus
 
 Supported sale statuses are `available`, `reserved`, and `sold`.
 When `priceUsd` is omitted, sale cards and checkout display `TBD` rather than treating the item as free.
-Collection and sale catalogs each use reader-facing `Specimen 001`, `Specimen 002`, and subsequent numbers. Stable `id` values, not the display number, identify physical records and cart items internally. An optional specimen-only `meteoriteId` groups multiple physical records on one detail page. When omitted, `id` also serves as the singleton meteorite page identity; existing JSON therefore needs no migration.
+Collection and sale catalogs each use reader-facing `Specimen 001`, `Specimen 002`, and subsequent `catalogNumber` values. The master ledger separately assigns one global `specimenId` sequence across both catalogs. Stable `id` values, not either display number, identify physical records and cart items internally. An optional specimen-only `meteoriteId` groups multiple physical records on one detail page. When omitted, `id` also serves as the singleton meteorite page identity.
 
 Every physical specimen offered for sale remains a separate record with its own stable ID, weight, photographs, price, status, and cart entry. Give related records the same `meteoriteId` to render them as separate cards on one meteorite page; grouping never combines availability or cart identity.
 
